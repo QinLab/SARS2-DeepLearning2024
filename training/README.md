@@ -1,2 +1,2 @@
 # For data_prep.py
-Download ```alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa``` for having sequences and ```variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv``` for having labels of sequences
+Download ```alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa``` for having sequences and ```variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv``` for having labels of sequences from [https://gisaid.org/]
