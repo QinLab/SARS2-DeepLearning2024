@@ -1,4 +1,5 @@
 import constants as CONST
+from matplotlib import pyplot as plt
 import tensorflow as tf
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras.optimizers import Adam, SGD
@@ -32,3 +33,28 @@ def get_model():
     model.compile(loss='categorical_crossentropy', optimizer= opt, 
                   metrics=['accuracy'])
     return model
+
+
+def plotter(history_file):
+    with open(history_file, 'rb') as file:
+        history = pickle.load(file)
+        
+    plt.figure()
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'validation'])
+    plt.savefig("Training_validation_accuracy.jpg")
+    plt.show()
+
+    plt.figure()
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'validation'])
+    plt.savefig("Training_validation_loss.jpg")
+    plt.show()
