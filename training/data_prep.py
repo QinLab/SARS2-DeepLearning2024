@@ -9,7 +9,6 @@ from sklearn.compose import ColumnTransformer
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 from tqdm.autonotebook import tqdm
-f
 
 
 def read_sequences(path, df_labelsID):
