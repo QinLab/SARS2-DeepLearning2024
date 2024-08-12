@@ -1,7 +1,7 @@
 from numpy.random import RandomState
 import pandas as pd
 
-def split_data_train_test(data_path = './who_dataset.csv'):
+def split_data_train_test(data_path = './data/who_dataset.csv'):
 
     df = pd.read_csv(data_path)
     rng = RandomState()
@@ -28,5 +28,5 @@ def split_data_val(data, ratio):
 if __name__ == '__main__':
     
     train, test = split_data_train_test()
-    train.reset_index().to_csv(f'./train/who_train.csv')
-    test.reset_index().to_csv(f'./test/who_test.csv')
+    train.reset_index().to_csv(f'./data/train/who_train.csv')
+    test.reset_index().to_csv(f'./data/test/who_test.csv')
