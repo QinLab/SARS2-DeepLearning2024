@@ -1,6 +1,9 @@
 SEQ_SIZE = 29891
 LEN_SIZE = 7
-TRAIN_DIR = "./train/who_train.csv"
-TEST_DIR = "./train/who_test.csv"
+SEQ_DIR = "/scr/qinlab/GISAID/alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa"
+LABEL_DIR = "/scr/qinlab/GISAID/variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv"
+BALANC_DIR = "./data/who_dataset.csv"
+TRAIN_DIR = "./data/train/who_train.csv"
+TEST_DIR = "./data/test/who_test.csv"
 MODEL_SAVE = "'model.hdf5'"
 SPLIT_RATIO = 0.2
