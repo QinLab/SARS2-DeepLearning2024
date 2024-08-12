@@ -33,7 +33,7 @@ batch_size = 64, epoches=15.
 |dense_3 (Dense)              | (None, 5)              | 105   |    
                                                                  
 =================================================================
-Total params: 4,975,287
-Trainable params: 4,975,287
-Non-trainable params: 0
+- Total params: 4,975,287
+- Trainable params: 4,975,287
+- Non-trainable params: 0
 _________________________________________________________________
