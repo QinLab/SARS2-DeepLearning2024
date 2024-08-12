@@ -8,6 +8,7 @@ from tensorflow.keras import models, layers, optimizers
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.layers import Dense, Dropout, Flatten, MaxPooling1D, Conv1D
 
+
 def get_model():
     model = Sequential()
     model.add(Conv1D(filters =196, kernel_size=19, strides=3, activation='relu', 
@@ -46,7 +47,7 @@ def plotter(history_file):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'])
-    plt.savefig("Training_validation_accuracy.jpg")
+    plt.savefig(f"{CONST.RSLT_DIR}/Training_validation_accuracy.jpg")
     plt.show()
 
     plt.figure()
@@ -56,5 +57,5 @@ def plotter(history_file):
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'])
-    plt.savefig("Training_validation_loss.jpg")
+    plt.savefig(f"{CONST.RSLT_DIR}/Training_validation_loss.jpg")
     plt.show()
