@@ -2,6 +2,7 @@ import ast
 import numpy as np
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
+from tensorflow.keras.utils import Sequence
 
 class DataGenerator(Sequence):
     
@@ -58,7 +59,7 @@ class DataGenerator(Sequence):
             
             df = self.df
 
-            x = ast.literal_eval(df.loc[df['ID'] == list_IDs_temp[i]]['sequence'].tolist()[0])[0]
+            x = df.loc[df['ID'] == list_IDs_temp[i]]['sequence'].tolist()[0]
             X[i,] = self._one_hot_encode_seq(x)
 
             y = df.loc[df['ID'] == list_IDs_temp[i]]['Variant_VOC'].tolist()[0]
