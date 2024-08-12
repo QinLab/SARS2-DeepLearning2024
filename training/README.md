@@ -1,4 +1,4 @@
-#Steps for training
+# Steps for training
 1. Download ```alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa``` for having sequences and ```variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv``` for having labels of sequences from [GISAID](https://gisaid.org/)
 2. Save data in this directory:
     - ```./alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa```
@@ -6,7 +6,8 @@
 3. Create these folders:
 ```
 data --- train
-    |---test
+    |
+    ---test
     
 ```
 4. To balance data: Run ```python3 data_prep.py```
