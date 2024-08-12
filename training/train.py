@@ -1,4 +1,6 @@
 from __future__ import division
+
+import argparse
 import ast
 from Bio import SeqIO
 import constants as CONST
@@ -6,18 +8,33 @@ from data_generator import DataGenerator
 from model import get_model, plotter
 import numpy as np
 import pandas as pd
-from split_data_train_val_test as split_data_val
+from split_data_train_val_test import split_data_val
+from tensorflow.keras.callbacks import ModelCheckpoint
 
+
+argParser = argparse.ArgumentParser()
+argParser.add_argument("batch_size", type=int, help="batch size")
+argParser.add_argument("epochs", type=int, help="number of epochs")
+argParser.add_argument("-v", "--verbose", type=int, default=1, help="enables tracing execution (default: 1)")
+
+args = argParser.parse_args()
+
+batch_size = args.batch_size  #64
+epochs = args.epochs  #15
+verbose = args.verbose # 1 if not provided, or the value passed by the user
+
+print(f"batch_size: {batch_size}")
+print(f"epochs: {epochs}")
 
 if __name__ == '__main__': 
 
     '''
-    Number of sequences in each variant are about:
-    Delta      40000
-    Omicron    40000
-    Gamma      40000
-    Alpha      40000
-    Beta       40000
+    Number of sequences in each variant:
+    Delta      35491
+    Omicron    34852
+    Gamma      33956
+    Alpha      33934
+    Beta       32897
     '''
 
     #preparing data
@@ -31,7 +48,7 @@ if __name__ == '__main__':
     labels = df.set_index('ID')['Variant_VOC'].to_dict() #list of labels
 
     params = {'dim': (CONST.SEQ_SIZE, CONST.LEN_SIZE),
-              'batch_size': 64,
+              'batch_size': batch_size,
               'n_classes': 5,
               'df': df,
               'shuffle': True}
@@ -46,7 +63,7 @@ if __name__ == '__main__':
     #start training
     checkpoint = ModelCheckpoint(filepath=CONST.MODEL_SAVE, 
                                  monitor='val_loss',
-                                 verbose=1, 
+                                 verbose=verbose, 
                                  save_best_only=True,
                                  mode='min')
 
@@ -55,10 +72,10 @@ if __name__ == '__main__':
     history = model.fit_generator(generator=training_generator,
                         validation_data=validation_generator,
                         use_multiprocessing=True,
-                        epochs = 15,
+                        epochs = epochs,
                         callbacks=[callbacks])
 
-    history_file = 'history.pickle'
+    history_file = CONST.HST_DIR
     with open(history_file, 'wb') as file:
         pickle.dump(history.history, file)
 
