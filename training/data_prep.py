@@ -121,6 +121,13 @@ if __name__ == "__main__":
     Delta          45100
     Gamma          45100
     Omicron        45100
+    
+    After matching sequences and labels based on ID:
+    Delta      44332
+    Omicron    43591
+    Gamma      42537
+    Alpha      42382
+    Beta       41071
     '''
     
     labels_path = CONST.LABEL_DIR
