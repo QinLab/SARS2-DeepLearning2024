@@ -1,5 +1,6 @@
 from __future__ import division
 
+import constants as CONST
 import gc
 import pandas as pd
 from Bio import SeqIO
@@ -8,6 +9,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.preprocessing import OneHotEncoder
 from tqdm.autonotebook import tqdm
+f
 
 
 def read_sequences(path, df_labelsID):
@@ -32,8 +34,6 @@ def read_sequences(path, df_labelsID):
     
     # Clean up memory
     del labels_id_set, sequences, id_seq, df_labelsID
-    
-    # Trigger garbage collection and frees up memory blocks 
     gc.collect()
     
     return id_seq_
@@ -57,8 +57,6 @@ def read_labels(path, desired_var):
     
     # Clean up memory
     del label_who
-    
-    # Trigger garbage collection
     gc.collect()
     
     print("length of labels: ", len(balance_label_who))
@@ -84,8 +82,6 @@ def balanced_data(df, num_seq = None):
     
     # Clean up memory
     del count_clade, counts_grouped
-    
-    # Trigger garbage collection
     gc.collect()
     
     return id_seq_clade_df
@@ -104,8 +100,6 @@ def map_clade_to_sequence_function(labels_path, sequences_path):
     
     # Clean up memory
     del id_seq_ds, id_label_map
-    
-    # Trigger garbage collection
     gc.collect()
         
     return merged_df
@@ -113,8 +107,24 @@ def map_clade_to_sequence_function(labels_path, sequences_path):
 
 if __name__ == "__main__":
     
-    labels_path= "./GISAID/variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv"
-    sequences_path="./GISAID/alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa"
+    '''
+    Unbalanced data:
+    Delta      4438624
+    Omicron    4162614
+    Alpha      1186649
+    Gamma       126478
+    Beta         45100
+    
+    Balanced data:
+    Alpha          45100
+    Beta           45100
+    Delta          45100
+    Gamma          45100
+    Omicron        45100
+    '''
+    
+    labels_path = CONST.LABEL_DIR
+    sequences_path = CONST.TRAIN_DIR
 
     clade_to_sequences_map = map_clade_to_sequence_function(labels_path, sequences_path) 
-    clade_to_sequences_map.to_csv(f'./who_dataset.csv')
+    clade_to_sequences_map.to_csv(CONST.BALANC_DIR)
