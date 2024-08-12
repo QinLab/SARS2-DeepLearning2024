@@ -1,6 +1,6 @@
 # Steps for training
 1. Download ```alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa``` for having sequences and ```variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv``` for having labels of sequences from [GISAID](https://gisaid.org/)
-2. Save data in this directory:
+2. Save data in these directories:
     - ```./alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa```
     - ```./variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv```
 3. Create these folders:
