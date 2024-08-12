@@ -20,28 +20,26 @@ batch_size = 64, epoches=15.
 
 
 | Layer (type)                |Output Shape            |Param |   
-------------------------------|:------------------------:|:-----------------:|
- |conv1d (Conv1D)             | (None, 9958, 196)      | 26264|    
+| --------------------------- |:----------------------:|:----:|
+|conv1d (Conv1D)              | (None, 9958, 196)      | 26264|    
                                                                  
- |max_pooling1d (MaxPooling1D | (None, 1991, 196)      | 0    |     
- )                                                               
+|max_pooling1d (MaxPooling1D) | (None, 1991, 196)      | 0    |                                                                   
                                                                  
- |conv1d_1 (Conv1D)           | (None, 658, 196)       |730100|    
+|conv1d_1 (Conv1D)            | (None, 658, 196)       |730100|    
                                                                  
- |max_pooling1d_1 (MaxPooling | (None, 131, 196)       |0     |   
- 1D)                                                             
+|max_pooling1d_1(MaxPooling1D)| (None, 131, 196)       | 0    |                                                               
                                                                  
- |flatten (Flatten)           | (None, 25676)          | 0    |      
+|flatten (Flatten)            | (None, 25676)          | 0    |      
                                                                  
- |dense (Dense)               | (None, 164)            |4211028|   
+|dense (Dense)                | (None, 164)            |4211028|   
                                                                  
- |dense_1 (Dense)             | (None, 42)             | 6930  |    
+|dense_1 (Dense)              | (None, 42)             | 6930  |    
                                                                  
- |dense_2 (Dense)             | (None, 20)             | 860   |    
+|dense_2 (Dense)              | (None, 20)             | 860   |    
                                                                  
- |dropout (Dropout)           | (None, 20)             | 0     |    
+|dropout (Dropout)            | (None, 20)             | 0     |    
                                                                  
- |dense_3 (Dense)             | (None, 5)              | 105   |    
+|dense_3 (Dense)              | (None, 5)              | 105   |    
                                                                  
 =================================================================
 Total params: 4,975,287
