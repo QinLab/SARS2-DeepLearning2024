@@ -7,7 +7,7 @@
 ```
 data --- train
     |
-    ---test
+     ---test
     
 ```
 4. To balance data: Run ```python3 data_prep.py```
