@@ -8,16 +8,17 @@ from data_generator import DataGenerator
 from model import get_model, plotter
 import numpy as np
 import pandas as pd
+import pickle
 from split_data_train_val_test import split_data_val
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 
-argParser = argparse.ArgumentParser()
-argParser.add_argument("batch_size", type=int, help="batch size")
-argParser.add_argument("epochs", type=int, help="number of epochs")
-argParser.add_argument("-v", "--verbose", type=int, default=1, help="enables tracing execution (default: 1)")
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument("batch_size", type=int, help="batch size")
+arg_parser.add_argument("epochs", type=int, help="number of epochs")
+arg_parser.add_argument("-v", "--verbose", type=int, default=1, help="enables tracing execution (default: 1)")
 
-args = argParser.parse_args()
+args = arg_parser.parse_args()
 
 batch_size = args.batch_size  #64
 epochs = args.epochs  #15
