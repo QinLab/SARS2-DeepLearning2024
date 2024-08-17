@@ -1,5 +1,7 @@
 import constants as CONST
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt 
+import os
+import pickle
 import tensorflow as tf
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras.optimizers import Adam, SGD
@@ -36,9 +38,12 @@ def get_model():
     return model
 
 
-def plotter(history_file):
-    with open(history_file, 'rb') as file:
-        history = pickle.load(file)
+def plotter(history):
+    if os.path.isfile(history):
+        with open(history, 'rb') as file:
+            history = pickle.load(file)
+    else:
+        history = history
         
     plt.figure()
     plt.plot(history.history['accuracy'])
