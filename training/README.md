@@ -6,8 +6,9 @@
 3. Create these folders:
 ```
 data 
-|--- train
-|---test
+│
+├── train
+└── test
      
     
 ```
