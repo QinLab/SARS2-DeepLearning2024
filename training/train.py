@@ -76,8 +76,8 @@ if __name__ == '__main__':
                         epochs = epochs,
                         callbacks=[callbacks])
 
-    history_file = CONST.HST_DIR
-    with open(history_file, 'wb') as file:
-        pickle.dump(history.history, file)
+#     history_file = CONST.HST_DIR
+#     with open(history_file, 'wb') as file:
+#         pickle.dump(history.history, file)
 
-    plotter(history_file)
+    plotter(history)
