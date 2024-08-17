@@ -5,9 +5,10 @@
     - ```./variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv```
 3. Create these folders:
 ```
-data --- train
-    |
-     ---test
+data 
+|--- train
+|---test
+     
     
 ```
 4. To balance data: Run ```python3 data_prep.py```
