@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     partition_data = split_data_val(IDs_seq, CONST.SPLIT_RATIO)
 
-    labels = df.set_index('ID')['Variant_VOC'].to_dict() #list of labels
+#     labels = df.set_index('ID')['Variant_VOC'].to_dict() #list of labels
 
     params = {'dim': (CONST.SEQ_SIZE, CONST.LEN_SIZE),
               'batch_size': batch_size,
@@ -54,8 +54,8 @@ if __name__ == '__main__':
               'df': df,
               'shuffle': True}
 
-    training_generator = DataGenerator(partition_data['train'], labels, **params)
-    validation_generator = DataGenerator(partition_data['validation'], labels, **params)
+    training_generator = DataGenerator(partition_data['train'], **params)
+    validation_generator = DataGenerator(partition_data['validation'], **params)
 
     #define the structure of our model
     model = get_model()
