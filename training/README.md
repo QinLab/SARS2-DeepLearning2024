@@ -10,11 +10,15 @@ data
 ├── train
 └── test   
 ```
-4. To balance data: Run ```python3 data_prep.py```
-5. To make train and test dataset: Run ```python3 split_data_train_val_test.py```
-6. To train the model: Run ```python3 train.py 64 15```
-
-batch_size = 64, epoches=15.
+4. Ensure the root directory is in `PYTHONPATH`
+```
+export PYTHONPATH="<ROOT_DIRECTORY>:$PYTHONPATH"
+```
+5. To balance data: Run ```python3 data_prep.py```
+6. To make train and test dataset: Run ```python3 split_data_train_val_test.py```
+7. To train the model: Run ```python3 main.py 64 15```
+-batch_size = 64, epoches=15.
+ 
 
 # Summary of our model
 
