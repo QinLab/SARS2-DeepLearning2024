@@ -1,18 +1,18 @@
 import numpy as np
 import pandas as pd
 import sars.one_hot.one_hot as OneHot
+from tqdm import trange
 
 
-class Agg_SHAP():
-    
-    def __int__(df, var, base_value=False):
+class Agg_SHAP:    
+    def __init__(self, df, var, base_value=False):
         self.var = var
         self.df = df
         self.column_names = ['ID','sequence', 'Variant_VOC']
         self.variants_who = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Omicron']
         
-        if var not in variants_who:
-            warning_message = f"Warning: '{var}' is not in the list of supported variants: {variants_who}.")
+        if self.var not in self.variants_who:
+            warning_message = f"Warning: '{var}' is not in the list of supported variants: {variants_who}."
             raise ValueError(warning_message)
 
 
