@@ -3,7 +3,7 @@ from __future__ import division
 import argparse
 import ast
 from Bio import SeqIO
-import constants as CONST
+import sars.constants as CONST
 from data_generator import DataGenerator
 from model import get_model, plotter
 import numpy as np
