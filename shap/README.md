@@ -6,3 +6,5 @@ To achieve this, run the following command:
 ```
 python3 main.py -var <NAME_VARIATION>
 ```
+
+Instead of <NAME_VARIATION> you should select a name from these names: Alpha, Beta, Gamma, Delta, Omicron
