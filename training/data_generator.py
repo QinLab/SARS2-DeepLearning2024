@@ -4,7 +4,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 import sys
 from tensorflow.keras.utils import Sequence
-import sars.One_Hot as OneHot
+import sars.one_hot.one_hot as OneHot
 
 
 class DataGenerator(Sequence):
