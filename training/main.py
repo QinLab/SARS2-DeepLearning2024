@@ -17,12 +17,14 @@ arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument("batch_size", type=int, help="batch size")
 arg_parser.add_argument("epochs", type=int, help="number of epochs")
 arg_parser.add_argument("-v", "--verbose", type=int, default=1, help="enables tracing execution (default: 1)")
+arg_parser.add_argument("-pkl", "--pickle", type=bool, default=False, help="save result in pickle file or not (default: False)")
 
 args = arg_parser.parse_args()
 
-batch_size = args.batch_size  #64
-epochs = args.epochs  #15
+batch_size = args.batch_size  # 64
+epochs = args.epochs  # 15
 verbose = args.verbose # 1 if not provided, or the value passed by the user
+pickle_file = args.pickle # False if not provided, or True passed by the user
 
 print(f"batch_size: {batch_size}")
 print(f"epochs: {epochs}")
@@ -45,8 +47,6 @@ if __name__ == '__main__':
     IDs_seq = column.tolist() #list of IDs
 
     partition_data = split_data_val(IDs_seq, CONST.SPLIT_RATIO)
-
-#     labels = df.set_index('ID')['Variant_VOC'].to_dict() #list of labels
 
     params = {'dim': (CONST.SEQ_SIZE, CONST.LEN_SIZE),
               'batch_size': batch_size,
@@ -75,9 +75,12 @@ if __name__ == '__main__':
                         use_multiprocessing=True,
                         epochs = epochs,
                         callbacks=[callbacks])
+    
+    if pickle_file == True:
+        history = CONST.HST_DIR
+        with open(history_file, 'wb') as file:
+            pickle.dump(history.history, file)
+    else:
+        history = history
 
-#     history_file = CONST.HST_DIR
-#     with open(history_file, 'wb') as file:
-#         pickle.dump(history.history, file)
-
-    plotter(history)
+    plotter(history, pickle_file)
