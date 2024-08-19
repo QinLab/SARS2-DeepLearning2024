@@ -1,4 +1,4 @@
-import aggSHAP
+from agg_shap import Agg_SHAP
 import argparse
 import numpy as np
 import pandas as pd
