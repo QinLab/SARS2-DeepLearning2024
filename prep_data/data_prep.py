@@ -1,6 +1,6 @@
 from __future__ import division
 
-import constants as CONST
+import sars.constants as CONST
 import gc
 import pandas as pd
 from Bio import SeqIO
