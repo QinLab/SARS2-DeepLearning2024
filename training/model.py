@@ -38,8 +38,9 @@ def get_model():
     return model
 
 
-def plotter(history):
-    if os.path.isfile(history):
+def plotter(history, pickle_file=False):
+    
+    if pickle_file==True:
         with open(history, 'rb') as file:
             history = pickle.load(file)
     else:
