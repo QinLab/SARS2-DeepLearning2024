@@ -1,4 +1,4 @@
-import constants as CONST
+import sars.constants as CONST
 from numpy.random import RandomState
 import pandas as pd
 
