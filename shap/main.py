@@ -36,7 +36,7 @@ if __name__ == '__main__':
     # Producing base value for calculating of SHAP value for all variants
     for i in range(len(var_who)):
             var_base = var_who[i]
-            features,_ = calc_base.get_features( num_seq = 5, 
+            features, _ = calc_base.get_features( num_seq = 5, 
                                                  ID = None, 
                                                  )
             features_tot.append(np.array(features))
@@ -48,22 +48,25 @@ if __name__ == '__main__':
     np.savetxt(f'{CONST.SHAP_DIR}/base_value_{var}.csv', base_value, delimiter=',')
     
     'RAM needs to be clean'
-    del df_train, df_test, model, df_concatenated, non_dup_test, features_base
+    del df_train, df_test, model, df_concatenated, features_base
     
     'Calculating SHAP value for each variant'
     calc_shap = Agg_SHAP(non_dup_test, var)
     features, Ids = calc_shap.get_features( num_seq = None,
                                             ID = None, 
                                             )
- 
-    shap_no_zero, non_zero_IDs = cal_shap.get_non_zero_shap_values(
+    print(f"{features:}")
+    print(f"features.shape: {np.array(features).shape}")
+    del non_dup_test
+    
+    shap_no_zero, non_zero_IDs = calc_shap.get_non_zero_shap_values(
         explainer, 
-        features, 
-        Id_test,
+        np.array(features), 
+        Ids,
         )
     
     'Producing a DataFrame for SHAP values. Each column name represents the position number of a nucleotide in the genetic sequence.'
-    df = aggSHAP.get_shap_for_each_nuc(shap_no_zero, non_zero_IDs)
+    df = calc_shap.get_shap_for_each_nuc(shap_no_zero, non_zero_IDs)
 
     df.loc[f'Total_SHAP_{var}'] = df.sum(numeric_only=True)
 
