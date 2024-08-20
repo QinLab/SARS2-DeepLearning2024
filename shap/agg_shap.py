@@ -65,7 +65,7 @@ class Agg_SHAP:
         return shap_no_zero, Id_non_zero
 
 
-    def get_shap_for_each_nuc(shap_no_zero, Id_non_zero):
+    def get_shap_for_each_nuc(self, shap_no_zero, Id_non_zero):
 
         split_df = pd.DataFrame(shap_no_zero)
 
