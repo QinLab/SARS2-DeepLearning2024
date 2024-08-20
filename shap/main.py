@@ -55,8 +55,6 @@ if __name__ == '__main__':
     features, Ids = calc_shap.get_features( num_seq = None,
                                             ID = None, 
                                             )
-    print(f"{features:}")
-    print(f"features.shape: {np.array(features).shape}")
     del non_dup_test
     
     shap_no_zero, non_zero_IDs = calc_shap.get_non_zero_shap_values(
