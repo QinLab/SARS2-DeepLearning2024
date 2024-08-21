@@ -20,11 +20,11 @@ if __name__ == '__main__':
     'Data'
     # Define home directory
     home_dir = os.path.expanduser('~')
-    model = tf.keras.models.load_model(f'{home_dir}/{CONST.MODEL_SAVE}')
+    model = tf.keras.models.load_model(f'{home_dir}{CONST.MODEL_SAVE}')
     
     # Using df_train for producing base value
-    df_train = pd.read_csv(f'{home_dir}/{CONST.TRAIN_DIR}')
-    df_test = pd.read_csv(f'{home_dir}/{CONST.TEST_DIR}')
+    df_train = pd.read_csv(f'{home_dir}{CONST.TRAIN_DIR}')
+    df_test = pd.read_csv(f'{home_dir}{CONST.TEST_DIR}')
     
     # non_dup_test for calculating SHAP value. We used all of sequences, both train and test sequences, within each variant.
     df_concatenated = pd.concat([df_train, df_test], ignore_index=True)
