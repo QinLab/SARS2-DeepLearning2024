@@ -10,10 +10,10 @@
 #SBATCH --nodes=1
  
 # Number of CPU cores per task
-#SBATCH --cpus-per-task=64
+#SBATCH --cpus-per-task=32
  
 # time
-#SBATCH --time=3-00:00:00
+#SBATCH --time=40:00:00
  
 # job name is my_job
 #SBATCH --job-name=SHAP
@@ -27,4 +27,4 @@ source activate myenv
 
 export PYTHONPATH="$HOME:$PYTHONPATH"
 # application execution
-python3 ./main.py -var Omicron
+python3 ./main.py 64 1
