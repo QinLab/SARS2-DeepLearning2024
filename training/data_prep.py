@@ -52,15 +52,10 @@ def read_labels(path, desired_var):
     label_who = label_who.rename(columns={'Accession ID': 'ID'})
     
     print("unbalanced\n", label_who['Variant_VOC'].value_counts())
-    balance_label_who = balanced_data(label_who)
     
-    # Clean up memory
-    del label_who
-    gc.collect()
-    
-    print("length of labels: ", len(balance_label_who))
+    print("length of labels: ", len(label_who))
 
-    return balance_label_who
+    return label_who
 
 
 def balanced_data(df, num_seq = None):
@@ -91,14 +86,15 @@ def map_clade_to_sequence_function(labels_path, sequences_path):
 
     variants_who = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Omicron']
     
-    id_label_map = read_labels(labels_path, variants_who)
+    label_who = read_labels(labels_path, variants_who)
+    id_label_map = balanced_data(label_who)
     id_seq_ds = read_sequences(sequences_path, id_label_map)
     
     
     merged_df = pd.merge(id_seq_ds, id_label_map, on='ID')
     
     # Clean up memory
-    del id_seq_ds, id_label_map
+    del label_who, id_seq_ds, id_label_map
     gc.collect()
         
     return merged_df
