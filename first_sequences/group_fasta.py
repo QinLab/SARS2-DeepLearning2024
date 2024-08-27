@@ -1,4 +1,5 @@
 from Bio import SeqIO
+import os
 import sars.constants as CONST
 
 "from https://biopython.org/wiki/Split_large_file"
@@ -22,10 +23,18 @@ def batch_iterator(iterator, batch_size):
             batch = []
 
 
-record_iter = SeqIO.parse(CONST.SEQ_DIR, "fasta")
+
+record_iter = SeqIO.parse(open(CONST.SEQ_DIR), "fasta")
 for i, batch in enumerate(batch_iterator(record_iter, 500)):
-    filename = f"{CONST.BATCH_DIR}/group_%i.fasta" % (i + 1)
+    filename = f"{CONST.BATCH_DIR}/group_{i + 1}.fasta"
+    print(f"Creating file: {filename}")
     with open(filename, "w") as handle:
         count = SeqIO.write(batch, handle, "fasta")
         
     print("Wrote %i records to %s" % (count, filename))
+    # Check if the file now exists
+    if os.path.exists(filename):
+        print(f"File {filename} successfully created.")
+    else:
+        print(f"Failed to create file {filename}.")
+    break
