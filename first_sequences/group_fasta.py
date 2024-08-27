@@ -1,6 +1,12 @@
+import argparse
 from Bio import SeqIO
 import os
 import sars.constants as CONST
+
+arg_parser = argparse.ArgumentParser(description="Split a large FASTA file into smaller batches.")
+arg_parser.add_argument("-b", "--batch_size", type=int, help="Batch size for splitting the large FASTA file into sub FASTA files")
+args = arg_parser.parse_args()
+batch_size = args.batch_size
 
 "from https://biopython.org/wiki/Split_large_file"
 def batch_iterator(iterator, batch_size):
@@ -25,7 +31,7 @@ def batch_iterator(iterator, batch_size):
 
 
 record_iter = SeqIO.parse(open(CONST.SEQ_DIR), "fasta")
-for i, batch in enumerate(batch_iterator(record_iter, 500)):
+for i, batch in enumerate(batch_iterator(record_iter, batch_size)):
     filename = f"{CONST.BATCH_DIR}/group_{i + 1}.fasta"
     print(f"Creating file: {filename}")
     with open(filename, "w") as handle:
