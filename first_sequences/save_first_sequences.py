@@ -53,11 +53,12 @@ def read_seq(file_path):
 if __name__ == "__main__":
 
     start = time.time()
+    
     if CONST.NM_CPU == None:
         num_cores = mp.cpu_count()  # Get the number of CPU cores
     else:
         num_cores = CONST.NM_CPU
-#     filenames = glob.glob(f"{dir_save}/group_*.fasta")
+        
     filenames = glob.glob(f"{CONST.BATCH_DIR}/group_*.fasta")
     with mp.Pool(processes=num_cores) as pool:
         found_sequence = pool.map(read_seq, filenames)
