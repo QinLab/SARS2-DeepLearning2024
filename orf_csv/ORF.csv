@@ -1,0 +1,12 @@
+Gene,Protein,Start,End
+ORF1ab,ORF1ab polyprotein,266,21555
+ORF2 (S),Spike protein (S protein),21563,25384
+ORF3a,ORF3a protein,25393,26220
+ORF4 (E),Envelope protein (E protein),26245,26472
+ORF5 (M),Membrane protein (M protein),26523,27191
+ORF6,ORF6 protein,27202,27387
+ORF7a,ORF7a protein,27394,27759
+ORF7b,ORF7b protein,27756,27887
+ORF8,ORF8 protein,27894,28259
+ORF9 (N),Nucleocapsid phosphoprotein (N protein),28274,29533
+ORF10,ORF10 protein,29558,29674
