@@ -41,10 +41,8 @@ class Agg_SHAP:
                 x = filtered_df['sequence'].iloc[i]
                 features.append(np.array(OneHot.one_hot_encode_seq(x)))      
                 ids.append(filtered_df['ID'].iloc[i])
-
-        del filtered_df
         
-        return features, ids
+        return filtered_df, features, ids
         
             
     def get_non_zero_shap_values(self, explainer, features_test, IDs):
