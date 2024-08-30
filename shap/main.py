@@ -18,13 +18,11 @@ var_who = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Omicron']
 
 if __name__ == '__main__':
     'Data'
-    # Define home directory
-    home_dir = os.path.expanduser('~')
-    model = tf.keras.models.load_model(f'{home_dir}{CONST.MODEL_SAVE}')
+    model = tf.keras.models.load_model(f'{CONST.MODEL_SAVE}')
     
     # Using df_train for producing base value
-    df_train = pd.read_csv(f'{home_dir}{CONST.TRAIN_DIR}')
-    df_test = pd.read_csv(f'{home_dir}{CONST.TEST_DIR}')
+    df_train = pd.read_csv(f'{CONST.TRAIN_DIR}')
+    df_test = pd.read_csv(f'{CONST.TEST_DIR}')
     
     # non_dup_test for calculating SHAP value. We used all of sequences, both train and test sequences, within each variant.
     df_concatenated = pd.concat([df_train, df_test], ignore_index=True)
@@ -36,7 +34,7 @@ if __name__ == '__main__':
     # Producing base value for calculating of SHAP value for all variants
     for i in range(len(var_who)):
             var_base = var_who[i]
-            features, _ = calc_base.get_features( num_seq = 5, 
+            _, features, _ = calc_base.get_features( num_seq = 200, 
                                                  ID = None, 
                                                  )
             features_tot.append(np.array(features))
@@ -45,14 +43,14 @@ if __name__ == '__main__':
     
     explainer = shap.DeepExplainer(model, features_base)
     base_value = np.array(explainer.expected_value)
-    np.savetxt(f'{CONST.SHAP_DIR}/base_value_{var}.csv', base_value, delimiter=',')
+    np.savetxt(f'{CONST.SHAP_DIR}/base_value_{var}_apr.csv', base_value, delimiter=',')
     
     'RAM needs to be clean'
     del df_train, df_test, model, df_concatenated, features_base
     
     'Calculating SHAP value for each variant'
     calc_shap = Agg_SHAP(non_dup_test, var)
-    features, Ids = calc_shap.get_features( num_seq = None,
+    _, features, Ids = calc_shap.get_features( num_seq = None,
                                             ID = None, 
                                             )
     del non_dup_test
@@ -68,5 +66,5 @@ if __name__ == '__main__':
 
     df.loc[f'Total_SHAP_{var}'] = df.sum(numeric_only=True)
 
-    df.to_csv(f'{CONST.SHAP_DIR}/agg_shap{var}_beeswarm.csv', 
+    df.to_csv(f'{CONST.SHAP_DIR}/agg_shap{var}_beeswarm_apr.csv', 
                     index=False)
