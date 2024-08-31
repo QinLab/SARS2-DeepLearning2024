@@ -1,7 +1,7 @@
 """
 A modified version of : https://github.com/shap/shap/blob/master/shap/plots/_waterfall.py
 """
-
+import sars.constants as CONST
 import warnings
 import shap
 
@@ -18,7 +18,7 @@ from shap.plots import colors
 from shap.plots._labels import labels
 
 
-def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_display=10, show=True):
+def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_display=6, show=True):
     """ Plots an explantion of a single prediction as a waterfall plot.
 
     The SHAP value of a feature represents the impact of the evidence provided by that feature on the model's
@@ -40,16 +40,15 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
         Whether matplotlib.pyplot.show() is called before returning. Setting this to False allows the plot
         to be customized further after it has been created.
     """
-    
-    get_pos_nuc_test = df_variant
-    df_col = get_pos_nuc_test.iloc[:,2:]
+    df_col = df_variant
     # Turn off interactive plot
     if show is False:
         plt.ioff()
-
+    print (f"The id of sequence is {df_col.iloc[0][0]} and its variant is {df_col.iloc[0][1]} \n")
     base_values = base_value
-    features = list(df_col.iloc[0])
-    feature_names = df_col.columns
+    features = list(df_col.iloc[0][2:])
+
+    feature_names = df_col.columns[2:]
     lower_bounds = None
     upper_bounds = None
     values = np.sum(shap_values,axis=-1)
@@ -121,7 +120,7 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
         if num_individual != num_features or i + 4 < num_individual:
             plt.plot([loc, loc], [rng[i] - 1 - 0.4, rng[i] + 0.4],
                      color="#bbbbbb", linestyle="--", linewidth=0.5, zorder=-1)
-        
+
         imp_nuc_region.append(feature_names[order[i]])
         if features is None:
             yticklabels[rng[i]] = feature_names[order[i]]
@@ -130,7 +129,7 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
             if np.issubdtype(type(features[order[i]]), np.number):
                 yticklabels[rng[i]] = format_value(float(features[order[i]]), "%0.20f") + " = " + feature_names[order[i]]
             else:
-                yticklabels[rng[i]] = str(features[order[i]]) + " = " + str(feature_names[order[i]])
+                yticklabels[rng[i]] = str(feature_names[order[i]])
     
     print("Important positions and nucleotides:", imp_nuc_region, "\n")
     
@@ -151,14 +150,6 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
     points = pos_lefts + list(np.array(pos_lefts) + np.array(pos_widths)) + neg_lefts + \
         list(np.array(neg_lefts) + np.array(neg_widths))
     dataw = np.max(points) - np.min(points)
-    
-    if var == "Gamma" and as_var == "Gamma":
-        pos_inds.insert(0, num_individual+1)
-        pos_widths.insert(0, 0)
-#         print("pos_widths:", pos_widths, '\n')
-        pos_lefts.insert(0, pos_lefts[0]+pos_widths[1])
-#         print("pos_lefts:", pos_lefts, '\n')
-
 
     # draw invisible bars just for sizing the axes
     label_padding = np.array([0.1*dataw if w < 1 else 0 for w in pos_widths])
@@ -180,44 +171,22 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
     hl_scaled = bbox_to_xscale * head_length
     renderer = fig.canvas.get_renderer()
     
-#     print("pos_widths:", pos_widths)
+    print("pos_widths:", pos_widths, '\n')
     # draw the positive arrows
     for i in range(len(pos_inds)):
         dist = pos_widths[i]
         dist_hl_scaled = dist-hl_scaled
-        scale_plt1 = 0.000001
+        dist_hl_scaled = dist - hl_scaled
+        scale_plt1 = 1e-4
         
-#         if var == "Alpha" and as_var == "Beta":
-#             scale_plt1 = 1e-8
-#         if var == "Beta":
-#             scale_plt1 = 0
-#         if var == "Gamma" and as_var == "Alpha" or as_var == "Omicron":
-#             scale_plt = 1e-45
-#         elif var == "Gamma" and as_var != "Alpha" or as_var != "Omicron":
-#             scale_plt1 = 0
-#         if var == "Beta":
-#             if as_var == "Alpha":
-#                 dist_hl_scaled = 0
-#                 scale_plt1 = 1e-17
-#             elif as_var == "Beta":
-#                 dist_hl_scaled = 0
-#                 scale_plt1 = 1e-10
-#             elif as_var == "Gamma":
-#                 dist_hl_scaled = 0
-#                 scale_plt1 = 1e-26
-#             elif as_var == "Delta":
-#                 dist_hl_scaled = 0
-#                 scale_plt1 = 1e-21
-#             elif as_var == "Omicron":
-#                 dist_hl_scaled = 0
-#                 scale_plt1 = 1e-59            
         arrow_obj = plt.arrow(
-            pos_lefts[i], pos_inds[i], max(dist_hl_scaled, scale_plt1), 0,
+            pos_lefts[i], pos_inds[i], max(dist_hl_scaled, scale_plt1), 0
+            ,
             head_length=min(dist, hl_scaled),
             color=colors.red_rgb, width=bar_width,
             head_width=bar_width
         )
-            
+
 
         if pos_low is not None and i < len(pos_low):
             plt.errorbar(
@@ -228,23 +197,13 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
 
         arrow_bbox = arrow_obj.get_window_extent(renderer=renderer)
 
-        # if the text overflows the arrow then draw it after the arrow
-        if text_bbox.width > arrow_bbox.width:
-            txt_obj.remove()
 
     # draw the negative arrows
-    print("neg_widths:", neg_widths)
+    print("neg_widths:", neg_widths, '\n')
     for i in range(len(neg_inds)):
         dist = neg_widths[i]
-        dist_hl_scaled = dist - hl_scaled
-        
-        scale_plt = 0.000001
-        if var == "Alpha" and as_var == "Beta":
-            scale_plt = dist_hl_scaled
-            
-        if var != "Alpha":
-            scale_plt = dist_hl_scaled
-            
+        dist_hl_scaled = dist - hl_scaled        
+        scale_plt = dist_hl_scaled
         arrow_obj = plt.arrow(
             neg_lefts[i], neg_inds[i], -max(-dist_hl_scaled, scale_plt), 0,
             head_length=min(-dist, hl_scaled),
@@ -259,18 +218,16 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
                 ecolor=colors.light_blue_rgb
             )
 
-        text_bbox = txt_obj.get_window_extent(renderer=renderer)
+
         arrow_bbox = arrow_obj.get_window_extent(renderer=renderer)
 
-        # if the text overflows the arrow then draw it after the arrow
-        if text_bbox.width > arrow_bbox.width:
-            txt_obj.remove()
 
     # draw the y-ticks twice, once in gray and then again with just the feature names in black
     # The 1e-8 is so matplotlib 3.3 doesn't try and collapse the ticks
     ytick_pos = list(range(num_features)) + list(np.arange(num_features)+1e-8)
-    plt.yticks(ytick_pos, yticklabels[:-1] + [l.split('=')[-1] for l in yticklabels[:-1]], fontsize=13)
+    plt.yticks(ytick_pos, yticklabels[:-1] + [l.split('=')[-1] for l in yticklabels[:-1]])
 
+    
     # put horizontal lines for each feature row
     for i in range(num_features):
         plt.axhline(i, color="#cccccc", lw=0.5, dashes=(1, 5), zorder=-1)
@@ -287,17 +244,21 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
     plt.gca().spines['right'].set_visible(False)
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['left'].set_visible(False)
-    ax.tick_params(labelsize=13)
+    ax.tick_params(labelsize=25)
 
     # draw the E[f(X)] tick mark
     xmin, xmax = ax.get_xlim()
+    
+    print("xmin:", xmin)
+    print("xmax:", xmax)
+
     ax2 = ax.twiny()
     ax2.set_xlim(xmin, xmax)
     ax2.set_xticks([base_values, base_values+1e-8])  # The 1e-8 is so matplotlib 3.3 doesn't try and collapse the ticks
-    ax2.set_xticklabels(["\n$E[f(X)]$", "\n$ = "+format_value(base_values, "%0.10f")+"$"], fontsize=12, ha="left")
+    ax2.set_xticklabels(["\n$E[f(X)]$", "\n   $    =  "+format_value(base_values, "%0.5f")+"$"], fontsize=20, ha="left")
     
     if base_values < 1e-10:
-        ax2.set_xticklabels(["\n$E[f(X)]$", "\n$ = "+format_value(base_values, "%0.30f")+"$"], fontsize=12, ha="left")
+        ax2.set_xticklabels(["\n$E[f(X)]$", "\n   $   =  "+format_value(base_values, "%0.5f")+"$"], fontsize=20, ha="left")
     
     ax2.spines['right'].set_visible(False)
     ax2.spines['top'].set_visible(False)
@@ -308,10 +269,10 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
     ax3.set_xlim(xmin, xmax)
     # The 1e-8 is so matplotlib 3.3 doesn't try and collapse the ticks
     ax3.set_xticks([base_values + values.sum(), base_values + values.sum() + 1e-8])
-    ax3.set_xticklabels(["$f(x)$", "$ = "+format_value(fx, "%0.10f")+"$"], fontsize=12, ha="left")
+    ax3.set_xticklabels(["$f(x)$", "  $   =  "+format_value(fx, "%0.5f")+"$"], fontsize=20, ha="left")
     
     if fx < 1e-10:
-        ax3.set_xticklabels(["$f(x)$", "$ = "+format_value(fx, "%0.30f")+"$"], fontsize=12, ha="left")
+        ax3.set_xticklabels(["$f(x)$", "  $   =  "+format_value(fx, "%0.11f")+"$"], fontsize=20, ha="left")
     
     tick_labels = ax3.xaxis.get_majorticklabels()
     tick_labels[0].set_transform(tick_labels[0].get_transform(
@@ -337,7 +298,8 @@ def waterfall(var, as_var, df, df_variant, shap_values, base_value, index, max_d
     tick_labels = ax.yaxis.get_majorticklabels()
     for i in range(num_features):
         tick_labels[i].set_color("#999999")
-
+    
+    plt.savefig(f"{CONST.WTFL_DIR}/{df_col.iloc[0][0]}_{var}_as_{as_var}", dpi=300, bbox_inches='tight')
     if show:
         plt.show()
     else:
