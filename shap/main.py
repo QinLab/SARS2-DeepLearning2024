@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # Producing base value for calculating of SHAP value for all variants
     for i in range(len(var_who)):
             var_base = var_who[i]
-            _, features, _ = calc_base.get_features( num_seq = 200, 
+            _, features, _ = calc_base.get_features( num_seq = 5, 
                                                  ID = None, 
                                                  )
             features_tot.append(np.array(features))
