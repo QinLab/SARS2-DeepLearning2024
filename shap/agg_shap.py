@@ -5,7 +5,7 @@ from tqdm import trange
 
 
 class Agg_SHAP:    
-    def __init__(self, df, var, base_value=False):
+    def __init__(self, df, var=None, base_value=False):
         self.var = var
         self.df = df
         self.column_names = ['ID','sequence', 'Variant_VOC']
@@ -24,9 +24,13 @@ class Agg_SHAP:
         
         if num_seq == None:
             num_seq = self.df['Variant_VOC'].value_counts()[var]
-                
-        # Filter the DataFrame based on the desired Variant_VOC    
-        filtered_df = self.df[self.df['Variant_VOC'] == var][:num_seq][self.column_names]
+        
+        if var != None:
+            # Filter the DataFrame based on the desired Variant_VOC    
+            filtered_df = self.df[self.df['Variant_VOC'] == var][:num_seq][self.column_names]
+        elif var == None:
+            # a single genetic sequence
+            filtered_df = df
 
         # When we want to seperate sequences based on some certain IDs
         if ID != None:        
