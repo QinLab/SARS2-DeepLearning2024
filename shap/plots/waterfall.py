@@ -18,7 +18,7 @@ from shap.plots import colors
 from shap.plots._labels import labels
 
 
-def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_display=6, show=True):
+def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_display, show=True):
     """ Plots an explantion of a single prediction as a waterfall plot.
 
     The SHAP value of a feature represents the impact of the evidence provided by that feature on the model's
@@ -131,7 +131,7 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
             else:
                 yticklabels[rng[i]] = str(feature_names[order[i]])
     
-    print("Important positions and nucleotides:", imp_nuc_region, "\n")
+#     print("Important positions and nucleotides:", imp_nuc_region, "\n")
     
     # add a last grouped feature to represent the impact of all the features we didn't show
     if num_features < len(values):
@@ -171,7 +171,7 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
     hl_scaled = bbox_to_xscale * head_length
     renderer = fig.canvas.get_renderer()
     
-    print("pos_widths:", pos_widths, '\n')
+#     print("pos_widths:", pos_widths, '\n')
     # draw the positive arrows
     for i in range(len(pos_inds)):
         dist = pos_widths[i]
@@ -199,7 +199,7 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
 
 
     # draw the negative arrows
-    print("neg_widths:", neg_widths, '\n')
+#     print("neg_widths:", neg_widths, '\n')
     for i in range(len(neg_inds)):
         dist = neg_widths[i]
         dist_hl_scaled = dist - hl_scaled        
@@ -235,7 +235,7 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
     # mark the prior expected value and the model prediction
     plt.axvline(base_values, 0, 1/num_features, color="#bbbbbb", linestyle="--", linewidth=0.5, zorder=-1)
     fx = base_values + values.sum()
-    print('fx = ',fx)
+#     print('fx = ',fx)
     plt.axvline(fx, 0, 1, color="#bbbbbb", linestyle="--", linewidth=1, zorder=-1)
 
     # clean up the main axis
@@ -249,8 +249,8 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
     # draw the E[f(X)] tick mark
     xmin, xmax = ax.get_xlim()
     
-    print("xmin:", xmin)
-    print("xmax:", xmax)
+#     print("xmin:", xmin)
+#     print("xmax:", xmax)
 
     ax2 = ax.twiny()
     ax2.set_xlim(xmin, xmax)
@@ -300,6 +300,10 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
         tick_labels[i].set_color("#999999")
     
     plt.savefig(f"{CONST.WTFL_DIR}/{df_col.iloc[0][0]}_{var}_as_{as_var}", dpi=300, bbox_inches='tight')
+    
+    # Close the plot to ensure no overlap
+    plt.close()
+    
     if show:
         plt.show()
     else:
