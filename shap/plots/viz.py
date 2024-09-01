@@ -1,12 +1,9 @@
-"""
-A modified verison of "https://github.com/kundajelab/deeplift/blob/master/deeplift/visualization/viz_sequence.py"
-"""
-
 from collections import Counter
 import matplotlib
 import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy as np
+import sars.constants as CONST
 
 
     
@@ -162,12 +159,13 @@ default_colors = {0:'purple', 1:'green', 2:'orange', 3:'red', 4:'pink', 5:'olive
 default_plot_funcs = {0:plot__, 1:plot_a, 2:plot_c, 3:plot_g, 4:plot_i, 5:plot_n, 6:plot_t}
 
 
-
+"https://github.com/kundajelab/deeplift/blob/master/deeplift/visualization/viz_sequence.py"
 class plot_DNA(): 
-    def __init__(self, var, as_var, num_shap, ref=None,
+    def __init__(self, var, as_var, Id, num_shap, ref=None,
                  mut= None, freq= None, indices = None, sorted_shap = None):
         self.var = var
         self.as_var = as_var
+        self.Id = Id
         self.ref = ref
         self.mut = mut
         self.freq = freq
@@ -230,16 +228,12 @@ class plot_DNA():
         ax.set_xlim(-length_padding, array.shape[0]+length_padding)
         ax.xaxis.set_ticks(np.arange(0.0, array.shape[0]+1, subticks_frequency))
         ax.xaxis.set_ticklabels(np.arange(start+1, start+1+array.shape[0]+1, 
-                                          subticks_frequency),fontsize=22)
+                                          subticks_frequency),fontsize=90,rotation=45)
+
         height_padding = max(abs(min_neg_height)*(height_padding_factor),
                              abs(max_pos_height)*(height_padding_factor))
         ax.set_ylim(min_neg_height-height_padding, max_pos_height+height_padding)
-        
-        if self.ref != None:
-            ax.set_title(f"If {self.var} gets classified as {self.as_var}\nMutation at position {self.indices}: {self.ref} -> {self.mut}, Frequency: {self.freq}", fontsize=24)
-        else:
-            ax.set_title(f"There is no mutation in position {self.indices}", fontsize=24)
-
+        ax.tick_params(axis='y', labelsize=50)
 
 
     def find_most_frequent_mutations(self, df, ref_converted_sequence):
@@ -281,7 +275,7 @@ class plot_DNA():
         return positions, ref_bases, mut_bases, frequencies, most_frequent_mutations
     
 
-    def plot_weights(self, array,
+    def plot_weights(self, ax, array,
                      start,
                      figsize=(20,2),
                      height_padding_factor=0.2,
@@ -291,7 +285,7 @@ class plot_DNA():
                      plot_funcs=default_plot_funcs,
                      highlight={}):
         fig = plt.figure(figsize=figsize)
-        ax = fig.add_subplot(111) 
+#         ax = fig.add_subplot(111) 
         self.plot_weights_given_ax(ax=ax, array=array, start = start,
             height_padding_factor=height_padding_factor,
             length_padding=length_padding,
@@ -299,11 +293,6 @@ class plot_DNA():
             colors=colors,
             plot_funcs=plot_funcs,
             highlight=highlight)
-        
-        plt.savefig(f'{self.var}_as_{self.as_var}_{self.indices}.jpg', dpi=40)
-        plt.show()
-
-
 
 
     def plot_ref_and_sequence_mutation_positions(self, df, shap_values,
@@ -312,7 +301,7 @@ class plot_DNA():
                                                  ref_seq,
                                                  ref_seq_oneHot):
 
-        var_name = ['Alpha', "Beta", "Gamma", "Delta", "Omicron"]
+        var_name = CONST.VOC_WHO
 
         if self.var not in var_name:
             warnings.warn(f"{self.var} is not found in var_name.")
@@ -322,7 +311,6 @@ class plot_DNA():
         else:
             warnings.warn(f"{self.as_var} is not found in var_name.")
 
-        print("\n")
         positions, ref_bases, mut_bases, frequency, most_frequent_mutations = self.find_most_frequent_mutations(df, ref_seq)
         positions_array = np.array(positions)
 
@@ -375,24 +363,21 @@ class plot_DNA():
                 self.freq = frequencies_sorted[0]
                 self.indices = sort_indices[i] + 1
             
-
             else:
                 self.ref = None
                 self.mut = None
                 self.freq = None
                 self.indices = sort_indices[i] + 1
 
-            start = sort_indices[i]-5 + 1 
-            end = sort_indices[i]+5 + 1
+            start = sort_indices[i]-3 + 1 
+            end = sort_indices[i]+3 + 1
             array_shap = dinuc_shuff_explanations[0][start:end]
-            ref_seq_oneHot_compare = ref_seq_oneHot[start:start+10]
+            ref_seq_oneHot_compare = ref_seq_oneHot[start:start+6]
+            
+            fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(30, 12))
 
-            # Calculate the sum of absolute values in the array
-            sum_abs_array = sum(sum(abs(x) for x in array_shap))
-            print("sum_abs_array:", sum_abs_array)
-
-            self.plot_weights(ref_seq_oneHot_compare,
-                         start,
+            self.plot_weights(ax=ax1, array=ref_seq_oneHot_compare,
+                         start=start,
                          figsize=(30, 6),
                          height_padding_factor=0.05,
                          length_padding=1,
@@ -401,10 +386,8 @@ class plot_DNA():
                          plot_funcs=default_plot_funcs,
                          highlight={})
 
-    
-            # Call the plot_weights function with the example array
-            self.plot_weights(array_shap,
-                         start,
+            self.plot_weights(ax=ax2, array=array_shap,
+                         start=start,
                          figsize=(30, 6),
                          height_padding_factor=0.05,
                          length_padding=1,
@@ -412,5 +395,7 @@ class plot_DNA():
                          colors=default_colors,
                          plot_funcs=default_plot_funcs,
                          highlight={})
-            print("\n\n\n\n")
-              
+            plt.savefig(f'{CONST.VIZ_DIR}/{self.Id}_{self.var}_as_{self.as_var}_{self.indices}.jpg', dpi=40)
+        plt.close(fig)
+
+                
