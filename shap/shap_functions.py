@@ -37,7 +37,7 @@ def convert_ref_to_onehot_lowercase():
     encoded_array = ct.fit_transform(df)
     ref_seq_oneHot = encoded_array.toarray()
     
-    return ref_seq_oneHot, converted_sequence
+    return ref_seq, ref_seq_oneHot, converted_sequence
 
 
 def get_pos_local_shap(df_shap):
@@ -83,7 +83,7 @@ def calculate_shap_value(model, explainer, base_value, var, df_sequences, ID_sha
     label = onehot(var)
     check_additivity(model, shap_values, label, features, base_value[base_value_index])
     
-    return shap_values
+    return df, features, shap_values
 
 def get_pos_nuc(df, var_name, cs, df_ORFs):
     column_names = ['ID', 'Variant_VOC']
