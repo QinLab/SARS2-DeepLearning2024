@@ -4,7 +4,7 @@ import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy as np
 import sars.constants as CONST
-
+from sars.shap.mutation import find_mutations
 
     
 def plot__(ax, base, left_edge, height, color):
@@ -236,65 +236,6 @@ class plot_DNA():
         ax.tick_params(axis='y', labelsize=50)
 
 
-    def find_most_frequent_mutations(self, df, ref_converted_sequence):
-        # Function to compare sequences and find mutations
-        def find_mutations(reference_seq, sequence):
-            mutations = []
-            sequence= sequence[2:-2]
-            for i in range(len(sequence[2:-2])):
-                if reference_seq[i] != sequence[i] and sequence[i] not in ["-", "n"]:
-                    mutations.append((i + 1, reference_seq[i], sequence[i]))
-            return mutations
-
-        # Counter to store the frequency of mutations
-        mutation_counter = Counter()
-
-        # Iterate over DataFrame rows and count mutations
-        for _, row in df.iterrows():
-            sequence = row['sequence']
-            mutations = find_mutations(ref_converted_sequence, sequence)
-            for mutation in mutations:
-                mutation_counter[mutation] += 1
-
-        # Find the mutations with the highest frequency
-        most_frequent_mutations = mutation_counter.most_common()
-
-        # Extract position, reference base, mutated base, and frequency as separate lists
-        positions = []
-        ref_bases = []
-        mut_bases = []
-        frequencies = []
-
-        for mutation, frequency in most_frequent_mutations:
-            position, ref_base, mut_base = mutation
-            positions.append(position)
-            ref_bases.append(ref_base)
-            mut_bases.append(mut_base)
-            frequencies.append(frequency)
-
-        return positions, ref_bases, mut_bases, frequencies, most_frequent_mutations
-    
-
-    def plot_weights(self, ax, array,
-                     start,
-                     figsize=(20,2),
-                     height_padding_factor=0.2,
-                     length_padding=1.0,
-                     subticks_frequency=1.0,
-                     colors=default_colors,
-                     plot_funcs=default_plot_funcs,
-                     highlight={}):
-        fig = plt.figure(figsize=figsize)
-#         ax = fig.add_subplot(111) 
-        self.plot_weights_given_ax(ax=ax, array=array, start = start,
-            height_padding_factor=height_padding_factor,
-            length_padding=length_padding,
-            subticks_frequency=subticks_frequency,
-            colors=colors,
-            plot_funcs=plot_funcs,
-            highlight=highlight)
-
-
     def plot_ref_and_sequence_mutation_positions(self, df, shap_values,
                                                  features_test,
                                                  seq_num,
@@ -310,10 +251,15 @@ class plot_DNA():
             index = var_name.index(self.as_var)
         else:
             warnings.warn(f"{self.as_var} is not found in var_name.")
+        
+        sequence = df['sequence'].values[0]
+        mutation = find_mutations(ref_seq, sequence)
 
-        positions, ref_bases, mut_bases, frequency, most_frequent_mutations = self.find_most_frequent_mutations(df, ref_seq)
+        positions = [m[0] for m in mutation]
+        ref_bases = [m[1] for m in mutation]
+        mut_bases = [m[2] for m in mutation]
+        
         positions_array = np.array(positions)
-
 
         shap_sum_last_axis = np.sum(shap_values[index],axis=-1)
 
@@ -325,13 +271,13 @@ class plot_DNA():
         # Reverse for descending order
         sort_indices = sort_indices[::-1]
 
-        # Define a custom sorting key function for finding the nagative SHAP value for classifying the original classes as the other classes
+        # Sorting by largest absolute negative SHAP values when a false classes are considered for a sequence
         def sorting_key(index):
             value = shap_sum_last_axis[seq_num][index]
             if value < 0:
-                return (abs(value), -value)  # Sort by maximum absolute negative value in descending order
+                return (abs(value), -value)  # Sort negatives by descending magnitude
             else:
-                return (0, 0)  # Non-negative values should appear after negative values
+                return (0, 0)  # Non-negatives come last
 
         if self.var == self.as_var:
             sort_indices = sort_indices
@@ -356,17 +302,14 @@ class plot_DNA():
                 # Apply the mask to the lists to get sorted elements
                 ref_bases_sorted = np.array(ref_bases)[mask]
                 mut_bases_sorted = np.array(mut_bases)[mask]
-                frequencies_sorted = np.array(frequency)[mask]
                 
                 self.ref = ref_bases_sorted[0]
                 self.mut = mut_bases_sorted[0]
-                self.freq = frequencies_sorted[0]
                 self.indices = sort_indices[i] + 1
             
             else:
                 self.ref = None
                 self.mut = None
-                self.freq = None
                 self.indices = sort_indices[i] + 1
 
             start = sort_indices[i]-3 + 1 
@@ -374,28 +317,29 @@ class plot_DNA():
             array_shap = dinuc_shuff_explanations[0][start:end]
             ref_seq_oneHot_compare = ref_seq_oneHot[start:start+6]
             
-            fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(30, 12))
+            fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(30, 20))
 
-            self.plot_weights(ax=ax1, array=ref_seq_oneHot_compare,
-                         start=start,
-                         figsize=(30, 6),
-                         height_padding_factor=0.05,
-                         length_padding=1,
-                         subticks_frequency=1,
-                         colors=default_colors,
-                         plot_funcs=default_plot_funcs,
-                         highlight={})
+            # Plot a section of the reference sequence on the first subplot
+            self.plot_weights_given_ax(ax=ax1, array=ref_seq_oneHot_compare, start=start,
+                                       height_padding_factor=0.05,
+                                       length_padding=1,
+                                       subticks_frequency=1,
+                                       colors=default_colors,
+                                       plot_funcs=default_plot_funcs,
+                                       highlight={})
 
-            self.plot_weights(ax=ax2, array=array_shap,
-                         start=start,
-                         figsize=(30, 6),
-                         height_padding_factor=0.05,
-                         length_padding=1,
-                         subticks_frequency=1,
-                         colors=default_colors,
-                         plot_funcs=default_plot_funcs,
-                         highlight={})
-            plt.savefig(f'{CONST.VIZ_DIR}/{self.Id}_{self.var}_as_{self.as_var}_{self.indices}.jpg', dpi=40)
-        plt.close(fig)
+            # Plot a section of asserted sequence on the second subplot
+            self.plot_weights_given_ax(ax=ax2, array=array_shap, start=start,
+                                       height_padding_factor=0.05,
+                                       length_padding=1,
+                                       subticks_frequency=1,
+                                       colors=default_colors,
+                                       plot_funcs=default_plot_funcs,
+                                       highlight={})
+            
+            plt.tight_layout()
+            plt.subplots_adjust(bottom=0.3)
+            plt.savefig(f'{CONST.VIZ_DIR}/{self.var}/{self.Id}_{self.var}_as_{self.as_var}_{self.indices}.jpg', dpi=40)
+            plt.close(fig)
 
                 
