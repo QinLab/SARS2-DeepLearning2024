@@ -1,4 +1,5 @@
 import argparse
+import glob
 import numpy as np
 import pandas as pd
 import sars.constants as CONST
@@ -19,6 +20,8 @@ arg_parser.add_argument("-ID_basevalue", "--ID_basevalue", default=None,
                         help="IDs for base value sequences (default: None)")
 arg_parser.add_argument("-ID_shapvalue", "--ID_shapvalue", default=None,
                         help="ID for SHAP value sequences (default: None)")
+arg_parser.add_argument("-Rand", "--random", type=bool, default=False,
+                        help="SHAP value a random sequences (default: None)")
 arg_parser.add_argument("-max_display", "--max_display", type=int, default=6,
                         help="Number of top SHAP values to display (default: 6)")
 arg_parser.add_argument("-var", "--variant", 
@@ -31,6 +34,7 @@ num_seq = args.num_seq_basevalue
 initial = args.initial_seq
 ID_basevalue = args.ID_basevalue
 ID_shapvalue = args.ID_shapvalue
+random = args.random
 var = args.variant
 variants = CONST.VOC_WHO
 
@@ -40,23 +44,46 @@ df_train = pd.read_csv(f'{CONST.TRAIN_DIR}')
 df_test = pd.read_csv(f'{CONST.TEST_DIR}')
 df_train_test = pd.concat([df_train, df_test])
 first_sequences = pd.read_csv(f'{CONST.FRST_DIR}/first_detected.csv')
+df_sequences = pd.DataFrame()
 
+# SHAP value for initial sequences of each variant
 if initial:
     df_initial = pd.read_csv(f'{CONST.FRST_DIR}/first_detected.csv')
     df_sequences = first_sequences[first_sequences['Variant_VOC'] == var]
-else:
-    df_sequences = df_train_test[df_train_test["ID"] == ID_shapvalue]
+    
+# SHAP value for a certain sequences with its GISAID id
+if ID_shapvalue:
+#     df_sequences = df_train_test[df_train_test["ID"] == ID_shapvalue]
+    if df_sequences.empty:
+        if CONST.NM_CPU == None:
+            num_cores = mp.cpu_count()  # Get the number of CPU cores
+        else:
+            num_cores = CONST.NM_CPU
+        filenames = glob.glob("/scr/parisa_shared/group_*.fasta")
+        args = [(filename, ID_shapvalue) for filename in filenames]
+        
+        with mp.Pool(processes=num_cores) as pool:
+            results = pool.map(read_single_seq, args)
+    
+    combined_df = pd.concat(results, ignore_index=True)
+    df_sequences =  find_single_label(combined_df)          
+    var = df_sequences['Variant_VOC'].values[0]
+    ID_shapvalue = list(ID_shapvalue)
+                                  
+# SHAP value for a random sequence from a certain variant
+if random == True:
+    df_sequences = df_train_test[df_train_test['Variant_VOC'] == var].sample(n=1)
+   
 
-# # Convert reference sequences to one-hot encoded format and get its genetic sequence with lower case
+# Convert reference sequences to one-hot encoded format and get its genetic sequence with lower case
 ref_seq, ref_seq_oneHot, converted_sequence = convert_ref_to_onehot_lowercase()
-
 
 #---------------------------Base value---------------------------
 # Get some sequences from test dataset to produce base value
 base_features = []
 
 for variant in variants:
-    features = calculate_base_value(df_train, variant, args.num_seq_basevalue, args.ID_basevalue)
+    features = calculate_base_value(df_train, variant, num_seq, ID_basevalue)
     base_features.append(features)
 
 combined_features = np.concatenate(base_features, axis=0)
@@ -73,10 +100,12 @@ base_value = np.array(explainer.expected_value)
 index = CONST.VOC_WHO.index(var)
 df, features, shap_values = calculate_shap_value(model, explainer, base_value, var, df_sequences, ID_shapvalue, index)
 
-##---------------------------Get the positions as column names of each shap value---------------------------
+#---------------------------Get the positions as column names of each shap value---------------------------
 df_ORFs = pd.read_csv(CONST.ORf_DIR)
 df_var = get_pos_nuc(df_sequences, var, ref_seq, df_ORFs)
 
+
+#---------------------------Draw plots for local SHAP value of a sequence---------------------------
 # waterfall plot
 for i in variants:
     print(f'If the {var} sequence gets classified as {i}:')
