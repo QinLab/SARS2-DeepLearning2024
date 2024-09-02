@@ -1,13 +1,36 @@
 from agg_shap import Agg_SHAP as aggshap
+from Bio import SeqIO
+import multiprocessing as mp
 import numpy as np
 import os
 from sars.one_hot.one_hot import one_hot_encode_label as onehot
 import pandas as pd
 import sars.constants as CONST
+from sars.training.data_prep import read_labels
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
 
+def read_single_seq(args):
+    
+    file_path, Id = args
+    sequences = SeqIO.parse(file_path, "fasta")        
+    for sequence in sequences:    
+        id_seq = sequence.id.split('|')
+        if id_seq[0]==Id:
+            seq = sequence.seq            
+            id_seq = pd.DataFrame({'ID':[Id]
+                                    ,'sequence':[str(seq)]})
+            return id_seq
+        
+    return pd.DataFrame(columns=['ID', 'sequence'])
+
+def find_single_label(df):
+
+    id_label_map = read_labels(CONST.LABEL_DIR, CONST.VOC_WHO)
+
+    merged_df = pd.merge(df, id_label_map, on='ID')
+    return merged_df
 
 # Function to calculate base value for a variant
 def calculate_base_value(df, variant, num_seq, ID_basevalue):
