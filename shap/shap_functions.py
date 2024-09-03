@@ -13,6 +13,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 def read_single_seq(args):
     
+    id_seq = pd.DataFrame(columns=['ID', 'sequence'])
     file_path, Id = args
     sequences = SeqIO.parse(file_path, "fasta")        
     for sequence in sequences:    
@@ -20,16 +21,17 @@ def read_single_seq(args):
         if id_seq[0]==Id:
             seq = sequence.seq            
             id_seq = pd.DataFrame({'ID':[Id]
-                                    ,'sequence':[str(seq)]})
+                                  ,'sequence':[''.join(seq)]})
             return id_seq
-        
-    return pd.DataFrame(columns=['ID', 'sequence'])
+
 
 def find_single_label(df):
 
     id_label_map = read_labels(CONST.LABEL_DIR, CONST.VOC_WHO)
 
-    merged_df = pd.merge(df, id_label_map, on='ID')
+    merged_df = pd.merge(df, id_label_map, on='ID')[['ID',
+                                                     'sequence', 
+                                                     'Variant_VOC']]
     return merged_df
 
 # Function to calculate base value for a variant
