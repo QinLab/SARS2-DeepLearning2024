@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import sars.one_hot.one_hot as OneHot
+import sars.constants as CONST
 from tqdm import trange
 
 
@@ -9,7 +10,7 @@ class Agg_SHAP:
         self.var = var
         self.df = df
         self.column_names = ['ID','sequence', 'Variant_VOC']
-        self.variants_who = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Omicron']
+        self.variants_who = CONST.VOC_WHO
         
         if self.var not in self.variants_who:
             warning_message = f"Warning: '{var}' is not in the list of supported variants: {variants_who}."
@@ -25,18 +26,20 @@ class Agg_SHAP:
         if num_seq == None:
             num_seq = self.df['Variant_VOC'].value_counts()[var]
         
-        if var != None:
+        if var != None and ID==None:
             # Filter the DataFrame based on the desired Variant_VOC    
             filtered_df = self.df[self.df['Variant_VOC'] == var][:num_seq][self.column_names]
         elif var == None:
             # a single genetic sequence
-            filtered_df = df
+            filtered_df = self.df
 
         # When we want to seperate sequences based on some certain IDs
-        if ID != None:        
-            x = filtered_df[filtered_df['ID'].isin(ID)]['sequence']
-            for i in trange(len(x)):
+        if ID != None: 
+            filtered_df = self.df[self.df['ID'].isin(ID)]
+            x = filtered_df['sequence']
+            for i in trange(len(filtered_df)):               
                 features.append(np.array(OneHot.one_hot_encode_seq(x.iloc[i])))
+                ids.append(filtered_df[filtered_df['ID']==ID[i]]['ID'].values[0])
 
                 
         # When we want to save the ID of selected sequences
