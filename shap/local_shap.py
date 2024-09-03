@@ -65,10 +65,11 @@ if ID_shapvalue:
         with mp.Pool(processes=num_cores) as pool:
             results = pool.map(read_single_seq, args)
     
-    combined_df = pd.concat(results, ignore_index=True)
-    df_sequences =  find_single_label(combined_df)          
+    valid_results = [res for res in results if res is not None]       
+    combined_df = pd.concat(valid_results, ignore_index=True)
+    df_sequences =  find_single_label(combined_df) 
     var = df_sequences['Variant_VOC'].values[0]
-    ID_shapvalue = list(ID_shapvalue)
+    ID_shapvalue = [ID_shapvalue]
                                   
 # SHAP value for a random sequence from a certain variant
 if random == True:
