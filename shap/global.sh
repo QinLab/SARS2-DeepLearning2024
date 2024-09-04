@@ -10,13 +10,13 @@
 #SBATCH --nodes=1
  
 # Number of CPU cores per task
-#SBATCH --cpus-per-task=64
+#SBATCH --cpus-per-task=80
  
 # time
 #SBATCH --time=3-00:00:00
  
 # job name is my_job
-#SBATCH --job-name=SHAP
+#SBATCH --job-name=Omicron
  
 #only use if gpu access required, 2GPUs requested
 #SBATCH --gres=gpu:4
@@ -27,4 +27,4 @@ source activate myenv
 
 export PYTHONPATH="$HOME:$PYTHONPATH"
 # application execution
-python3 ./main.py -var Omicron
+python3 ./global_shap.py -var Omicron
