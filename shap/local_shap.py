@@ -4,23 +4,24 @@ import numpy as np
 import pandas as pd
 import sars.constants as CONST
 import shap
-from shap_functions import *
+from utils import *
 import tensorflow as tf
 from plots.waterfall import waterfall
 from plots.viz import plot_DNA
+from plots.scatter import scatter_plot_var
 
 
 # Argument Parsing
 arg_parser = argparse.ArgumentParser(description="SHAP Value Calculation for SARS-CoV-2 Variants")
 arg_parser.add_argument("-num_seq_basevalue", "--num_seq_basevalue", type=int, default=5,
                         help="Number of sequences for base value (default: 5)")
-arg_parser.add_argument("-initial", "--initial_seq", type=bool, default=True,
+arg_parser.add_argument("-init", "--initial_seq", action='store_true', default=True,
                         help="Use initial sequence for SHAP value (default: True)")
 arg_parser.add_argument("-ID_basevalue", "--ID_basevalue", default=None,
                         help="IDs for base value sequences (default: None)")
 arg_parser.add_argument("-ID_shapvalue", "--ID_shapvalue", default=None,
                         help="ID for SHAP value sequences (default: None)")
-arg_parser.add_argument("-Rand", "--random", type=bool, default=False,
+arg_parser.add_argument("-Rand", "--random", action='store_true', default=False,
                         help="SHAP value a random sequences (default: None)")
 arg_parser.add_argument("-max_display", "--max_display", type=int, default=6,
                         help="Number of top SHAP values to display (default: 6)")
@@ -50,6 +51,7 @@ df_sequences = pd.DataFrame()
 if initial:
     df_initial = pd.read_csv(f'{CONST.FRST_DIR}/first_detected.csv')
     df_sequences = first_sequences[first_sequences['Variant_VOC'] == var]
+    ID = df_sequences["ID"].values[0]
     
 # SHAP value for a certain sequences with its GISAID id
 if ID_shapvalue:
@@ -74,6 +76,7 @@ if ID_shapvalue:
 # SHAP value for a random sequence from a certain variant
 if random == True:
     df_sequences = df_train_test[df_train_test['Variant_VOC'] == var].sample(n=1)
+    ID = df_sequences["ID"].values[0]
    
 
 # Convert reference sequences to one-hot encoded format and get its genetic sequence with lower case
@@ -124,3 +127,7 @@ for i in variants:
                                              seq_num = 0,
                                              ref_seq = converted_sequence,
                                              ref_seq_oneHot=ref_seq_oneHot)
+
+# Scatter plot of shap value along sequence
+for as_var in variants:
+    scatter_plot_var(Id, shap_values, var, as_var)
