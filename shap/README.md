@@ -18,14 +18,12 @@ The `local_shap.py` script allows you to calculate SHAP values under three diffe
     python3 local_shap.py -ID_shapvalue <GISAID_ID>
 
 
-All generated plots (Waterfall, DNA, scatter plots) will be saved in the following directory:
-```
-<HOME>/sars/results/<PLOT_NAME>_plot/<VARIANT>
-```
+All generated plots (Waterfall, DNA, scatter plots) will be saved in the following directory:`<HOME>/sars/results/<PLOT_NAME>_plot/<VARIANT>`
 
 Replace `<NAME_VARIANT>` with one of the following variant names: Alpha, Beta, Gamma, Delta, or Omicron.
 
-To execute the script with a SLURM job, use: ```bash sbatch local.sh```
+To execute the script with a SLURM job, use: 
+``` sbatch local.sh```
 Make sure to modify the last line (`python3 ... `) in `local.sh` according to your specific needs.
 
 
