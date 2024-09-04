@@ -1,21 +1,20 @@
 """
 A modified version of : https://github.com/shap/shap/blob/master/shap/plots/_waterfall.py
 """
-import sars.constants as CONST
-import warnings
-import shap
-
-import numpy as np
-
 try:
     import matplotlib
     import matplotlib.pyplot as plt
 except ImportError:
     warnings.warn("matplotlib could not be loaded!")
     pass
+import numpy as np
+import os
+import sars.constants as CONST
+import shap
 from shap.utils import format_value,safe_isinstance
 from shap.plots import colors
 from shap.plots._labels import labels
+import warnings
 
 
 def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_display, show=True):
@@ -299,7 +298,12 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
     for i in range(num_features):
         tick_labels[i].set_color("#999999")
     
-    plt.savefig(f"{CONST.WTFL_DIR}/{var}/{df_col.iloc[0][0]}_{var}_as_{as_var}", dpi=100, bbox_inches='tight')
+    directory_path = f"{CONST.WTFL_DIR}/{var}/{df_col.iloc[0][0]}_{var}_as_{as_var}"
+    
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+        
+    plt.savefig(directory_path, dpi=100, bbox_inches='tight')
     
     # Close the plot to ensure no overlap
     plt.close()
