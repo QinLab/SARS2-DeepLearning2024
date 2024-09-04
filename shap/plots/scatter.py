@@ -83,7 +83,12 @@ def scatter_plot_var(ID, shap_values, var, as_var):
         start, end = regions[orf]
         plt.xlim(start - 1000, end + 1000) # To compare with its neigbours
         plt.tight_layout()
-
+    
+    directory_path = f'{CONST.SCAT_DIR}/{var}/{ID}_{var}_{as_var}_scat.jpg'
+    
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+        
     # Save all plots to a single JPEG file
-    plt.savefig(f'{CONST.SCAT_DIR}/{ID}_{var}_{as_var}_scat.jpg', format='jpg', bbox_inches='tight')
+    plt.savefig(directory_path, format='jpg', bbox_inches='tight')
     plt.close()
