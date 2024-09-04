@@ -14,7 +14,7 @@ args = arg_parser.parse_args()
 var = args.variant
 
 features_tot = []
-var_who = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Omicron']
+var_who = CONST.VOC_WHO
 
 if __name__ == '__main__':
     'Data'
@@ -29,21 +29,20 @@ if __name__ == '__main__':
     non_dup_test = df_concatenated.drop_duplicates(subset=['ID'], keep=False)
     
     'Calculating base value'
-    calc_base = Agg_SHAP(df_train, var)
-    
     # Producing base value for calculating of SHAP value for all variants
     for i in range(len(var_who)):
-            var_base = var_who[i]
-            _, features, _ = calc_base.get_features( num_seq = 5, 
-                                                 ID = None, 
-                                                 )
-            features_tot.append(np.array(features))
+        var_base = var_who[i]
+        calc_base = Agg_SHAP(df_train, var_base)
+        _, features, _ = calc_base.get_features( num_seq = 5, 
+                                             ID = None, 
+                                             )
+        features_tot.append(np.array(features))
             
     features_base = np.concatenate((features_tot), axis=0)
     
     explainer = shap.DeepExplainer(model, features_base)
     base_value = np.array(explainer.expected_value)
-    np.savetxt(f'{CONST.SHAP_DIR}/base_value_{var}_apr.csv', base_value, delimiter=',')
+    np.savetxt(f'{CONST.SHAP_DIR}/base_{var}.csv', base_value, delimiter=',')
     
     'RAM needs to be clean'
     del df_train, df_test, model, df_concatenated, features_base
@@ -66,5 +65,5 @@ if __name__ == '__main__':
 
     df.loc[f'Total_SHAP_{var}'] = df.sum(numeric_only=True)
 
-    df.to_csv(f'{CONST.SHAP_DIR}/agg_shap{var}_beeswarm_apr.csv', 
+    df.to_csv(f'{CONST.SHAP_DIR}/{var}_glob.csv', 
                     index=False)
