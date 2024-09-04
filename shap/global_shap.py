@@ -64,6 +64,10 @@ if __name__ == '__main__':
     df = calc_shap.get_shap_for_each_nuc(shap_no_zero, non_zero_IDs)
 
     df.loc[f'Total_SHAP_{var}'] = df.sum(numeric_only=True)
-
-    df.to_csv(f'{CONST.SHAP_DIR}/{var}_glob.csv', 
-                    index=False)
+    
+    directory_path = f'{CONST.SHAP_DIR}/{var}_glob.csv'
+    
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+        
+    df.to_csv(directory_path, index=False)
