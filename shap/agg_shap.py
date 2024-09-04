@@ -15,39 +15,33 @@ class Agg_SHAP:
         if self.var not in self.variants_who:
             warning_message = f"Warning: '{var}' is not in the list of supported variants: {variants_who}."
             raise ValueError(warning_message)
-
-
-    def get_features(self, num_seq, ID):
+    
+    def features_id(self, filtered_df, num_seq):
         features = []
-        labels = []
         ids = []
-        var = self.var
+        for i in trange(num_seq):
+            x = filtered_df['sequence'].iloc[i]
+            features.append(np.array(OneHot.one_hot_encode_seq(x)))
+            ids.append(filtered_df['ID'].iloc[i])
         
+        return features, ids
+
+
+    def get_features(self, num_seq, ID):        
+        labels = []        
+        var = self.var
         if num_seq == None:
             num_seq = self.df['Variant_VOC'].value_counts()[var]
         
-        if var != None and ID==None:
-            # Filter the DataFrame based on the desired Variant_VOC    
-            filtered_df = self.df[self.df['Variant_VOC'] == var][:num_seq][self.column_names]
-        elif var == None:
-            # a single genetic sequence
-            filtered_df = self.df
+        filtered_df = self.df[self.df['Variant_VOC'] == var][:num_seq][self.column_names]
+        # when we want to have random sequences from a certain variant
+        if ID==None:       
+             features, ids = self.features_id(filtered_df, num_seq)
 
         # When we want to seperate sequences based on some certain IDs
-        if ID != None: 
-            filtered_df = self.df[self.df['ID'].isin(ID)]
-            x = filtered_df['sequence']
-            for i in trange(len(filtered_df)):               
-                features.append(np.array(OneHot.one_hot_encode_seq(x.iloc[i])))
-                ids.append(filtered_df[filtered_df['ID']==ID[i]]['ID'].values[0])
-
-                
-        # When we want to save the ID of selected sequences
-        elif ID == None:    
-            for i in trange(num_seq):
-                x = filtered_df['sequence'].iloc[i]
-                features.append(np.array(OneHot.one_hot_encode_seq(x)))      
-                ids.append(filtered_df['ID'].iloc[i])
+        elif ID!=None: 
+            filtered_df = filtered_df[filtered_df['ID'].isin(ID)]
+            features, ids = self.features_id(filtered_df, num_seq)
         
         return filtered_df, features, ids
         
