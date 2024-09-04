@@ -50,6 +50,7 @@ LABEL_DIR = "/scr/qinlab/GISAID/variant_surveillance_tsv_2022_06_16/variant_surv
 MODEL_SAVE = f"{HOME_DIR}/sars/model/WHO_Apr_4_epoch_15.hdf5"
 ORf_DIR = f"{HOME_DIR}/sars/orf_csv/ORF.csv"
 RSLT_DIR = f"{HOME_DIR}/sars/results/"
+SCAT_DIR = f"{HOME_DIR}/sars/results/scatter_plot"
 SEQ_DIR = "/scr/qinlab/GISAID/alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa"
 SHAP_DIR = f"{HOME_DIR}/sars/shap/agg_shap_value"
 TRAIN_DIR = f"{HOME_DIR}/sars/training/data/train/who_train.csv"
