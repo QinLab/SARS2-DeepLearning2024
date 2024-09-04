@@ -339,7 +339,13 @@ class plot_DNA():
             
             plt.tight_layout()
             plt.subplots_adjust(bottom=0.3)
-            plt.savefig(f'{CONST.VIZ_DIR}/{self.var}/{self.Id}_{self.var}_as_{self.as_var}_{self.indices}.jpg', dpi=40)
+            
+            directory_path =f'{CONST.VIZ_DIR}/{self.var}/{self.Id}_{self.var}_as_{self.as_var}_{self.indices}.jpg'
+    
+            if not os.path.exists(directory_path):
+                os.makedirs(directory_path)
+                
+            plt.savefig(directory_path, dpi=40)
             plt.close(fig)
 
                 
