@@ -15,18 +15,18 @@ from plots.scatter import scatter_plot_var
 arg_parser = argparse.ArgumentParser(description="SHAP Value Calculation for SARS-CoV-2 Variants")
 arg_parser.add_argument("-num_seq_basevalue", "--num_seq_basevalue", type=int, default=5,
                         help="Number of sequences for base value (default: 5)")
-arg_parser.add_argument("-init", "--initial_seq", action='store_true', default=True,
-                        help="Use initial sequence for SHAP value (default: True)")
+arg_parser.add_argument("-init", "--initial_seq", action='store_true',
+                        help="Use initial sequences for SHAP value")
 arg_parser.add_argument("-ID_basevalue", "--ID_basevalue", default=None,
                         help="IDs for base value sequences (default: None)")
 arg_parser.add_argument("-ID_shapvalue", "--ID_shapvalue", default=None,
                         help="ID for SHAP value sequences (default: None)")
-arg_parser.add_argument("-Rand", "--random", action='store_true', default=False,
+arg_parser.add_argument("-rand", "--random", action='store_true',
                         help="SHAP value a random sequences (default: None)")
 arg_parser.add_argument("-max_display", "--max_display", type=int, default=6,
                         help="Number of top SHAP values to display (default: 6)")
-arg_parser.add_argument("-var", "--variant", 
-                        help="Variant name for SHAP value calculation; use 'None' for a single sequence")
+arg_parser.add_argument("-var", "--variant", default=None
+                        help="Variant name for SHAP value calculation; (default: None)")
 
 
 args = arg_parser.parse_args()
@@ -55,7 +55,7 @@ if initial:
     
 # SHAP value for a certain sequences with its GISAID id
 if ID_shapvalue:
-#     df_sequences = df_train_test[df_train_test["ID"] == ID_shapvalue]
+    df_sequences = df_train_test[df_train_test["ID"] == ID_shapvalue]
     if df_sequences.empty:
         if CONST.NM_CPU == None:
             num_cores = mp.cpu_count()  # Get the number of CPU cores
@@ -67,14 +67,14 @@ if ID_shapvalue:
         with mp.Pool(processes=num_cores) as pool:
             results = pool.map(read_single_seq, args)
     
-    valid_results = [res for res in results if res is not None]       
-    combined_df = pd.concat(valid_results, ignore_index=True)
-    df_sequences =  find_single_label(combined_df) 
+        valid_results = [res for res in results if res is not None]       
+        combined_df = pd.concat(valid_results, ignore_index=True)
+        df_sequences =  find_single_label(combined_df) 
     var = df_sequences['Variant_VOC'].values[0]
     ID_shapvalue = [ID_shapvalue]
                                   
 # SHAP value for a random sequence from a certain variant
-if random == True:
+if random:
     df_sequences = df_train_test[df_train_test['Variant_VOC'] == var].sample(n=1)
     ID = df_sequences["ID"].values[0]
    
