@@ -23,7 +23,9 @@ All generated plots (Waterfall, DNA, scatter plots) will be saved in the followi
 Replace `<NAME_VARIANT>` with one of the following variant names: Alpha, Beta, Gamma, Delta, or Omicron.
 
 To execute the script with a SLURM job, use: 
-``` sbatch local.sh```
+```
+sbatch local.sh
+```
 Make sure to modify the last line (`python3 ... `) in `local.sh` according to your specific needs.
 
 
