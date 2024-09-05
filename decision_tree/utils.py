@@ -78,7 +78,7 @@ def plot_metrics(model, y_preds, y_test, color, palette):
     for i, score in enumerate(scores):
         plt.text(i, score + 0.02, f"{score:.2f}", ha='center', fontsize=26)
         
-    plt.savefig(f'metrics_{model}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{CONST.MTC_PLT}/metrics_{model}.png', dpi=300, bbox_inches='tight')
 
 def get_column_names():
 
