@@ -1,6 +1,7 @@
 import argparse
 from catboost import CatBoostClassifier
 import json
+import sars.constants as CONST
 from sars.decision_tree.utils import *
 import scipy.stats as stats
 from sklearn.ensemble import RandomForestClassifier
@@ -8,16 +9,16 @@ from sklearn.model_selection import RandomizedSearchCV
 import xgboost as XGBClassifier
 
 
-
-arg_parser.add_argument("-num_fine", "--num_finetunning", type=int, default=1000,
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument("-num_fine", "--num_finetunning", type=int, default=500,
                         help="Number of data for hyperparameter tunning  (default:1000)")
 args = arg_parser.parse_args()
 num_finetunning = args.num_finetunning
 
 
 # Loading data
-df_train = pd.read_csv("/home/phatami/sars/training/data/train/who_train.csv")
-df_test = pd.read_csv("/home/phatami/sars/training/data/test/who_test.csv")
+df_train = pd.read_csv(CONST.TRAIN_DT)
+df_test = pd.read_csv(CONST.TEST_DT)
 
 # Selecting a certain number of data for fine tunning
 df_train = df_train.groupby('Variant_VOC', group_keys=False).apply(lambda x: x.sample(min(len(x), num_finetunning)))
@@ -81,7 +82,7 @@ xgb_random = RandomizedSearchCV(xgb_model,
                                 cv=5,
                                 verbose=2,
                                 random_state=42,
-                                n_jobs = -1
+                                n_jobs = -1,
                                 scoring='accuracy',
                                )
 
@@ -112,7 +113,7 @@ cat_random = RandomizedSearchCV(cat_model,
                                  cv=5,
                                  verbose=2,
                                  random_state=42,
-                                 n_jobs = -1
+                                 n_jobs = -1,
                                  scoring='accuracy',
                                  )
 
