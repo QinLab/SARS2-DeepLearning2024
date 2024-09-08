@@ -6,12 +6,12 @@ from sars.decision_tree.utils import *
 import scipy.stats as stats
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
-import xgboost as XGBClassifier
+from xgboost import XGBClassifier
 
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument("-num_fine", "--num_finetunning", type=int, default=500,
-                        help="Number of data for hyperparameter tunning  (default:1000)")
+arg_parser.add_argument("-num", "--num_finetunning", type=int, default=500,
+                        help="Number of data for hyperparameter tunning  (default:500)")
 args = arg_parser.parse_args()
 num_finetunning = args.num_finetunning
 
@@ -22,7 +22,7 @@ df_test = pd.read_csv(CONST.TEST_DT)
 
 # Selecting a certain number of data for fine tunning
 df_train = df_train.groupby('Variant_VOC', group_keys=False).apply(lambda x: x.sample(min(len(x), num_finetunning)))
-df_test = df_test.groupby('Variant_VOC', group_keys=False).apply(lambda x: x.sample(min(len(x), num_finetunning)))
+df_test = df_test.groupby('Variant_VOC', group_keys=False).apply(lambda x: x.sample(min(len(x), int(num_finetunning*CONST.SPLIT_RATIO))))
 
 # Prepare data
 X_train, y_train = get_data(df_train)
@@ -58,7 +58,7 @@ rf_random = RandomizedSearchCV(estimator = rf_model,
 rf_random.fit(X_train, y_train)
 
 best_params_rf = rf_random.best_params_
-with open('best_params_rf.json', 'w') as file:
+with open('./best_params/best_params_rf.json', 'w') as file:
     json.dump(best_params_rf, file)
 
 # ------------------------XGBOOST------------------------
@@ -89,7 +89,7 @@ xgb_random = RandomizedSearchCV(xgb_model,
 xgb_random.fit(X_train, y_train)
 
 best_params_xgb = xgb_random.best_params_
-with open('best_params_xgb.json', 'w') as file:
+with open('./best_params/best_params_xgb.json', 'w') as file:
     json.dump(best_params_xgb, file)
     
 # ------------------------CatBoost------------------------
@@ -124,5 +124,5 @@ cat_random.fit(X_train_cat, y_train_cat,
                 )
 
 best_params_cat = cat_random.best_params_
-with open('best_params_cat.json', 'w') as file:
+with open('./best_params/best_params_cat.json', 'w') as file:
     json.dump(best_params_cat, file)
