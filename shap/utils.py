@@ -1,4 +1,4 @@
-from agg_shap import Agg_SHAP as aggshap
+from sars.shap.agg_shap import Agg_SHAP as aggshap
 from Bio import SeqIO
 import multiprocessing as mp
 import numpy as np
