@@ -5,6 +5,7 @@ from sars.one_hot.one_hot import *
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, classification_report
 import tensorflow as tf
+from tqdm import trange
 
 
 def get_data(df):
@@ -14,8 +15,8 @@ def get_data(df):
     y = []
 
     for i in trange(len(df)):
-        X.append(one_hot_encode_seq(df['sequence'][i]))
-        label.append(one_hot_encode_label(df['Variant_VOC'][i]))
+        X.append(one_hot_encode_seq(df.iloc[i]['sequence']))
+        label.append(one_hot_encode_label(df.iloc[i]['Variant_VOC']))
         
     X = np.array(X)
     X = X.reshape(X.shape[0], X.shape[1] * X.shape[2])
