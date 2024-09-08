@@ -14,10 +14,10 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument("batch_size", type=int, help="batch size")
-arg_parser.add_argument("epochs", type=int, help="number of epochs")
-arg_parser.add_argument("-v", "--verbose", type=int, default=1, help="enables tracing execution (default: 1)")
-arg_parser.add_argument("-pkl", "--pickle", type=bool, default=False, help="save result in pickle file or not (default: False)")
+arg_parser.add_argument("-batch_size", "--batch_size", type=int, help="Batch size")
+arg_parser.add_argument("-epochs","--epochs", type=int, help="Number of epochs")
+arg_parser.add_argument("-v", "--verbose", type=int, default=1, help="Enables tracing execution (default: 1)")
+arg_parser.add_argument("-pkl", "--pickle", action='store_true', help="Save result in pickle file or not (default: False)")
 
 args = arg_parser.parse_args()
 
