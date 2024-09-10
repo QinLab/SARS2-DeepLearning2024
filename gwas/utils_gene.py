@@ -89,9 +89,7 @@ def get_position_from_codon(codon, ORF, df_ORFs=df_ORFs, codontab=codontab):
 
         return real_position
     
-
-import re
-
+    
 def extract_positions(df_mutation):
     """
     Extracts positions and condon,and specified genes from the mutation DataFrame.
