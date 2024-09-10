@@ -3,6 +3,8 @@ import os
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import constants as CONST
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency
 from sklearn.preprocessing import MinMaxScaler
@@ -78,7 +80,7 @@ def map_snp_to_orf(df_pvalue, df_orfs):
     return df_snv_ORF
 
 
-def plot_dist_pvalue_across_gene(df):
+def plot_dist_value_across_gene(df, file_name):
     
     grouped_dfs = {}
     for orf, group_df in df_snv_ORF.groupby('ORF'):
@@ -111,5 +113,37 @@ def plot_dist_pvalue_across_gene(df):
         percentage = percentage_dict[orf]
         plt.text(bar.get_x() + bar.get_width() / 2, height, f'{percentage:.2f}%', ha='center', va='bottom')
         
-    output_path = f'{CONST.RSLT_DIR}/p-values-plot/sum_of_norm_logp_by_orf.png'
+    output_path = f'{CONST.RSLT_DIR}/p-values-plot/{file_name}.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
+
+
+def mean_agg_shap_values(variants, shap_dir):
+    """
+    Processes SHAP values for VOCs, computes the mean, merges them into a single DataFrame,
+    and normalizes the aggregation.
+    """
+    merged_df = pd.DataFrame()
+    variants = CONST.VOC_WHO
+    for variant in variants:
+        df = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{variant}_beeswarm.csv')
+        
+        # Compute the mean, excluding the last row (aggregation of all shap values) and column (VOCs name)
+        df_mean = df.iloc[:-1, :-1].mean()
+        
+        variant_df = pd.DataFrame(df_mean, columns=[variant])
+        
+        if merged_df.empty:
+            merged_df = variant_df
+        else:
+            merged_df = merged_df.merge(variant_df, left_index=True, right_index=True)
+
+    # Calculate the mean aggregation across all variants
+    merged_df['mean-Aggregation'] = merged_df.mean(axis=1)
+
+    scaling_SHAP = MinMaxScaler()
+    merged_df['norm-Aggregation'] = scaling_SHAP.fit_transform(merged_df[['mean-Aggregation']])
+
+    agg_shap_allVariants = merged_df[['norm-Aggregation']].copy()
+    agg_shap_allVariants['Position'] = agg_shap_allVariants.index
+
+    return agg_shap_allVariants
