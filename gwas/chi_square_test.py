@@ -6,7 +6,7 @@ import constants as CONST
 import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency
-from utils_gwas import *
+from utils_gwas import split_sequence, replace_invalid_chars, calculate_p_value
 
 
 
