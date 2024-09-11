@@ -1,7 +1,8 @@
 from matplotlib import pyplot as plt
-import sars.constants as CONST
-from sars.shap.utils import *
-from sars.one_hot.one_hot import *
+import constants as CONST
+import numpy as np
+from one_hot import *
+from shap.utils import *
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, classification_report
 import tensorflow as tf
@@ -33,7 +34,7 @@ def get_data(df):
 
 def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
     
-    conf_matrix = confusion_matrix(np.array(labels), random_forest_preds)
+    conf_matrix = confusion_matrix(y_test, y_preds)
     fig, ax = plt.subplots(figsize=(10, 8))
     sns.set(font_scale=1.8)
     heatmap = sns.heatmap(conf_matrix,
@@ -50,11 +51,11 @@ def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
     ax.xaxis.set_label_coords(0.5, -0.1)
     ax.yaxis.set_label_coords(-0.1, 0.5)
 
-    plt.title(f'{CONST.CNFMTRX_DIR}/Confusion Matrix for {model}', fontsize=26)
-    plt.savefig(f'confusion_matrix_{model}.png', dpi=300, bbox_inches='tight')
+    plt.title('Confusion Matrix for {model}', fontsize=26)
+    plt.savefig(f'{CONST.CNFMTRX_DIR}/confusion_matrix_{model}.png', dpi=300, bbox_inches='tight')
 
 
-def plot_metrics(model, y_preds, y_test, color, palette):
+def plot_metrics(model, y_preds, y_test, palette):
 
     accuracy = accuracy_score(y_test, y_preds)
     precision = precision_score(y_test, y_preds, average='macro')
