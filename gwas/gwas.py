@@ -11,7 +11,7 @@ from utils_gene import *
 
 
 #-----------------Analyze p-value-----------------
-df_pvalue = pd.read_csv('./p_value_csv/p_values_corrected.csv')
+df_pvalue = pd.read_csv('./p_value_csv/p_values_chi_square.csv')
 df_pvalue = norm_log_p_values(df_pvalue)
 
 df_orfs = pd.read_csv(CONST.ORf_DIR)
@@ -21,10 +21,10 @@ df_snv_ORF = map_snp_to_orf(df_pvalue, df_orfs)
 plot_dist_value_across_gene(df_snv_ORF, 'sum_of_norm_logp_by_orf')
 
 # 2- What percentage of the highest pvalue is associated with each gene
-count_greatest_pvalue = (df_snv_ORF['norm(-logp)'] == 1).sum()
-print(f"Number of positions with value 1 in 'norm(-logp)': {count_greatest_pvalue}")
+count_greatest_pvalue = (df_snv_ORF['Normalized -log(P-value)'] == 1).sum()
+print(f"Number of positions with value 1 in 'Normalized -log(P-value)': {count_greatest_pvalue}")
 
-P_value_pos = df_snv_ORF[df_snv_ORF['norm(-logp)'] == 1]
+P_value_pos = df_snv_ORF[df_snv_ORF['Normalized -log(P-value)'] == 1]
 # P_value_pos['Position'] = P_value_pos.index.astype(int)
 orf_percentage = P_value_pos['ORF'].value_counts(normalize=True)*100
 '''
@@ -46,16 +46,16 @@ ORF7b        0.14%
 agg_shap_allVariants = mean_agg_shap_values()
 df_agg_ORF = map_snp_to_orf(agg_shap_allVariants, df_orfs)
 
-df_agg_ORF_merge = pd.merge(df_agg_ORF, agg_shap_allVariants, on='Position', how="inner")
+df_agg_ORF_merge = pd.merge(df_agg_ORF, agg_shap_allVariants, on='Positions', how="inner")
 
 # 1- The distribution of SHAP across different ORFs
 plot_dist_value_across_gene(df_agg_ORF_merge, 'sum_of_norm_shap_by_orf')
 
 # 2- What percentage of the highest SHAP values is associated with each gene
-count_greatest_shapvalue = (df_agg_ORF_merge['norm-Aggregation'] == 1).sum()
+count_greatest_shapvalue = (df_agg_ORF_merge['Normalized SHAP value'] == 1).sum()
 great_num = max(count_greatest_shapvalue, count_greatest_pvalue)
 
-greatest_SHAP_value_pos = df_agg_ORF_merge.nlargest(great_num, 'norm-Aggregation')
+greatest_SHAP_value_pos = df_agg_ORF_merge.nlargest(great_num, 'Normalized SHAP value')
 orf_percentage = greatest_SHAP_value_pos['ORF'].value_counts(normalize=True) * 100
 '''
 ORF2 (S)    55.16%
@@ -71,11 +71,28 @@ ORF5 (M)     0.07%
 with open('mutations.json', 'r') as json_file:
     mutations_data = json.load(json_file)
 
-mutation_alpha = mutations_data["mutation_alpha"]
-mutation_beta = mutations_data["mutation_beta"]
-mutation_gamma = mutations_data["mutation_gamma"]
-mutation_delta = mutations_data["mutation_delta"]
-mutation_omicron = mutations_data["mutation_omicron"]
+variants = {
+    "Alpha": mutations_data["mutation_alpha"],
+    "Beta": mutations_data["mutation_beta"],
+    "Gamma": mutations_data["mutation_gamma"],
+    "Delta": mutations_data["mutation_delta"],
+    "Omicron": mutations_data["mutation_omicron"]
+}
 
-df_mutation_alpha = pd.DataFrame(mutation_alpha, columns=['Nucleotides and Positions', 'Condon', 'Genes'])
-position_spike_alpha = extract_positions(mutation_alpha)
+variant_dfs = []
+for variant_name, mutation_data in variants.items():
+    variant_df = process_variant(mutation_data, variant_name, agg_shap_allVariants, df_pvalue)
+    variant_dfs.append(variant_df)
+
+# Concatenate all variants into a single DataFrame
+stacked_all_variant = pd.concat(variant_dfs, axis=0)
+stacked_all_variant['AminoAcid'] = stacked_all_variant['Amino Acide Changes'] + "(" + stacked_all_variant['Variant'] + ")"
+stacked_all_variant = stacked_all_variant[["Positions","Amino Acide Changes", "AminoAcid"]]
+
+#plot all shap regarding genes
+df_agg_ORF_merge_aa = pd.merge(df_agg_ORF_merge, stack_all_variant, on='Positions', how='outer')
+plot_by_genes(df_agg_ORF_merge_aa, 'Normalized SHAP value')
+
+#plot all -log(p-value) regarding genes
+df_snv_ORF_plot = pd.merge(df_snv_ORF, stack_all_variant, on='Positions', how='outer')
+plot_by_genes(df_snv_ORF_plot, "Normalized -log(P-value)")
