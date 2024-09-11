@@ -61,11 +61,11 @@ def map_snp_to_orf(df_pvalue, df_orfs):
         pos = row['Position']
 
         # A mask to check if the SNP position falls within any ORF
-        mask = (pos >= df_ORFs['Start']) & (pos <= df_ORFs['End'])
+        mask = (pos >= df_orfs['Start']) & (pos <= df_orfs['End'])
 
         if mask.any():
             # Extract the matching 'Gene' values
-            matching_genes = df_ORFs.loc[mask, 'Gene'].tolist()
+            matching_genes = df_orfs.loc[mask, 'Gene'].tolist()
 
             matching_df = pd.DataFrame({'Position': [pos] * len(matching_genes),
                                         'ORF': matching_genes})
@@ -83,7 +83,7 @@ def map_snp_to_orf(df_pvalue, df_orfs):
 def plot_dist_value_across_gene(df, file_name):
     
     grouped_dfs = {}
-    for orf, group_df in df_snv_ORF.groupby('ORF'):
+    for orf, group_df in df.groupby('ORF'):
         grouped_dfs[orf] = group_df
 
     # Calculate the sum of 'norm(-logp)' for each ORF group and store it in a dictionary
@@ -117,7 +117,7 @@ def plot_dist_value_across_gene(df, file_name):
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 
-def mean_agg_shap_values(variants, shap_dir):
+def mean_agg_shap_values():
     """
     Processes SHAP values for VOCs, computes the mean, merges them into a single DataFrame,
     and normalizes the aggregation.
