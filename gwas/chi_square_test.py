@@ -26,5 +26,5 @@ df_merged = pd.concat([df_seq, df["Variant_VOC"]], axis=1)
 # Calculate p-value for each position with the corrected function
 p_values = {column: calculate_p_value(df_merged, column) for column in df_merged.columns[:-1]}
 
-p_values_df = pd.DataFrame(p_values.items(), columns=['Position', 'P-Value'])
+p_values_df = pd.DataFrame(p_values.items(), columns=['Positions', 'P-Value'])
 p_values_df.to_csv('./p_value_csv/p_values_chi_square.csv', index=False)
