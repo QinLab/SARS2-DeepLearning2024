@@ -8,7 +8,7 @@ def translate_with_gaps(seq):
     return ''.join(proteins) 
 
 
-def get_protein_genes(gene, df_orfs, converted_sequence=converted_sequence):
+def get_protein_genes(gene, df_orfs, converted_sequence):
     start = int(df[df['Gene']==gene]['Start'])
     end = int(df[df['Gene']==gene]['End'])
     protein = translate_with_gaps(converted_sequence[start-1:end])
@@ -51,7 +51,7 @@ def find_matching_condons_with_single_difference(aa1_input, aa2_input):
     return matching_pairs, seen_differences
 
 
-def get_position_from_codon(codon, ORF, df_ORFs=df_ORFs, codontab=codontab):
+def get_position_from_codon(codon, ORF, df_ORFs, codontab):
     
     '''
     H49Y mutant is produced by C/T change at position 21,707
@@ -98,13 +98,13 @@ def extract_positions(df_mutation):
     position_spike = []
 
     for gene in genes:
-        for index, row in df_mutation_alpha.iterrows():
+        for index, row in df_mutation.iterrows():
             if row['Genes'] == gene:
                 if row["Nucleotides and Positions"] != 'Unknown':
                     # Extract the integer position from the nucleotides and positions column
                     integer_match = re.search(r'\d+', row["Nucleotides and Positions"])
                     extracted_integer = int(integer_match.group())
-                    position_spike_alpha.append((row['Nucleotides and Positions'],
+                    position_spike.append((row['Nucleotides and Positions'],
                                                  row['Condon'],
                                                  row['Genes'],
                                                  [extracted_integer]))
