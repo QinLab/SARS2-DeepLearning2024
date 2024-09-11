@@ -16,7 +16,7 @@
 #SBATCH --time=3-00:00:00
  
 # job name is my_job
-#SBATCH --job-name=Omicron
+#SBATCH --job-name=Delta
  
 #only use if gpu access required, 2GPUs requested
 #SBATCH --gres=gpu:4
@@ -27,4 +27,4 @@ source activate myenv
 
 export PYTHONPATH="$HOME:$PYTHONPATH"
 # application execution
-python3 ./global_shap.py -var Omicron
+python3 ./global_shap.py -var Delta
