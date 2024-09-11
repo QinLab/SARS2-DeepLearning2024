@@ -14,6 +14,30 @@ CHARS = {'-': [1, 0, 0, 0, 0, 0, 0],
      'n': [0, 0, 0, 0, 0, 1, 0], 
      't': [0, 0, 0, 0, 0, 0, 1]}
 
+CONDONTAB = {'S': ['TCT', 'TCC', 'TCA', 'TCG', 'AGT', 'AGC'], 
+            'L': ['TTA', 'TTG', 'CTT', 'CTC', 'CTA', 'CTG'], 
+            'C': ['TGT', 'TGC'], 
+            'W': ['TGG'], 
+            'E': ['GAA', 'GAG'], 
+            'D': ['GAT', 'GAC'], 
+            'P': ['CCT', 'CCC', 'CCA', 'CCG'], 
+            'V': ['GTT', 'GTC', 'GTA', 'GTG'], 
+            'N': ['AAT', 'AAC'], 
+            'M': ['ATG'], 
+            'K': ['AAA', 'AAG'], 
+            'Y': ['TAT', 'TAC'], 
+            'I': ['ATT', 'ATC', 'ATA'], 
+            'Q': ['CAA', 'CAG'], 
+            'F': ['TTT', 'TTC'], 
+            'R': ['CGT', 'CGC', 'CGA', 'CGG', 'AGA', 'AGG'], 
+            'T': ['ACT', 'ACC', 'ACA', 'ACG'], 
+            '*': ['TAA', 'TAG', 'TGA'], 
+            'A': ['GCT', 'GCC', 'GCA', 'GCG'], 
+            'G': ['GGT', 'GGC', 'GGA', 'GGG'], 
+            'H': ['CAT', 'CAC'],
+            '-': ['---','---','---','---']
+           }
+
 # This dictionary will be updated frequently based on new amino acide changes in SARS-CoV-2
 AMINO_ACID = {'C913T':'S216S', 'C1059T':'T85I', 'A2480G':'I559V', 'C2558T':'P585S', 'C3037T':'F106F',
               'C3267T':'T1001I', 'G5230T':'K837N','C5388A':'A1708D', 'T6954C':'I2230T', 'C8782T':'S76S',
