@@ -4,3 +4,4 @@ __pycache__/
 *.ipynb
 catboost_info/
 data/
+first_seq/
