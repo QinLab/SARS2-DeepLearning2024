@@ -16,9 +16,11 @@
 #SBATCH --time=40:00:00
  
 # job name is my_job
-#SBATCH --job-name=chi_square
- 
+#SBATCH --job-name=gwas_shap
 
+# Specify the output file name
+#SBATCH --output=gwas_shap_output_%j.out
+ 
 module load anaconda
 source activate myenv
 
