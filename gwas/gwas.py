@@ -18,7 +18,7 @@ df_orfs = pd.read_csv(CONST.ORf_DIR)
 df_snv_ORF = map_snp_to_orf(df_pvalue, df_orfs)
 
 # 1- The distribution of p-value across different ORFs
-plot_dist_value_across_gene(df_snv_ORF, sum_of_norm_logp_by_orf)
+plot_dist_value_across_gene(df_snv_ORF, 'sum_of_norm_logp_by_orf')
 
 # 2- What percentage of the highest pvalue is associated with each gene
 count_greatest_pvalue = (df_snv_ORF['norm(-logp)'] == 1).sum()
@@ -49,9 +49,9 @@ df_agg_ORF = map_snp_to_orf(agg_shap_allVariants, df_orfs)
 df_agg_ORF_merge = pd.merge(df_agg_ORF, agg_shap_allVariants, on='Position', how="inner")
 
 # 1- The distribution of SHAP across different ORFs
-plot_dist_value_across_gene(df_agg_ORF_merge, sum_of_norm_shap_by_orf)
+plot_dist_value_across_gene(df_agg_ORF_merge, 'sum_of_norm_shap_by_orf')
 
-# 2- What percentage of the highest SHAP value is associated with each gene
+# 2- What percentage of the highest SHAP values is associated with each gene
 count_greatest_shapvalue = (df_agg_ORF_merge['norm-Aggregation'] == 1).sum()
 great_num = max(count_greatest_shapvalue, count_greatest_pvalue)
 
