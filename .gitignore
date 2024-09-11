@@ -5,3 +5,4 @@ __pycache__/
 catboost_info/
 data/
 first_seq/
+model/
