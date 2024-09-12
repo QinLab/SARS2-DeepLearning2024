@@ -4,6 +4,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import constants as CONST
 import matplotlib.pyplot as plt
+from matplotlib_venn import venn2
 import numpy as np
 import pandas as pd
 from random import uniform
@@ -47,7 +48,7 @@ def norm_log_p_values(df_pvalue):
 
     # Normalize the '-logp' values using MinMaxScaler
     scaling_pvalue = MinMaxScaler()
-    df_pvalue['Normalized -log(P-value)'] = scaling_pvalue.fit_transform(df_pvalue[['-logp']])
+    df_pvalue['Normalized -log(p-value)'] = scaling_pvalue.fit_transform(df_pvalue[['-logp']])
     
     return df_pvalue
 
@@ -57,7 +58,9 @@ def map_snp_to_orf(df_pvalue, df_orfs):
     Maps SNP positions to corresponding ORFs or marks them as 'Non_ORF' if they do not match any ORF.
     """
     df_snv_ORF = pd.DataFrame(columns=['Positions', 'ORF'])
-
+    df_orfs['Start'] = df_orfs['Start'].astype(int)
+    df_orfs['End'] = df_orfs['End'].astype(int)
+    
     for idx, row in df_pvalue.iterrows():
         pos = row['Positions']
 
@@ -81,14 +84,14 @@ def map_snp_to_orf(df_pvalue, df_orfs):
     return df_snv_ORF
 
 
-def plot_dist_value_across_gene(df, file_name):
+def plot_dist_value_across_gene(df, file_name, value):
     
     grouped_dfs = {}
     for orf, group_df in df.groupby('ORF'):
         grouped_dfs[orf] = group_df
-
+    
     # Calculate the sum of 'Normalized -log(P-value)' for each ORF group and store it in a dictionary
-    sums_by_orf = {orf: grouped_dfs['Normalized -log(P-value)'].sum() for orf, grouped_dfs in grouped_dfs.items()}
+    sums_by_orf = {orf: grouped_dfs[f'Normalized {value}'].sum() for orf, grouped_dfs in grouped_dfs.items()}
 
     sorted_sums_by_orf = dict(sorted(sums_by_orf.items(), key=lambda item: item[1], reverse=True))
 
@@ -102,8 +105,8 @@ def plot_dist_value_across_gene(df, file_name):
     plt.figure(figsize=(10, 6))
     bars = plt.bar(sorted_orfs, sorted_sums, color='skyblue')
     plt.xlabel('ORF')
-    plt.ylabel('Sum of normalized -log(P-value)')
-    plt.title('Sum of normalized -log(P-value) by ORF (Descending Order)')
+    plt.ylabel(f'Sum of normalized {value}')
+    plt.title(f'Distribution of normalized {value} over ORF (Descending Order)')
     plt.xticks(rotation=45)
 
     for bar, orf in zip(bars, sorted_orfs):
@@ -111,7 +114,7 @@ def plot_dist_value_across_gene(df, file_name):
         percentage = percentage_dict[orf]
         plt.text(bar.get_x() + bar.get_width() / 2, height, f'{percentage:.2f}%', ha='center', va='bottom')
     
-    output_path = f'{CONST.RSLT_DIR}/p-values-plot/{file_name}.png'
+    output_path = f'{CONST.RSLT_DIR}/gwas-plot/{file_name}.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 
@@ -161,7 +164,7 @@ def get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants
     merged_shap_pvalue = df_position_spike.merge(agg_shap_allVariants, on='Positions', how='left')
     merged_shap_pvalue = merged_shap_pvalue.merge(df_pvalue, on='Positions', how='left')
 
-    result_df = merged_shap_pvalue[["Positions", "Amino Acide Changes", "Genes", "Normalized SHAP value", "Normalized -log(P-value)"]]
+    result_df = merged_shap_pvalue[["Positions", "Amino Acide Changes", "Genes", "Normalized SHAP value", "Normalized -log(p-value)"]]
     result_df['Variant'] = variant_name
 
     return result_df
@@ -229,4 +232,33 @@ def plot_by_genes(df, norm):
     
     output_path = f'./test2.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
+
+
+def plot_venn_digram_shap_pvalue(num, df_snv_ORF, df_agg_ORF_merge):
     
+    greatest_pvalue_pos = df_snv_ORF.nlargest(num, 'Normalized -log(p-value)')
+    greatest_SHAPvalue_pos = df_agg_ORF_merge.nlargest(num, 'Normalized SHAP value')
+    greatest_pvalue_pos['Position'] = greatest_pvalue_posp['Position'].astype(int)
+
+    greatest_SHAPvalue_pos['position'] = greatest_SHAPvalue_pos['position'].astype(int)
+
+    positions_pvalue = set(greatest_pvalue_pos['Position'])
+    positions_shapvalue = set(greatest_SHAPvalue_pos['position'])
+
+    # Compute the intersection
+    common_values = positions_pvalue & positions_shapvalue
+    print(f"Number of common values: {len(common_values)}")
+
+    plt.figure(figsize=(8, 6))
+    venn = venn2([positions_pvalue, positions_shapvalue], 
+                 set_labels=('P-value Positions', 'SHAP Value Positions'))
+
+    venn.get_label_by_id('10').set_text(f'{len(positions_pvalue - positions_shapvalue)}')
+    venn.get_label_by_id('01').set_text(f'{len(positions_shapvalue - positions_pvalue)}')
+    venn.get_label_by_id('11').set_text(f'{len(common_values)}')
+
+    # Set title and display the plot
+    plt.title(f'Number of Common Positions within {num} greatest value in p-value and SHAP value')
+    
+    output_path = f'./venn.png'
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
