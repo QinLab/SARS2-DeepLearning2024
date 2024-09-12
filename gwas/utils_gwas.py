@@ -170,6 +170,32 @@ def get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants
     return result_df
 
 
+def match_gwas_shap(agg_shap_allVariants, df_pvalue):
+    
+    with open('mutations.json', 'r') as json_file:
+        mutations_data = json.load(json_file)
+
+    variants = {
+        "Alpha": mutations_data["mutation_alpha"],
+        "Beta": mutations_data["mutation_beta"],
+        "Gamma": mutations_data["mutation_gamma"],
+        "Delta": mutations_data["mutation_delta"],
+        "Omicron": mutations_data["mutation_omicron"]
+    }
+
+    variant_dfs = []
+    for variant_name, mutation_data in variants.items():
+        variant_df = get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants, df_pvalue)
+        variant_dfs.append(variant_df)
+
+    # Concatenate all variants into a single DataFrame
+    stacked_all_variant = pd.concat(variant_dfs, axis=0)
+    stacked_all_variant['AminoAcid'] = stacked_all_variant['Amino Acide Changes'] + "(" + stacked_all_variant['Variant'] + ")"
+    stacked_all_variant = stacked_all_variant[["Positions","Amino Acide Changes", "AminoAcid"]]
+    
+    return stacked_all_variant
+
+
 def plot_by_genes(df, norm):
     
     WHO_spike = ["H69-", "V70-", "Y144-", "N501Y", "A570D", "D614G",
