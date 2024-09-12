@@ -12,6 +12,7 @@ from utils_gene import *
 
 #-----------------Analyze p-value-----------------
 df_pvalue = pd.read_csv('./p_value_csv/p_values_chi_square.csv')
+df_pvalue['Positions'] = df_pvalue['Positions'].astype(int)
 df_pvalue = norm_log_p_values(df_pvalue)
 
 df_orfs = pd.read_csv(CONST.ORf_DIR)
@@ -24,9 +25,9 @@ plot_dist_value_across_gene(df_snv_ORF, 'sum_of_norm_logp_by_orf')
 count_greatest_pvalue = (df_snv_ORF['Normalized -log(P-value)'] == 1).sum()
 print(f"Number of positions with value 1 in 'Normalized -log(P-value)': {count_greatest_pvalue}")
 
-P_value_pos = df_snv_ORF[df_snv_ORF['Normalized -log(P-value)'] == 1]
+p_value_pos = df_snv_ORF[df_snv_ORF['Normalized -log(P-value)'] == 1]
 # P_value_pos['Position'] = P_value_pos.index.astype(int)
-orf_percentage = P_value_pos['ORF'].value_counts(normalize=True)*100
+orf_percentage = p_value_pos['ORF'].value_counts(normalize=True)*100
 '''
 ORF2 (S)    29.34%
 ORF1ab      24.6%
@@ -44,6 +45,7 @@ ORF7b        0.14%
 
 #-----------------Analyze SHAP value-----------------
 agg_shap_allVariants = mean_agg_shap_values()
+agg_shap_allVariants['Positions'] = agg_shap_allVariants['Positions'].astype(int)
 df_agg_ORF = map_snp_to_orf(agg_shap_allVariants, df_orfs)
 
 df_agg_ORF_merge = pd.merge(df_agg_ORF, agg_shap_allVariants, on='Positions', how="inner")
@@ -96,3 +98,5 @@ plot_by_genes(df_agg_ORF_merge_aa, 'Normalized SHAP value')
 #plot all -log(p-value) regarding genes
 df_snv_ORF_plot = pd.merge(df_snv_ORF, stack_all_variant, on='Positions', how='outer')
 plot_by_genes(df_snv_ORF_plot, "Normalized -log(P-value)")
+
+# plot venn diagram
