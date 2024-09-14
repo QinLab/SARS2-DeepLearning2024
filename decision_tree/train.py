@@ -16,8 +16,8 @@ from xgboost import XGBClassifier
 
 
 # Loading data
-df_train = pd.read_csv(CONST.TRAIN_DT)[:20]
-df_test = pd.read_csv(CONST.TEST_DT)[:20]
+df_train = pd.read_csv(CONST.TRAIN_DT)
+df_test = pd.read_csv(CONST.TEST_DT)
 
 # Prepare data
 X_train, y_train = get_data(df_train)
@@ -41,7 +41,7 @@ plot_metrics('rf', y_preds, y_test, 'Reds')
 with open("./best_params/best_params_xgb.json", "r") as f:
     best_params_xgb = json.load(f)
 model = XGBClassifier(**best_params_xgb)
-model.fit(x_train, y_train)
+model.fit(X_train, y_train)
 joblib.dump(model, CONST.MODEL_XGB, compress=3)
 
 y_pred = model.predict(X_test)
@@ -56,9 +56,9 @@ plot_metrics('xgb', y_preds, y_test, 'Greens')
 # ------------------------CatBoost------------------------
 X_train_cat, X_val_cat, y_train_cat, y_val_cat = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 
-# with open("./best_params/best_params_cat.json", "r") as f:
-#     best_params_cat = json.load(f)
-model = CatBoostClassifier()
+with open("./best_params/best_params_cat.json", "r") as f:
+    best_params_cat = json.load(f)
+model = CatBoostClassifier(**best_params_cat)
 model.fit(X_train_cat, y_train_cat, 
         eval_set=(X_val_cat, y_val_cat),
         verbose=False
