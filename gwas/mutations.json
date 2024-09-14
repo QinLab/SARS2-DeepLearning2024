@@ -1,175 +1,167 @@
-#5 A comparative overview of SARS-CoV-2 and its variants of concern 2022
-#https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9448317/#:~:text=The%20WHO%20classified%20it%20as,remainder%20is%20synonymous%20%5B20%5D.
-#6 The impact of spike mutated variants of SARS-CoV2 [Alpha, Beta, Gamma, Delta, and Lambda] on 
-#the efficacy of subunit recombinant vaccines 2021
-#https://www.sciencedirect.com/science/article/pii/S1413867021000751?via%3Dihub
-
-
-#https://gisaid.org/lineage-comparison/
-mutations_data = {
-    "mutation_alpha" : [
-        ('C3267T', 'T1001I', 'ORF1ab'), #6
-        ('C5388A', 'A1708D', 'ORF1ab'), #6
-        ('T6954C', 'I2230T', 'ORF1ab'), #6
-        ('T11288-', 'S3675-', 'ORF1ab'), #6
-        ('C11289-', 'S3675-', 'ORF1ab'), #6
-        ('T11290-', 'S3675-', 'ORF1ab'), #6
-        ('G11291-', 'G3676-', 'ORF1ab'), #6
-        ('G11292-', 'G3676-', 'ORF1ab'), #6
-        ('T11293-', 'G3676-', 'ORF1ab'), #6
-        ('T11294-', 'F3677-', 'ORF1ab'), #6
-        ('T11295-', 'F3677-', 'ORF1ab'), #6
-        ('T11296-', 'F3677-', 'ORF1ab'), #6
-        ('Unknown','H69-', 'ORF2 (S)'), #5,6
-        ('Unknown','V70-', 'ORF2 (S)'), #5,6 
-        ('Unknown','Y144-', 'ORF2 (S)'), #5,6
-        ('A23063T','N501Y', 'ORF2 (S)'), #5,6 #Most important mutation in Alpha
-        ('C23271A','A570D', 'ORF2 (S)'), #5,6
-        ('A23403G','D614G', 'ORF2 (S)'), #5,6 #Most important mutation in Alpha
-        ('C23604A','P681H', 'ORF2 (S)'), #5,6 #Most important mutation in Alpha
-        ('C23709T','T716I', 'ORF2 (S)'), #5,6
-        ('T24506G','S982A', 'ORF2 (S)'), #5,6
-        ('G24914C','D1118H', 'ORF2 (S)'), #5,6
-        ('C27972T','Q27-', 'ORF8'), #6
-        ('G28048T','R52I', 'ORF8'), #6
-        ('A28111G','Y73C', 'ORF8'),
-        ('G28280C','D3L', 'ORF9 (N)'), #6
-        ('A28281T','D3L', 'ORF9 (N)'), #6
-        ('T28282A','D3L', 'ORF9 (N)'), #6
-        ('C28977T','S235F', 'ORF9 (N)'), #6
-        ('C913T','S216S', 'ORF1ab'), #6
-    ],
-    "mutation_beta": [
-        ("G25563T",'Q57H','ORF3a'),
-        ("C26456T",'P71L','ORF4 (E)'),
-        ("C21614T",'L18F','ORF2 (S)'), #5,6
-        ("A21801C",'D80A','ORF2 (S)'), #5,6
-        ("A22206G",'D215G','ORF2 (S)'), #5,6
-        ("C22281-",'L242-','ORF2 (S)'), #5,6
-        ("T22282-",'L242-','ORF2 (S)'),
-        ("T22283-",'L242-','ORF2 (S)'),
-        ("G22284-",'A243-','ORF2 (S)'), #5,6
-        ("C22285-",'A243-','ORF2 (S)'),
-        ("T22286-",'A243-','ORF2 (S)'),
-        ("T22287-",'L244-','ORF2 (S)'), #5,6
-        ("T22288-",'L244-','ORF2 (S)'),
-        ("A22289-",'L244-','ORF2 (S)'),
-        ('C14408T', 'P314L', 'ORF1ab'),
-        ("G22813T",'K417N','ORF2 (S)'), #5,6
-        ("G23012A",'E484K','ORF2 (S)'), #5,6
-        ("A23063T",'N501Y','ORF2 (S)'), #5,6
-        ("A23403G",'D614G','ORF2 (S)'), #5,6
-        ("C23664T",'A701V','ORF2 (S)'), #5,6
-        ("A10323G",'K90R','ORF1ab'),
-        ("G5230T",'K837N','ORF1ab'),   
-        ('T11288-', 'S3675-', 'ORF1ab'), #6
-        ('C11289-', 'S3675-', 'ORF1ab'), #6
-        ('T11290-', 'S3675-', 'ORF1ab'), #6
-        ('G11291-', 'G3676-', 'ORF1ab'), #6
-        ('G11292-', 'G3676-', 'ORF1ab'), #6
-        ('T11293-', 'G3676-', 'ORF1ab'), #6
-        ('T11294-', 'F3677-', 'ORF1ab'), #6
-        ('T11295-', 'F3677-', 'ORF1ab'), #6
-        ('T11296-', 'F3677-', 'ORF1ab'),
+{
+    "mutation_alpha": [
+        ["C3267T", "T1001I", "ORF1ab"], 
+        ["C5388A", "A1708D", "ORF1ab"], 
+        ["T6954C", "I2230T", "ORF1ab"], 
+        ["T11288-", "S3675-", "ORF1ab"],
+        ["C11289-", "S3675-", "ORF1ab"], 
+        ["T11290-", "S3675-", "ORF1ab"], 
+        ["G11291-", "G3676-", "ORF1ab"], 
+        ["G11292-", "G3676-", "ORF1ab"], 
+        ["T11293-", "G3676-", "ORF1ab"], 
+        ["T11294-", "F3677-", "ORF1ab"], 
+        ["T11295-", "F3677-", "ORF1ab"], 
+        ["T11296-", "F3677-", "ORF1ab"], 
+        ["Unknown", "H69-", "ORF2 (S)"], 
+        ["Unknown", "V70-", "ORF2 (S)"],  
+        ["Unknown", "Y144-", "ORF2 (S)"], 
+        ["A23063T", "N501Y", "ORF2 (S)"], 
+        ["C23271A", "A570D", "ORF2 (S)"], 
+        ["A23403G", "D614G", "ORF2 (S)"], 
+        ["C23604A", "P681H", "ORF2 (S)"], 
+        ["C23709T", "T716I", "ORF2 (S)"], 
+        ["T24506G", "S982A", "ORF2 (S)"], 
+        ["G24914C", "D1118H", "ORF2 (S)"], 
+        ["C27972T", "Q27-", "ORF8"], 
+        ["G28048T", "R52I", "ORF8"], 
+        ["A28111G", "Y73C", "ORF8"],
+        ["G28280C", "D3L", "ORF9 (N)"], 
+        ["A28281T", "D3L", "ORF9 (N)"], 
+        ["T28282A", "D3L", "ORF9 (N)"], 
+        ["C28977T", "S235F", "ORF9 (N)"], 
+        ["C913T", "S216S", "ORF1ab"]
+        ],
+     "mutation_beta": [
+        ["G25563T", "Q57H", "ORF3a"],
+        ["C26456T", "P71L", "ORF4 (E)"],
+        ["C21614T", "L18F", "ORF2 (S)"], 
+        ["A21801C", "D80A", "ORF2 (S)"], 
+        ["A22206G", "D215G", "ORF2 (S)"], 
+        ["C22281-", "L242-", "ORF2 (S)"], 
+        ["T22282-", "L242-", "ORF2 (S)"],
+        ["T22283-", "L242-", "ORF2 (S)"],
+        ["G22284-", "A243-", "ORF2 (S)"], 
+        ["C22285-", "A243-", "ORF2 (S)"],
+        ["T22286-", "A243-", "ORF2 (S)"],
+        ["T22287-", "L244-", "ORF2 (S)"], 
+        ["T22288-", "L244-", "ORF2 (S)"],
+        ["A22289-", "L244-", "ORF2 (S)"],
+        ["C14408T", "P314L", "ORF1ab"],
+        ["G22813T", "K417N", "ORF2 (S)"], 
+        ["G23012A", "E484K", "ORF2 (S)"], 
+        ["A23063T", "N501Y", "ORF2 (S)"], 
+        ["A23403G", "D614G", "ORF2 (S)"], 
+        ["C23664T", "A701V", "ORF2 (S)"], 
+        ["A10323G", "K90R", "ORF1ab"],
+        ["G5230T", "K837N", "ORF1ab"],   
+        ["T11288-", "S3675-", "ORF1ab"], 
+        ["C11289-", "S3675-", "ORF1ab"], 
+        ["T11290-", "S3675-", "ORF1ab"], 
+        ["G11291-", "G3676-", "ORF1ab"], 
+        ["G11292-", "G3676-", "ORF1ab"], 
+        ["T11293-", "G3676-", "ORF1ab"], 
+        ["T11294-", "F3677-", "ORF1ab"], 
+        ["T11295-", "F3677-", "ORF1ab"], 
+        ["T11296-", "F3677-", "ORF1ab"]
     ],
     "mutation_gamma": [
-    ('Unknown', 'P314L', 'ORF1ab'),
-    ('Unknown', 'S1188L', 'ORF1ab'), #6
-    ('Unknown', 'E1264D', 'ORF1ab'),
-    ('Unknown', 'K1795Q', 'ORF1ab'), #6
-    ('Unknown', 'E5665D', 'ORF1ab'), #6
-    ('Unknown', 'S3675-', 'ORF1ab'), #6
-    ('Unknown', 'G3676-', 'ORF1ab'), #6
-    ('Unknown', 'F3677-', 'ORF1ab'), #6
-    ("Unknown",'L18F','ORF2 (S)'), #5,6
-    ("Unknown",'T20N','ORF2 (S)'), #5,6
-    ("Unknown",'P26S','ORF2 (S)'), #5,6
-    ("Unknown",'D138Y','ORF2 (S)'), #5,6
-    ("Unknown",'R190S','ORF2 (S)'), #5,6
-    ("Unknown",'K417T','ORF2 (S)'), #5,6 #E484K and K417N mutations boost viral binding to human ACE2, comparable to the N501Y mutation
-    ("Unknown",'E484K','ORF2 (S)'), #5,6
-    ("Unknown",'N501Y','ORF2 (S)'), #5,6
-    ("Unknown",'D614G','ORF2 (S)'), #5,6
-    ("Unknown",'H655Y','ORF2 (S)'), #5,6
-    ("Unknown",'T1027I','ORF2 (S)'), #5,6
-    ("Unknown",'V1176F','ORF2 (S)'), #5,6
-    ("Unknown",'D27N','ORF3a'),
-    ('Unknown','S84L', 'ORF8'), #6
-    ('Unknown','E92K', 'ORF8'),
-    ('Unknown','P80K', 'ORF9 (N)'), #6
-    ('Unknown','R203K', 'ORF9 (N)'),
-    ('Unknown','G204R', 'ORF9 (N)'),
+        ["Unknown", "P314L", "ORF1ab"],
+        ["Unknown", "S1188L", "ORF1ab"], 
+        ["Unknown", "E1264D", "ORF1ab"],
+        ["Unknown", "K1795Q", "ORF1ab"], 
+        ["Unknown", "E5665D", "ORF1ab"], 
+        ["Unknown", "S3675-", "ORF1ab"], 
+        ["Unknown", "G3676-", "ORF1ab"], 
+        ["Unknown", "F3677-", "ORF1ab"], 
+        ["Unknown", "L18F", "ORF2 (S)"], 
+        ["Unknown", "T20N", "ORF2 (S)"], 
+        ["Unknown", "P26S", "ORF2 (S)"], 
+        ["Unknown", "D138Y", "ORF2 (S)"], 
+        ["Unknown", "R190S", "ORF2 (S)"], 
+        ["Unknown", "K417T", "ORF2 (S)"],
+        ["Unknown", "E484K", "ORF2 (S)"], 
+        ["Unknown", "N501Y", "ORF2 (S)"], 
+        ["Unknown", "D614G", "ORF2 (S)"], 
+        ["Unknown", "H655Y", "ORF2 (S)"], 
+        ["Unknown", "T1027I", "ORF2 (S)"], 
+        ["Unknown", "V1176F", "ORF2 (S)"],
+        ["Unknown", "D27N", "ORF3a"],
+        ["Unknown", "S84L", "ORF8"], 
+        ["Unknown", "E92K", "ORF8"],
+        ["Unknown", "P80K", "ORF9 (N)"], 
+        ["Unknown", "R203K", "ORF9 (N)"],
+        ["Unknown", "G204R", "ORF9 (N)"]
     ],
-    "mutation_delta" = [
-    ('C14408T', 'P314L', 'ORF1ab'),
-    ('G15451A', 'G662S', 'ORF1ab'),
-    ('C16466T', 'P1000L', 'ORF1ab'),
-    ("C21618G",'T19R','ORF2 (S)'), #5
-    ("G21987A",'G142D','ORF2 (S)'), #5
-    ("G22029-",'E156-','ORF2 (S)'), #5
-    ("A22030-",'E156-','ORF2 (S)'), 
-    ("G22031-",'E156-','ORF2 (S)'), 
-    ("T22032-",'F157-','ORF2 (S)'), #5
-    ("T22033-",'F157-','ORF2 (S)'),
-    ("C22034-",'F157-','ORF2 (S)'),
-    ("A22034G",'R158G','ORF2 (S)'), #5
-    ("T22917G",'L452R','ORF2 (S)'), #5,6 #critical amino acid substitutions
-    ("C22995A",'T478K','ORF2 (S)'), #5,6 #critical amino acid substitutions
-    ("T22917G",'L452R','ORF2 (S)'),
-    ("C22995A",'T478K','ORF2 (S)'),
-    ("A23403G",'D614G','ORF2 (S)'), #5
-    ("C23604G",'P681R','ORF2 (S)'), #5
-    ("G24410A",'D950N','ORF2 (S)'), #5
-    ("C25469T",'S26L','ORF3a'),
-    ("T26767C",'I82T','ORF5 (M)'),
-    ("T27638C",'V82A','ORF7a'),
-    ("C27752T",'T120I','ORF7a'),
-    ('G28248-','D119-', 'ORF8'),
-    ('A28249-','D119-', 'ORF8'),
-    ('T28250-','D119-', 'ORF8'),
-    ('T28251-','F120-', 'ORF8'),
-    ('T28252-','F120-', 'ORF8'),
-    ('C28253-','F120-', 'ORF8'),
-    ('A28461G','D63G', 'ORF9 (N)'),
-    ('G28881T','R203M', 'ORF9 (N)'),
-    ('G29402T','D377Y', 'ORF9 (N)'),
+    "mutation_delta": [
+        ["C14408T", "P314L", "ORF1ab"],
+        ["G15451A", "G662S", "ORF1ab"],
+        ["C16466T", "P1000L", "ORF1ab"],
+        ["C21618G", "T19R", "ORF2 (S)"],
+        ["G21987A", "G142D", "ORF2 (S)"],
+        ["G22029-", "E156-", "ORF2 (S)"],
+        ["A22030-", "E156-", "ORF2 (S)"],
+        ["G22031-", "E156-", "ORF2 (S)"],
+        ["T22032-", "F157-", "ORF2 (S)"],
+        ["T22033-", "F157-", "ORF2 (S)"],
+        ["C22034-", "F157-", "ORF2 (S)"],
+        ["A22034G", "R158G", "ORF2 (S)"],
+        ["T22917G", "L452R", "ORF2 (S)"],
+        ["C22995A", "T478K", "ORF2 (S)"],
+        ["T22917G", "L452R", "ORF2 (S)"],
+        ["C22995A", "T478K", "ORF2 (S)"],
+        ["A23403G", "D614G", "ORF2 (S)"],
+        ["C23604G", "P681R", "ORF2 (S)"],
+        ["G24410A", "D950N", "ORF2 (S)"],
+        ["C25469T", "S26L", "ORF3a"],
+        ["T26767C", "I82T", "ORF5 (M)"],
+        ["T27638C", "V82A", "ORF7a"],
+        ["C27752T", "T120I", "ORF7a"],
+        ["G28248-", "D119-", "ORF8"],
+        ["A28249-", "D119-", "ORF8"],
+        ["T28250-", "D119-", "ORF8"],
+        ["T28251-", "F120-", "ORF8"],
+        ["T28252-", "F120-", "ORF8"],
+        ["C28253-", "F120-", "ORF8"],
+        ["A28461G", "D63G", "ORF9 (N)"],
+        ["G28881T", "R203M", "ORF9 (N)"],
+        ["G29402T", "D377Y", "ORF9 (N)"]
     ],
-    "mutation_omicron" = [
-    ("Unknown",'A67V','ORF2 (S)'), #5
-    ("Unknown",'H69-','ORF2 (S)'), #5
-    ("Unknown",'V70-','ORF2 (S)'), #5
-    ("Unknown",'T95I','ORF2 (S)'), #5
-    ("Unknown",'G142-','ORF2 (S)'), #5
-    ("Unknown",'V143-','ORF2 (S)'), #5
-    ("Unknown",'Y144-','ORF2 (S)'), #5
-    ("Unknown",'Y145D','ORF2 (S)'), #5
-    ("Unknown",'N211-','ORF2 (S)'), #5
-    ("Unknown",'L212I','ORF2 (S)'), #5
-    ("Unknown",'G339D','ORF2 (S)'), #5
-    ("Unknown",'S371L','ORF2 (S)'), #5
-    ("Unknown",'S373P','ORF2 (S)'), #5
-    ("Unknown",'S375F','ORF2 (S)'), #5
-    ("Unknown",'K417N','ORF2 (S)'), #5
-    ("Unknown",'N440K','ORF2 (S)'), #5
-    ("Unknown",'G446S','ORF2 (S)'), #5
-    ("Unknown",'S477N','ORF2 (S)'), #5
-    ("Unknown",'T478K','ORF2 (S)'), #5
-    ("Unknown",'E484A','ORF2 (S)'), #5
-    ("Unknown",'Q493R','ORF2 (S)'), #5
-    ("Unknown",'G496S','ORF2 (S)'), #5
-    ("Unknown",'Q498R','ORF2 (S)'), #5
-    ("Unknown",'N501Y','ORF2 (S)'), #5
-    ("Unknown",'Y505H','ORF2 (S)'), #5
-    ("Unknown",'T547K','ORF2 (S)'), #5
-    ("Unknown",'D614G','ORF2 (S)'), #5
-    ("Unknown",'H655Y','ORF2 (S)'), #5
-    ("Unknown",'N679K','ORF2 (S)'), #5
-    ("Unknown",'P681H','ORF2 (S)'), #5
-    ("Unknown",'N764K','ORF2 (S)'), #5
-    ("Unknown",'D796Y','ORF2 (S)'), #5
-    ("Unknown",'N856K','ORF2 (S)'), #5
-    ("Unknown",'Q954H','ORF2 (S)'), #5
-    ("Unknown",'N969K','ORF2 (S)'), #5
-    ("Unknown",'L981F','ORF2 (S)') #5
+     "mutation_omicron": [
+        ["Unknown", "A67V", "ORF2 (S)"],
+        ["Unknown", "H69-", "ORF2 (S)"],
+        ["Unknown", "V70-", "ORF2 (S)"],
+        ["Unknown", "T95I", "ORF2 (S)"],
+        ["Unknown", "G142-", "ORF2 (S)"],
+        ["Unknown", "V143-", "ORF2 (S)"],
+        ["Unknown", "Y144-", "ORF2 (S)"],
+        ["Unknown", "Y145D", "ORF2 (S)"],
+        ["Unknown", "N211-", "ORF2 (S)"],
+        ["Unknown", "L212I", "ORF2 (S)"],
+        ["Unknown", "G339D", "ORF2 (S)"],
+        ["Unknown", "S371L", "ORF2 (S)"],
+        ["Unknown", "S373P", "ORF2 (S)"],
+        ["Unknown", "S375F", "ORF2 (S)"],
+        ["Unknown", "K417N", "ORF2 (S)"],
+        ["Unknown", "N440K", "ORF2 (S)"],
+        ["Unknown", "G446S", "ORF2 (S)"],
+        ["Unknown", "S477N", "ORF2 (S)"],
+        ["Unknown", "T478K", "ORF2 (S)"],
+        ["Unknown", "E484A", "ORF2 (S)"],
+        ["Unknown", "Q493R", "ORF2 (S)"],
+        ["Unknown", "G496S", "ORF2 (S)"],
+        ["Unknown", "Q498R", "ORF2 (S)"],
+        ["Unknown", "N501Y", "ORF2 (S)"],
+        ["Unknown", "Y505H", "ORF2 (S)"],
+        ["Unknown", "T547K", "ORF2 (S)"],
+        ["Unknown", "D614G", "ORF2 (S)"],
+        ["Unknown", "H655Y", "ORF2 (S)"],
+        ["Unknown", "N679K", "ORF2 (S)"],
+        ["Unknown", "P681H", "ORF2 (S)"],
+        ["Unknown", "N764K", "ORF2 (S)"],
+        ["Unknown", "D796Y", "ORF2 (S)"],
+        ["Unknown", "N856K", "ORF2 (S)"],
+        ["Unknown", "Q954H", "ORF2 (S)"],
+        ["Unknown", "N969K", "ORF2 (S)"],
+        ["Unknown", "L981F", "ORF2 (S)"]
     ]
 }
