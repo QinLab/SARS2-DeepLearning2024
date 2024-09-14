@@ -6,3 +6,4 @@ catboost_info/
 data/
 first_seq/
 model/
+agg_shap_value
