@@ -103,8 +103,8 @@ X_test, y_test = get_data(df_train)
 
 cat_model = CatBoostClassifier()
 
-iterations = [int(x) for x in np.linspace(start = 10, stop = 20, num = 2)]
-depth = [int(x) for x in np.linspace(start = 2, stop = 3, num = 1)]
+iterations = [int(x) for x in np.linspace(start = 10, stop = 20, num = 10)]
+depth = [int(x) for x in np.linspace(start = 2, stop = 16, num = 5)]
 learning_rate = stats.uniform(0.01, 0.1)
 cat_grid = {
         'iterations': iterations,
@@ -114,7 +114,7 @@ cat_grid = {
     
 cat_random = RandomizedSearchCV(cat_model,
                                  param_distributions=cat_grid,
-                                 n_iter=2, 
+                                 n_iter=5, 
                                  cv=5,
                                  verbose=2,
                                  random_state=42,
@@ -125,6 +125,6 @@ cat_random = RandomizedSearchCV(cat_model,
 cat_random.fit(X_train, y_train)
 
 best_params_cat = cat_random.best_params_
-print("best_params_cat", best_params_cat)
+best_params_cat_converted = {k: int(v) if isinstance(v, np.integer) else v for k, v in best_params_cat.items()}
 with open('./best_params/best_params_cat.json', 'w') as file:
-    json.dump(best_params_cat, file)
+    json.dump(best_params_cat_converted, file)
