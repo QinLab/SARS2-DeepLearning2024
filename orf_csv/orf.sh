@@ -1,7 +1,7 @@
 #!/bin/bash
  
 # execute in the general partition
-#SBATCH --partition=general
+#SBATCH --partition=firefly
  
 # Number of  processes/tasks
 #SBATCH --ntasks=1
@@ -22,6 +22,7 @@
 #SBATCH --gres=gpu:0
  
 # load environment
+module load anaconda
 source activate myenv
 
 export PYTHONPATH="$HOME:$PYTHONPATH"
