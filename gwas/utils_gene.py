@@ -1,5 +1,11 @@
 from Bio.Seq import Seq
 import re
+from collections import Counter
+import constants as CONST
+from gene_shap.utils import convert_ref_to_onehot_lowercase
+
+
+ref_seq, ref_seq_oneHot, converted_sequence = convert_ref_to_onehot_lowercase()
 
 def translate_with_gaps(seq):
     proteins = []
@@ -8,9 +14,9 @@ def translate_with_gaps(seq):
     return ''.join(proteins) 
 
 
-def get_protein_genes(gene, df_orfs, converted_sequence):
-    start = int(df[df['Gene']==gene]['Start'])
-    end = int(df[df['Gene']==gene]['End'])
+def get_protein_genes(gene, df_orfs, converted_sequence=converted_sequence):
+    start = int(df_orfs[df_orfs['Gene']==gene]['Start'])
+    end = int(df_orfs[df_orfs['Gene']==gene]['End'])
     protein = translate_with_gaps(converted_sequence[start-1:end])
     return protein
 
@@ -35,7 +41,7 @@ def find_matching_condons_with_single_difference(aa1_input, aa2_input):
     tuple_counts = Counter(differences)
     # Find the most common tuple
     most_common_tuple = tuple_counts.most_common(3)
-    print(f"Most common tuple: {most_common_tuple}")
+#     print(f"Most common tuple: {most_common_tuple}")
 
     i, ch1, ch2 = tuple_counts.most_common(1)[0][0]
     seen_differences.append((i, ch1, ch2))
@@ -72,7 +78,7 @@ def get_position_from_codon(codon, ORF, df_ORFs, codontab):
         integer_match = re.search(r'\d+', codon)
         extracted_integer = int(integer_match.group())
 
-        protein = get_protein_genes(ORF)
+        protein = get_protein_genes(ORF, df_ORFs)
 
         if ORF in list(df_ORFs['Gene']):
             start = int(df_ORFs[df_ORFs['Gene']==ORF]['Start'])
@@ -90,7 +96,7 @@ def get_position_from_codon(codon, ORF, df_ORFs, codontab):
         return real_position
     
     
-def extract_positions(df_mutation):
+def extract_positions(df_mutation, df_ORFs, codontab=CONST.CONDONTAB):
     """
     Extracts positions and condon,and specified genes from the mutation DataFrame.
     """
@@ -105,14 +111,15 @@ def extract_positions(df_mutation):
                     integer_match = re.search(r'\d+', row["Nucleotides and Positions"])
                     extracted_integer = int(integer_match.group())
                     position_spike.append((row['Nucleotides and Positions'],
-                                                 row['Condon'],
+                                                 row['Amino Acide Changes'],
                                                  row['Genes'],
                                                  [extracted_integer]))
                 else:
                     # Use a fallback function to get the position from the codon
-                    pos = get_position_from_codon(row['Condon'], gene)
-                    position_spike_alpha.append((row['Nucleotides and Positions'],
-                                                 row['Condon'],
+                    pos = get_position_from_codon(row['Amino Acide Changes'], gene,
+                                                  df_ORFs, codontab)
+                    position_spike.append((row['Nucleotides and Positions'],
+                                                 row['Amino Acide Changes'],
                                                  row['Genes'],
                                                  pos))
     return position_spike
