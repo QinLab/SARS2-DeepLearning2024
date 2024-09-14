@@ -3,6 +3,7 @@ import os
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import constants as CONST
+import json
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
 import numpy as np
@@ -10,6 +11,7 @@ import pandas as pd
 from random import uniform
 from scipy.stats import chi2_contingency
 from sklearn.preprocessing import MinMaxScaler
+from utils_gene import *
 
 
 def split_sequence(sequence):
@@ -53,15 +55,15 @@ def norm_log_p_values(df_pvalue):
     return df_pvalue
 
 
-def map_snp_to_orf(df_pvalue, df_orfs):
+def map_snp_to_orf(df, df_orfs):
     """
     Maps SNP positions to corresponding ORFs or marks them as 'Non_ORF' if they do not match any ORF.
     """
-    df_snv_ORF = pd.DataFrame(columns=['Positions', 'ORF'])
+    df_value_ORF = pd.DataFrame(columns=['Positions', 'ORF'])
     df_orfs['Start'] = df_orfs['Start'].astype(int)
     df_orfs['End'] = df_orfs['End'].astype(int)
     
-    for idx, row in df_pvalue.iterrows():
+    for idx, row in df.iterrows():
         pos = row['Positions']
 
         # A mask to check if the SNP position falls within any ORF
@@ -77,11 +79,11 @@ def map_snp_to_orf(df_pvalue, df_orfs):
             matching_df = pd.DataFrame({'Positions': [pos],
                                         'ORF': "Non_ORF"})
 
-        df_snv_ORF = pd.concat([df_snv_ORF, matching_df], ignore_index=True)
+        df_value_ORF = pd.concat([df_value_ORF, matching_df], ignore_index=True)
 
-    df_snv_ORF = df_snv_ORF.merge(df_pvalue, on='Positions', how='inner')
+    df_value_ORF = df_value_ORF.merge(df, on='Positions', how='inner')
 
-    return df_snv_ORF
+    return df_value_ORF
 
 
 def plot_dist_value_across_gene(df, file_name, value):
@@ -114,7 +116,7 @@ def plot_dist_value_across_gene(df, file_name, value):
         percentage = percentage_dict[orf]
         plt.text(bar.get_x() + bar.get_width() / 2, height, f'{percentage:.2f}%', ha='center', va='bottom')
     
-    output_path = f'{CONST.RSLT_DIR}/gwas-plot/{file_name}.png'
+    output_path = f'{CONST.GWAS_DIR}/{file_name}.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 
@@ -150,13 +152,13 @@ def mean_agg_shap_values():
     return agg_shap_allVariants
 
 
-def get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants, df_pvalue):
+def get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants, df_pvalue, df_orfs):
     """
     Processes mutation data for a specific variant and merges it with additional data.
     """
     df_mutation = pd.DataFrame(mutation_data, columns=['Nucleotides and Positions', 'Amino Acide Changes', 'Genes'])
 
-    position_spike = extract_positions(df_mutation)
+    position_spike = extract_positions(df_mutation, df_orfs)
     df_position_spike = pd.DataFrame(position_spike, columns=['Nucleotides and Positions', 'Amino Acide Changes', 'Genes', 'Positions'])
     df_position_spike = df_position_spike.explode('Positions', ignore_index=True)
 
@@ -170,7 +172,7 @@ def get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants
     return result_df
 
 
-def match_gwas_shap(agg_shap_allVariants, df_pvalue):
+def match_gwas_shap(agg_shap_allVariants, df_pvalue, df_orf):
     
     with open('mutations.json', 'r') as json_file:
         mutations_data = json.load(json_file)
@@ -185,7 +187,7 @@ def match_gwas_shap(agg_shap_allVariants, df_pvalue):
 
     variant_dfs = []
     for variant_name, mutation_data in variants.items():
-        variant_df = get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants, df_pvalue)
+        variant_df = get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants, df_pvalue, df_orf)
         variant_dfs.append(variant_df)
 
     # Concatenate all variants into a single DataFrame
@@ -223,7 +225,7 @@ def plot_by_genes(df, norm):
         colors = []
         for _, row in df_color.iterrows():
             colors.append(color_map[gene])
-        ax.scatter(df_color['Position'], df_color[norm], c=colors, label=gene)
+        ax.scatter(df_color['Positions'], df_color[norm], c=colors, label=gene)
     
     colors_who = []
     pos_who = []
@@ -240,7 +242,7 @@ def plot_by_genes(df, norm):
     # Remove the spines
     ax.spines[['top','left','bottom']].set_visible(False)
     
-    ax.set_xlabel('Position', fontsize = 14)
+    ax.set_xlabel('Positions', fontsize = 14)
     if norm == "Normalized SHAP value":
         ax.set_ylabel('Normalized SHAP value', fontsize = 14)
     else:
@@ -256,35 +258,40 @@ def plot_by_genes(df, norm):
     ax.text(x=0.12, y=.93, s=f"Scatter plot of {norm} within", transform=fig.transFigure, ha='left', fontsize=14, weight='bold', alpha=.8)
     ax.text(x=0.12, y=.90, s=" Alpha, Beta, Delta,Gamma,Omicron", transform=fig.transFigure, ha='left', fontsize=14,weight='bold', alpha=.8)
     
-    output_path = f'./test2.png'
+    output_path = f'{CONST.GWAS_DIR}/manhattan_{norm}.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 
-def plot_venn_digram_shap_pvalue(num, df_snv_ORF, df_agg_ORF_merge):
+def plot_venn_digram_shap_pvalue(num, df_snv_ORF, df_agg_ORF):
     
     greatest_pvalue_pos = df_snv_ORF.nlargest(num, 'Normalized -log(p-value)')
-    greatest_SHAPvalue_pos = df_agg_ORF_merge.nlargest(num, 'Normalized SHAP value')
-    greatest_pvalue_pos['Position'] = greatest_pvalue_posp['Position'].astype(int)
+    greatest_SHAPvalue_pos = df_agg_ORF.nlargest(num, 'Normalized SHAP value')
+    greatest_pvalue_pos['Positions'] = greatest_pvalue_pos['Positions'].astype(int)
+    greatest_SHAPvalue_pos['Positions'] = greatest_SHAPvalue_pos['Positions'].astype(int)
 
-    greatest_SHAPvalue_pos['position'] = greatest_SHAPvalue_pos['position'].astype(int)
-
-    positions_pvalue = set(greatest_pvalue_pos['Position'])
-    positions_shapvalue = set(greatest_SHAPvalue_pos['position'])
+    positions_pvalue = list(greatest_pvalue_pos['Positions'])
+    positions_shapvalue = list(greatest_SHAPvalue_pos['Positions'])
+    
+    counter_pvalue = Counter(positions_pvalue)
+    counter_shapvalue = Counter(positions_shapvalue)
 
     # Compute the intersection
-    common_values = positions_pvalue & positions_shapvalue
+    common_elements = list((counter_pvalue & counter_shapvalue).elements())
     print(f"Number of common values: {len(common_values)}")
-
+    
+    unique_pvalue = set(positions_pvalue)
+    unique_shapvalue = set(positions_shapvalue)
+    
     plt.figure(figsize=(8, 6))
-    venn = venn2([positions_pvalue, positions_shapvalue], 
+    venn = venn2([unique_pvalue, unique_shapvalue], 
                  set_labels=('P-value Positions', 'SHAP Value Positions'))
 
-    venn.get_label_by_id('10').set_text(f'{len(positions_pvalue - positions_shapvalue)}')
-    venn.get_label_by_id('01').set_text(f'{len(positions_shapvalue - positions_pvalue)}')
+    venn.get_label_by_id('10').set_text(f'{len(positions_pvalue) - len(common_elements)}')
+    venn.get_label_by_id('01').set_text(f'{len(positions_shapvalue) - len(common_elements)}')
     venn.get_label_by_id('11').set_text(f'{len(common_values)}')
 
     # Set title and display the plot
     plt.title(f'Number of Common Positions within {num} greatest value in p-value and SHAP value')
     
-    output_path = f'./venn.png'
+    output_path = f'{CONST.GWAS_DIR}/venn.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
