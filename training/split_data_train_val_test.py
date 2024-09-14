@@ -8,14 +8,16 @@ def split_data_train_test(data_path = CONST.BALANC_DIR):
     df = pd.read_csv(data_path)
     df['sequence'] = df['sequence'].str.slice(2, -2) #Remove the first 2 and last 2 characters which are "[", two "'", and "]" 
 
-    train_sample_size = 40000
-    test_sample_size = 4000
+    train_sample_size = 32000
+    test_sample_size = 8000
 
     rng = RandomState()
 
     # Create train and test datasets by sampling from each variant
     train = df.groupby('Variant_VOC', group_keys=False).apply(lambda x: x.sample(n=train_sample_size, random_state=rng))
-    test = df.groupby('Variant_VOC', group_keys=False).apply(lambda x: x.sample(n=test_sample_size, random_state=rng))
+    
+    remaining_df = df.loc[~df.index.isin(train.index)]
+    test = remaining_df.groupby('Variant_VOC', group_keys=False).apply(lambda x: x.sample(n=test_sample_size, random_state=rng))
 
     return train, test
 
