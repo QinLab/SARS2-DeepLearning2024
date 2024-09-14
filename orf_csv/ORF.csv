@@ -1,5 +1,6 @@
 Gene,Protein,Start,End
 ORF1ab,ORF1ab polyprotein,266,21555
+ORF1a,ORF1a polyprotein,266,13483
 ORF2 (S),Spike protein (S protein),21563,25384
 ORF3a,ORF3a protein,25393,26220
 ORF4 (E),Envelope protein (E protein),26245,26472
