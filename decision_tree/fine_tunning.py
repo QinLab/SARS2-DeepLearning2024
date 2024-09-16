@@ -11,7 +11,7 @@ import numpy as np
 import scipy.stats as stats
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV, train_test_split
-from utils import *
+from utils_dt import *
 from xgboost import XGBClassifier
 
 
