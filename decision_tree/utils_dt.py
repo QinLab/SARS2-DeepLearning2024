@@ -52,7 +52,7 @@ def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
     ax.yaxis.set_label_coords(-0.1, 0.5)
 
     plt.title('Confusion Matrix for {model}', fontsize=26)
-    plt.savefig(f'{CONST.CNFMTRX_DIR}/confusion_matrix_{model}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{CONST.CNFMTRX_DIR}/confusion_matrix_{model}.png', dpi=140, bbox_inches='tight')
 
 
 def plot_metrics(model, y_preds, y_test, palette):
@@ -80,7 +80,7 @@ def plot_metrics(model, y_preds, y_test, palette):
     for i, score in enumerate(scores):
         plt.text(i, score + 0.02, f"{score:.2f}", ha='center', fontsize=26)
         
-    plt.savefig(f'{CONST.MTC_PLT}/metrics_{model}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{CONST.MTC_PLT}/metrics_{model}.png', dpi=140, bbox_inches='tight')
 
 def get_column_names():
 
