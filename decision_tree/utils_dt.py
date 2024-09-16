@@ -1,10 +1,12 @@
 from matplotlib import pyplot as plt
 import constants as CONST
+import joblib
 import numpy as np
 from one_hot import *
-from shap.utils import *
+from gene_shap.utils import *
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, classification_report
+import shap
 import tensorflow as tf
 from tqdm import trange
 
@@ -30,6 +32,44 @@ def get_data(df):
     y = y[indices_shuffle]
     
     return X, y
+
+
+def get_column_names(seq):
+
+    ref,_,_ = convert_ref_to_onehot_lowercase()
+    column_names = []
+    chars = ['_', 'A', 'C', 'G', 'I', 'N', 'T']
+    for i in range(len(seq)):
+        ref_nuc = ref[i]
+        for char in chars:
+            column_names.append(f'{ref_nuc}{i+1}{char}')
+
+    return column_names
+
+
+def get_data_shap(df):
+    one_hot_seq = []
+    one_hot_label = []
+    for i in trange(len(df)):
+        one_hot_seq.append(one_hot_encode_seq(df['sequence'][i]))
+        one_hot_label.append(one_hot_encode_label(df['Variant_VOC'][i]))
+    
+    return one_hot_seq, one_hot_label
+
+
+def get_shap_instance(model, df, var):
+    
+    x, y = get_data(df)
+    seq = df[df['Variant_VOC'] == var]['sequence'].values[0]
+    column_names = get_column_names(seq)
+    df_shap = pd.DataFrame(x, columns=column_names)
+    choosen_instance = df_shap.loc[[0]]
+    model = joblib.load(model)
+    explainer = shap.TreeExplainer(model)
+    shap_values = explainer.shap_values(choosen_instance)
+    
+    return explainer, shap_values, choosen_instance, df_shap
+    
 
 
 def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
@@ -82,14 +122,3 @@ def plot_metrics(model, y_preds, y_test, palette):
         
     plt.savefig(f'{CONST.MTC_PLT}/metrics_{model}.png', dpi=140, bbox_inches='tight')
 
-def get_column_names():
-
-    ref,_,_ = convert_ref_to_onehot_lowercase()
-    column_names = []
-    chars = ['_', 'A', 'C', 'G', 'I', 'N', 'T']
-    for i in range(len(seq)):
-        ref_nuc = ref[i]
-        for char in chars:
-            column_names.append(f'{ref_nuc}{i+1}{char}')
-
-    return column_names
