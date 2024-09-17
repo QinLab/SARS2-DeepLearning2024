@@ -3,7 +3,7 @@ import constants as CONST
 import joblib
 import numpy as np
 from one_hot import *
-from gene_shap.utils import *
+from gene_shap.utils import convert_ref_to_onehot_lowercase
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, classification_report
 import shap
@@ -75,12 +75,15 @@ def get_shap_instance(model, df, var):
 def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
     
     conf_matrix = confusion_matrix(y_test, y_preds)
+    conf_matrix_normalized = conf_matrix.astype('float') / conf_matrix.sum(axis=1)[:, np.newaxis]
+
     fig, ax = plt.subplots(figsize=(10, 8))
-    sns.set(font_scale=1.8)
-    heatmap = sns.heatmap(conf_matrix,
+    sns.set(font_scale=2)
+
+    heatmap = sns.heatmap(conf_matrix_normalized,
                           annot=True,
-                          fmt='g',
-                          cmap=cmap,
+                          fmt='.2f', 
+                          cmap=cmap,  
                           cbar=False,
                           xticklabels=CONST.VOC_WHO,
                           yticklabels=CONST.VOC_WHO)
@@ -91,7 +94,7 @@ def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
     ax.xaxis.set_label_coords(0.5, -0.1)
     ax.yaxis.set_label_coords(-0.1, 0.5)
 
-    plt.title('Confusion Matrix for {model}', fontsize=26)
+    plt.title(f'Confusion Matrix for {model}', fontsize=26)
     plt.savefig(f'{CONST.CNFMTRX_DIR}/confusion_matrix_{model}.png', dpi=140, bbox_inches='tight')
 
 
