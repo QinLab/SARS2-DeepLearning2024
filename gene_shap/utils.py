@@ -1,14 +1,15 @@
-from sars.gene_shap.agg_shap import Agg_SHAP as aggshap
+from agg_shap import Agg_SHAP as aggshap
 from Bio import SeqIO
+import constants.constants as CONST
 import multiprocessing as mp
 import numpy as np
 import os
-from sars.one_hot.one_hot import one_hot_encode_label as onehot
+from one_hot import one_hot_encode_label as onehot
 import pandas as pd
-import sars.constants as CONST
-from sars.training.data_prep import read_labels
+import re
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
+from training.data_prep import read_labels
 
 
 def read_single_seq(args):
@@ -110,8 +111,8 @@ def calculate_shap_value(model, explainer, base_value, var, df_sequences, ID_sha
     
     return df, features, shap_values
 
-def get_pos_nuc(df, var_name, cs, df_ORFs):
-    column_names = ['ID', 'Variant_VOC']
+def get_pos_nuc(df, cs, df_ORFs):
+#     column_names = ['ID', 'Variant_VOC']
     df = get_pos_local_shap(df)
     df_seq = df.iloc[:,2:]
     dictionary = df_seq.to_dict(orient='records')[0]
@@ -138,3 +139,37 @@ def get_pos_nuc(df, var_name, cs, df_ORFs):
         new_columns.append(f"{aa_to_find}, {value} ({matching_gene})")
     df = df.rename(columns=dict(zip(df.iloc[:, 2:].columns, new_columns))) 
     return df
+
+
+def get_pos_nuc_summation(df, df_ORFs, column_names, features):   
+    df_shap = pd.DataFrame(np.array(features).reshape(1, 29891*7),
+                           columns=column_names).reset_index(drop=True)
+    df = df.reset_index(drop=True)
+    
+    dictionary = df_shap.to_dict(orient='records')[0]
+
+    # rename the columns
+    new_columns = []
+    for col, val in dictionary.items():
+        col_num = int(re.search(r'\d+', col).group())
+        for index, row in df_ORFs.iterrows():
+            i = 0
+            if col_num >= int(row['Start']) and col_num <= int(row['End']):
+                i += 1
+                matching_gene = row['Gene']
+                break
+            if i == 0:
+                matching_gene = 'Non_ORF'
+
+        for key in CONST.AMINO_ACID:
+            if col in key:
+                value = CONST.AMINO_ACID[key]
+                break
+            else:
+                value = "_" 
+        new_columns.append(f"{col}, {value} ({matching_gene})")
+    df_shap = df_shap.rename(columns=dict(zip(df_shap.columns, new_columns)))
+    
+    column_names = ['ID', 'Variant_VOC']
+    df_sum = pd.concat([df[column_names],df_shap], axis=1)
+    return df_sum
