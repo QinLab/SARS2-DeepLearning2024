@@ -26,10 +26,8 @@ elif model == 'cat':
     
     
 if __name__  == '__main__':
-    df_initial = pd.read_csv(f'{CONST.FRST_DIR}/first_detected.csv')
-    
+    df_initial = pd.read_csv(f'{CONST.FRST_DIR}/first_detected.csv') 
     for var in variants:
-        print("var:", {var})
         index_var = variants.index(var)
         seq_df = df_initial[df_initial['Variant_VOC'] == var]
         explainer, shap_values, choosen_instance, df_shap = get_shap_instance(model_dt,
