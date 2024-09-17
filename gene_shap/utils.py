@@ -1,12 +1,15 @@
-from agg_shap import Agg_SHAP as aggshap
+from gene_shap.agg_shap import Agg_SHAP as aggshap
 from Bio import SeqIO
 import constants.constants as CONST
+import dcor
+from matplotlib import pyplot as plt
 import multiprocessing as mp
 import numpy as np
 import os
 from one_hot import one_hot_encode_label as onehot
 import pandas as pd
 import re
+import seaborn as sns
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from training.data_prep import read_labels
@@ -173,3 +176,37 @@ def get_pos_nuc_summation(df, df_ORFs, column_names, features):
     column_names = ['ID', 'Variant_VOC']
     df_sum = pd.concat([df[column_names],df_shap], axis=1)
     return df_sum
+
+
+def compute_distance_nonlinear_correlation_matrix(merged_df):
+    """
+    Computes the distance correlation matrix for the variants regarding the mean of their shap values
+    """
+    names = CONST.VOC_WHO
+    df_corr = pd.DataFrame(index=names, columns=names)
+    
+    # Calculate nonlinear distance correlation for each pair of columns
+    for i in names:
+        for j in names:
+            df_i = np.array(merged_df[i])[:, None]
+            df_j = np.array(merged_df[j])[:, None]
+            df_corr.at[i, j] = dcor.distance_correlation(df_i, df_j)
+
+    for col in df_corr.columns:
+        df_corr[col] = pd.to_numeric(df_corr[col], errors='coerce', downcast='float')
+
+    return df_corr
+
+def plot_correlation(df):
+    sns.set(font_scale=1.4)
+    cmap = sns.color_palette("Spectral",as_cmap=True)
+    cluster_grid = sns.clustermap(df, cmap=cmap,vmin=0, vmax=1, center=0,
+                square=True, linewidths=.5, cbar_kws={"shrink": .5}, annot=True)
+    
+    directory_path = f"{CONST.CORL_DIR}"
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+        
+    name = f"{directory_path}/corrolation_map.png"
+    cluster_grid.fig.savefig(name, dpi=100, bbox_inches='tight')
+
