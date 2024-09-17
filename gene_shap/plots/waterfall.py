@@ -17,7 +17,7 @@ from shap.plots._labels import labels
 import warnings
 
 
-def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_display, show=True):
+def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_display, summation=True, show=True):
     """ Plots an explantion of a single prediction as a waterfall plot.
 
     The SHAP value of a feature represents the impact of the evidence provided by that feature on the model's
@@ -50,7 +50,12 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
     feature_names = df_col.columns[2:]
     lower_bounds = None
     upper_bounds = None
-    values = np.sum(shap_values,axis=-1)
+    
+    if summation == True:
+        values = np.sum(shap_values,axis=-1)
+    elif summation == False:
+        values = shap_values.reshape(shap_values.shape[1]*shap_values.shape[2])
+        
 
     # make sure we only have a single output to explain
     if (type(base_values) == np.ndarray and len(base_values) > 0) or type(base_values) == list:
@@ -298,12 +303,16 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
     for i in range(num_features):
         tick_labels[i].set_color("#999999")
     
-    directory_path = f"{CONST.WTFL_DIR}/{var}/{df_col.iloc[0][0]}_{var}_as_{as_var}"
-    
+    directory_path = f"{CONST.WTFL_DIR}/{var}"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
         
-    plt.savefig(directory_path, dpi=100, bbox_inches='tight')
+    if summation == True:
+        name = f"{directory_path}/{df_col.iloc[0][0]}_{var}_as_{as_var}.png"
+    elif summation == False:
+        name = f"{directory_path}/{df_col.iloc[0][0]}_{var}_as_{as_var}_sum.png"
+           
+    plt.savefig(name, dpi=100, bbox_inches='tight')
     
     # Close the plot to ensure no overlap
     plt.close()
