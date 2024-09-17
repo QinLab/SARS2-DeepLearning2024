@@ -1,8 +1,9 @@
 import argparse
+from decision_tree.utils_dt import get_column_names
 import glob
 import numpy as np
 import pandas as pd
-import sars.constants as CONST
+import constants.constants as CONST
 import shap
 from utils import *
 import tensorflow as tf
@@ -25,7 +26,7 @@ arg_parser.add_argument("-rand", "--random", action='store_true',
                         help="SHAP value a random sequences (default: None)")
 arg_parser.add_argument("-max_display", "--max_display", type=int, default=6,
                         help="Number of top SHAP values to display (default: 6)")
-arg_parser.add_argument("-var", "--variant", default=None
+arg_parser.add_argument("-var", "--variant", default=None,
                         help="Variant name for SHAP value calculation; (default: None)")
 
 
@@ -77,57 +78,67 @@ if ID_shapvalue:
 if random:
     df_sequences = df_train_test[df_train_test['Variant_VOC'] == var].sample(n=1)
     ID = df_sequences["ID"].values[0]
-   
-
-# Convert reference sequences to one-hot encoded format and get its genetic sequence with lower case
-ref_seq, ref_seq_oneHot, converted_sequence = convert_ref_to_onehot_lowercase()
-
-#---------------------------Base value---------------------------
-# Get some sequences from test dataset to produce base value
-base_features = []
-
-for variant in variants:
-    features = calculate_base_value(df_train, variant, num_seq, ID_basevalue)
-    base_features.append(features)
-
-combined_features = np.concatenate(base_features, axis=0)
-
-# Load model
-model = tf.keras.models.load_model(f'{CONST.MODEL_SAVE}')
-
-# Calculate base value
-explainer = shap.DeepExplainer(model, combined_features)
-base_value = np.array(explainer.expected_value)
 
 
-#---------------------------shap value for initial sequences of each variant---------------------------
-index = CONST.VOC_WHO.index(var)
-df, features, shap_values = calculate_shap_value(model, explainer, base_value, var, df_sequences, ID_shapvalue, index)
+if __name__ == "__main__":
+       
+    # Convert reference sequences to one-hot encoded format and get its genetic sequence with lower case
+    ref_seq, ref_seq_oneHot, converted_sequence = convert_ref_to_onehot_lowercase()
 
-#---------------------------Get the positions as column names of each shap value---------------------------
-df_ORFs = pd.read_csv(CONST.ORf_DIR)
-df_var = get_pos_nuc(df_sequences, var, ref_seq, df_ORFs)
+    #---------------------------Base value---------------------------
+    # Get some sequences from test dataset to produce base value
+    base_features = []
+
+    for variant in variants:
+        features = calculate_base_value(df_train, variant, num_seq, ID_basevalue)
+        base_features.append(features)
+
+    combined_features = np.concatenate(base_features, axis=0)
+
+    # Load model
+    model = tf.keras.models.load_model(f'{CONST.MODEL_SAVE}')
+
+    # Calculate base value
+    explainer = shap.DeepExplainer(model, combined_features)
+    base_value = np.array(explainer.expected_value)
 
 
-#---------------------------Draw plots for local SHAP value of a sequence---------------------------
-# waterfall plot
-for i in variants:
-    print(f'If the {var} sequence gets classified as {i}:')
-    index_var = variants.index(i)
-    waterfall(var,i ,df_var, shap_values[index_var][0], base_value[index_var], 1,max_display=max_display, show=True)
-    
-# Vis plot
-for i in variants:
-    print(f'If the {var} sequence gets classified as {i}:')
-    Id = df_sequences["ID"].iloc[0]
-    DNA_obj = plot_DNA(var=var,as_var=i, Id=Id, num_shap = 5)
-    DNA_obj.plot_ref_and_sequence_mutation_positions(df,
-                                             shap_values,
-                                             features,
-                                             seq_num = 0,
-                                             ref_seq = converted_sequence,
-                                             ref_seq_oneHot=ref_seq_oneHot)
+    #---------------------------shap value for initial sequences of each variant---------------------------
+    index = CONST.VOC_WHO.index(var)
+    df, features, shap_values = calculate_shap_value(model, explainer, base_value, var, df_sequences, ID_shapvalue, index)
+#     print("feature:", type(features))
 
-# Scatter plot of shap value along sequence
-for as_var in variants:
-    scatter_plot_var(Id, shap_values, var, as_var)
+    #---------------------------Get the positions as column names of each shap value---------------------------
+    df_ORFs = pd.read_csv(CONST.ORf_DIR)
+    df_var = get_pos_nuc(df_sequences, ref_seq, df_ORFs)
+
+
+    #---------------------------Draw plots for local SHAP value of a sequence---------------------------
+    # waterfall plot
+    for i in variants:
+        print(f'If the {var} sequence gets classified as {i}:')
+        index_var = variants.index(i)
+        # with summation
+        waterfall(var,i ,df_var, shap_values[index_var][0], base_value[index_var], 1,max_display=max_display, show=True)
+        #without summation
+        seq = df_sequences['sequence'].values[0]
+        column_names = get_column_names(seq)
+        df_sum = get_pos_nuc_summation(df_sequences, df_ORFs, column_names, features)
+        waterfall(var, i, df_sum, shap_values[index_var],
+           base_value[index_var], 1, max_display=6, summation=False, show=True)
+
+    # Vis plot
+    for i in variants:
+        print(f'If the {var} sequence gets classified as {i}:')
+        Id = df_sequences["ID"].iloc[0]
+        DNA_obj = plot_DNA(var=var,as_var=i, Id=Id, num_shap = 5)
+        DNA_obj.plot_ref_and_sequence_mutation_positions(df,
+                                                 shap_values,
+                                                 features,
+                                                 seq_num = 0,
+                                                 ref_seq = converted_sequence,
+                                                 ref_seq_oneHot=ref_seq_oneHot)
+
+    # Scatter plot of shap value along sequence
+    for as_var in variants:
+        scatter_plot_var(Id, shap_values, var, as_var)
