@@ -2,6 +2,7 @@ from gene_shap.agg_shap import Agg_SHAP as aggshap
 from Bio import SeqIO
 import constants.constants as CONST
 import dcor
+from gene_shap.mutation import find_most_frequent_mutations, print_frequent_mutations
 import itertools
 from matplotlib import pyplot as plt
 import multiprocessing as mp
@@ -209,7 +210,7 @@ def plot_correlation(df):
     cluster_grid.fig.savefig(name, dpi=100, bbox_inches='tight')
 
     
-def get_df_var_count(df_agg, df_orfs, num):
+def get_var_shap_count(df_agg, df_orfs, num):
 
     numeric_df = df_agg[:-1].drop(columns=['Accession ID'])
     column_count = {}
@@ -240,6 +241,39 @@ def get_df_var_count(df_agg, df_orfs, num):
     
     return var_df
 
+def get_var_dna_count(df_train_test, var, freq):
+    
+    calc_base = aggshap(df_train_test, var)
+    df, features, ID = calc_base.get_features( num_seq = None, 
+                                     ID = None, 
+                                     )
+    
+    _, _, converted_sequence = convert_ref_to_onehot_lowercase
+    positions, ref_bases, mut_bases, frequency, _ = find_most_frequent_mutations(df, converted_sequence)
+    
+    mutations = list(zip(positions, ref_bases, mut_bases, frequency))
+    sorted_mutations = sorted(mutations, key=lambda x: x[0], reverse=True)
+
+    data = []
+    for position, ref_base, mut_base, frequencys in sorted_mutations:
+        aa = f'{ref_base.upper()}{position}{mut_base.upper()}'
+        matching_gene = 'Non_ORF'
+        for index, row in df_orfs.iterrows():
+                if position >= int(row['Start']) and position <= int(row['End']):
+                    i += 1
+                    matching_gene = row['Gene']
+                    break
+
+        data.append({
+            'mutations': f'{aa} ({matching_gene})',
+            'frequency': frequencys
+        })
+
+    df = pd.DataFrame(data)
+    df_var = df[df["frequency"]>=freq].sort_values(by="frequency", ascending=False)
+    return df_var
+
+
 def count_common_positions_all_combinations(all_sets, set_names):
     
     common_sets = {}
@@ -261,6 +295,7 @@ def count_common_positions_all_combinations(all_sets, set_names):
 
 def plot_common_positions_with_rank(all_sets, set_names, top):
     combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
+    combinations_with_counts.sort(key=lambda x: x[1], reverse=True)
     sns.set(style="whitegrid")
     plt.figure(figsize=(25, 15))
     df_combinations = pd.DataFrame(combinations_with_counts, columns=['Combination', 'Count'])
@@ -284,4 +319,3 @@ def plot_common_positions_with_rank(all_sets, set_names, top):
         os.makedirs(directory_path)
         
     plt.savefig(f'{directory_path}/bar_{top}.png', format='png', dpi=40, bbox_inches='tight')
-
