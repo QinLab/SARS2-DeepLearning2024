@@ -1,9 +1,9 @@
-from gene_shap.agg_shap import Agg_SHAP
 import argparse
 import constants.constants as CONST
+from gene_shap.agg_shap import Agg_SHAP
 from gene_shap.mutation import find_most_frequent_mutations, print_frequent_mutations
-import pandas as pd
 from gene_shap.utils import convert_ref_to_onehot_lowercase
+import pandas as pd
 
 
 arg_parser = argparse.ArgumentParser(description="Get the number of most frequent mutaions")
@@ -28,7 +28,7 @@ if __name__== "__main__":
     df_test = pd.read_csv(f'{CONST.TEST_DIR}')
     df_train_test = pd.concat([df_train, df_test])
 
-    calc_base = Agg_SHAP(df_train, var)
+    calc_base = Agg_SHAP(df_train_test, var)
     df, features, ID = calc_base.get_features( num_seq = num_seq, 
                                          ID = None, 
                                          )
