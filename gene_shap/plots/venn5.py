@@ -7,10 +7,12 @@ try:
     from collections.abc import Iterable
 except ImportError:
     from collections import Iterable
+import constants.constants as CONST
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib import colors
 import math
+import os
 
 default_colors = [
     # r, g, b, a
@@ -217,5 +219,10 @@ def venn5(labels, names=['Alpha', 'Beta', 'Gamma', 'Delta', 'Omicron'], elements
 
     leg = ax.legend(names, loc='center left', bbox_to_anchor=(1.0, 0.5), fancybox=True)
     leg.get_frame().set_alpha(0.5)
-
+    
+    directory_path = f"{CONST.VEN_DIR}"
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+        
+    plt.savefig(f'{directory_path}/venn_diagram.png', format='png', dpi=40, bbox_inches='tight')
     return fig, ax
