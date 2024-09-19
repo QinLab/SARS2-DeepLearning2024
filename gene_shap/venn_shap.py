@@ -1,7 +1,7 @@
 import argparse
 import constants.constants as CONST
 from gene_shap.plots.venn5 import venn5, get_labels
-from gene_shap.utils import get_df_var_count, plot_common_positions_with_rank
+from gene_shap.utils import get_var_shap_count, plot_common_positions_with_rank
 import pandas as pd
 
 
@@ -24,11 +24,11 @@ if __name__== '__main__':
     df_delta = pd.read_csv(f'{CONST.SHAP_DIR}/agg_Delta_beeswarm.csv')
     df_omicron = pd.read_csv(f'{CONST.SHAP_DIR}/agg_Omicron_beeswarm.csv')
 
-    alpha_venn = get_df_var_count(df_alpha, df_orfs, num)
-    beta_venn = get_df_var_count(df_beta, df_orfs, num)
-    gamma_venn = get_df_var_count(df_gamma, df_orfs, num)
-    delta_venn = get_df_var_count(df_delta, df_orfs, num)
-    omicron_venn = get_df_var_count(df_omicron, df_orfs, num)
+    alpha_venn = get_var_shap_count(df_alpha, df_orfs, num)
+    beta_venn = get_var_shap_count(df_beta, df_orfs, num)
+    gamma_venn = get_var_shap_count(df_gamma, df_orfs, num)
+    delta_venn = get_var_shap_count(df_delta, df_orfs, num)
+    omicron_venn = get_var_shap_count(df_omicron, df_orfs, num)
 
     alpha_set = set(alpha_venn['Positions'])
     beta_set = set(beta_venn['Positions'])
@@ -39,8 +39,8 @@ if __name__== '__main__':
     all_sets = [alpha_set, beta_set, gamma_set, delta_set, omicron_set]
     labels = get_labels(all_sets, elements=elements, fill=['number', 'logic'])
 
-    #venn Digram
+    #Venn Diagram
     venn5(labels, names=set_names,elements=elements)
 
-    #Bar plot
+    #Bar Plot
     plot_common_positions_with_rank(all_sets, set_names, 'Top SHAP Values')
