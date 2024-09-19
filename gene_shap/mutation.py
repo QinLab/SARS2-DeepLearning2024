@@ -52,10 +52,7 @@ def print_frequent_mutations(positions, ref_bases, mut_bases, frequency, thr, va
     print("____________________________________________\n")    
     print("Mutations in descending order of positions:\n")
 
-    # Create a list of tuples containing mutation data
     mutations = list(zip(positions, ref_bases, mut_bases, frequency))
-
-    # Sort the list of tuples in descending order of position
     sorted_mutations = sorted(mutations, key=lambda x: x[0], reverse=True)
 
     # Print mutations in descending order of position above the threshold
@@ -63,3 +60,5 @@ def print_frequent_mutations(positions, ref_bases, mut_bases, frequency, thr, va
         position, ref_base, mut_base, frequencys = mutation
         if frequencys > thr:
             print(f"Mutation at position {position}: {ref_base} -> {mut_base}, Frequency: {frequencys}")
+    
+    
