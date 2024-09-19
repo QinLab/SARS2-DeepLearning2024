@@ -2,11 +2,12 @@ from gene_shap.agg_shap import Agg_SHAP as aggshap
 from Bio import SeqIO
 import constants.constants as CONST
 import dcor
+import itertools
 from matplotlib import pyplot as plt
 import multiprocessing as mp
 import numpy as np
 import os
-from one_hot import one_hot_encode_label as onehot
+from one_hot.one_hot import one_hot_encode_label as onehot
 import pandas as pd
 import re
 import seaborn as sns
@@ -156,20 +157,17 @@ def get_pos_nuc_summation(df, df_ORFs, column_names, features):
     for col, val in dictionary.items():
         col_num = int(re.search(r'\d+', col).group())
         for index, row in df_ORFs.iterrows():
-            i = 0
+            matching_gene = 'Non_ORF'
             if col_num >= int(row['Start']) and col_num <= int(row['End']):
-                i += 1
                 matching_gene = row['Gene']
-                break
-            if i == 0:
-                matching_gene = 'Non_ORF'
+                break               
 
         for key in CONST.AMINO_ACID:
+            value = "_"
             if col in key:
                 value = CONST.AMINO_ACID[key]
                 break
-            else:
-                value = "_" 
+                 
         new_columns.append(f"{col}, {value} ({matching_gene})")
     df_shap = df_shap.rename(columns=dict(zip(df_shap.columns, new_columns)))
     
@@ -209,4 +207,81 @@ def plot_correlation(df):
         
     name = f"{directory_path}/corrolation_map.png"
     cluster_grid.fig.savefig(name, dpi=100, bbox_inches='tight')
+
+    
+def get_df_var_count(df_agg, df_orfs, num):
+
+    numeric_df = df_agg[:-1].drop(columns=['Accession ID'])
+    column_count = {}
+    column_count_new = {}
+
+    for idx, row in numeric_df.iterrows():
+        top_shap_columns = row.nlargest(num).index
+        for col in top_shap_columns:
+            if col in column_count:
+                column_count[col] += 1
+            else:
+                column_count[col] = 1
+
+    for key, value in list(column_count.items()):
+        for _, row in df_orfs.iterrows():
+            key = int(key)
+            matching_gene = 'Non_ORF'
+            if key >= int(row['Start']) and key <= int(row['End']):
+                matching_gene = row['Gene']
+                break
+
+        value = column_count[str(key)]
+        key_new = f'{key} ({ matching_gene})'
+        column_count_new[key_new] = value
+
+    var_df = pd.DataFrame(list(column_count_new.items()), columns=['Positions', 'Count'])
+    var_df = var_df.sort_values(by='Count', ascending=False)
+    
+    return var_df
+
+def count_common_positions_all_combinations(all_sets, set_names):
+    
+    common_sets = {}
+    combinations_with_counts = []
+
+    for r in range(2, len(all_sets) + 1):
+        for combination in itertools.combinations(enumerate(all_sets), r):
+            indexes, sets = zip(*combination)
+            common_values = set.intersection(*sets)
+            key = ', '.join([set_names[i] for i in indexes])
+            common_sets[key] = (common_values, len(common_values))
+            combinations_with_counts.append((key, len(common_values)))
+
+    for combination, (values, count) in common_sets.items():
+        print(f"Common values between {combination}: {values}, Count: {count}")
+    
+    return combinations_with_counts
+
+
+def plot_common_positions_with_rank(all_sets, set_names, top):
+    combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
+    sns.set(style="whitegrid")
+    plt.figure(figsize=(25, 15))
+    df_combinations = pd.DataFrame(combinations_with_counts, columns=['Combination', 'Count'])
+
+    sns.barplot(x='Count', y='Combination', data=df_combinations, palette='viridis')
+    plt.xlabel(f'Count of Common Positions with {top}', fontsize=24)
+    plt.ylabel('Combinations of VOCs', fontsize=24)
+    plt.title(f'Counts of Common Positions with {top} in Combination of VOCs', fontsize=24)
+
+    plt.xticks(fontsize=24)
+    plt.yticks(fontsize=24)
+
+    for index, value in enumerate(df_combinations['Count']):
+        plt.text(value + 0.1, index, str(value), va='center', fontsize=30, color='black')
+
+    yticks_labels = [f"{label} ({i + 1})" for i, label in enumerate(df_combinations['Combination'])]
+    plt.yticks(ticks=range(len(yticks_labels)), labels=yticks_labels, fontsize=24)
+    
+    directory_path = f"{CONST.VEN_DIR}"
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+        
+    plt.savefig(f'{directory_path}/bar_{top}.png', format='png', dpi=40, bbox_inches='tight')
 
