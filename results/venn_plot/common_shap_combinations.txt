@@ -1,4 +1,4 @@
-Common values between Alpha, Beta: {'21768 (ORF2 (S))', '22283 (ORF2 (S))', '11291 (ORF1ab)', '28111 (ORF8)', '28311 (ORF9 (N))', '28250 (ORF8)', '21614 (ORF2 (S))',
+Common values between Alpha, Beta: {'21768 (ORF2 (S))', '22283 (ORF2 (S))', '11291 (ORF1ab)', '28111 (ORF8)','28311 (ORF9 (N))', '28250 (ORF8)', '21614 (ORF2 (S))',
 '22289 (ORF2 (S))', '22206 (ORF2 (S))', '21974 (ORF2 (S))', '28281 (ORF9 (N))',
 '22286 (ORF2 (S))', '28253 (ORF8)', '21618 (ORF2 (S))', '28461 (ORF9 (N))',
 '11292 (ORF1ab)', '17259 (ORF1ab)', '28271 (Non_ORF)', '21611 (ORF2 (S))',
