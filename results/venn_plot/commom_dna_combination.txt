@@ -1,0 +1,117 @@
+Common values between Alpha, Beta: {'A23403G (ORF2 (S))', 'C241T (Non_ORF)',
+'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 'C3037T (ORF1ab)'}, Count: 5
+
+
+Common values between Alpha, Gamma: {'A23403G (ORF2 (S))',
+'C241T (Non_ORF)', 'G28883C (ORF9 (N))', 'G28881A (ORF9 (N))',
+'G28882A (ORF9 (N))', 'C14408T (ORF1ab)', 'A23063T (ORF2 (S))',
+'C3037T (ORF1ab)'}, Count: 8
+
+
+Common values between Alpha, Delta: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C3037T (ORF1ab)', 'C241T (Non_ORF)'}, Count: 4
+
+
+Common values between Alpha, Omicron: {'A23403G (ORF2 (S))', 
+'C241T (Non_ORF)', 'G28883C (ORF9 (N))', 'G28881A (ORF9 (N))', 
+'G28882A (ORF9 (N))', 'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 
+'C3037T (ORF1ab)', 'C23604A (ORF2 (S))'}, Count: 9
+
+
+Common values between Beta, Gamma: {'A23403G (ORF2 (S))', 'C241T (Non_ORF)',
+'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 'C3037T (ORF1ab)', 
+'G23012A (ORF2 (S))'}, Count: 6
+
+
+Common values between Beta, Delta: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C3037T (ORF1ab)', 'C241T (Non_ORF)'}, Count: 4
+
+
+Common values between Beta, Omicron: {'A23403G (ORF2 (S))', 
+'C241T (Non_ORF)', 'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 
+'C3037T (ORF1ab)', 'G22813T (ORF2 (S))'}, Count: 6
+
+
+Common values between Gamma, Delta: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C3037T (ORF1ab)', 'C241T (Non_ORF)'}, Count: 4
+
+
+Common values between Gamma, Omicron: {'A23403G (ORF2 (S))', 
+'C241T (Non_ORF)', 'G28883C (ORF9 (N))', 'G28881A (ORF9 (N))', 
+'G28882A (ORF9 (N))', 'C23525T (ORF2 (S))', 'C14408T (ORF1ab)', 
+'A23063T (ORF2 (S))', 'C3037T (ORF1ab)'}, Count: 9
+
+
+Common values between Delta, Omicron: {'A23403G (ORF2 (S))', 
+'C241T (Non_ORF)', 'C14408T (ORF1ab)', 'C22995A (ORF2 (S))', 
+'C3037T (ORF1ab)', 'C10029T (ORF1ab)'}, Count: 6
+
+
+Common values between Alpha, Beta, Gamma: {'A23403G (ORF2 (S))', 
+'C241T (Non_ORF)', 'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 
+'C3037T (ORF1ab)'}, Count: 5
+
+
+Common values between Alpha, Beta, Delta: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C241T (Non_ORF)', 'C3037T (ORF1ab)'}, Count: 4
+
+
+Common values between Alpha, Beta, Omicron: {'A23403G (ORF2 (S))', 
+'C241T (Non_ORF)', 'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 
+'C3037T (ORF1ab)'}, Count: 5
+
+
+Common values between Alpha, Gamma, Delta: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C241T (Non_ORF)', 'C3037T (ORF1ab)'}, Count: 4
+
+
+Common values between Alpha, Gamma, Omicron: {'A23403G (ORF2 (S))', 
+'C241T (Non_ORF)', 'G28883C (ORF9 (N))', 'G28881A (ORF9 (N))', 
+'G28882A (ORF9 (N))', 'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 
+'C3037T (ORF1ab)'}, Count: 8
+
+
+Common values between Alpha, Delta, Omicron: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C3037T (ORF1ab)', 'C241T (Non_ORF)'}, Count: 4
+
+
+Common values between Beta, Gamma, Delta: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C241T (Non_ORF)', 'C3037T (ORF1ab)'}, Count: 4
+
+
+Common values between Beta, Gamma, Omicron: {'A23403G (ORF2 (S))', 
+'C241T (Non_ORF)', 'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 
+'C3037T (ORF1ab)'}, Count: 5
+
+
+Common values between Beta, Delta, Omicron: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C3037T (ORF1ab)', 'C241T (Non_ORF)'}, Count: 4
+
+
+Common values between Gamma, Delta, Omicron: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C3037T (ORF1ab)', 'C241T (Non_ORF)'}, Count: 4
+
+
+Common values between Alpha, Beta, Gamma, Delta: {'A23403G (ORF2 (S))',
+'C14408T (ORF1ab)', 'C241T (Non_ORF)', 'C3037T (ORF1ab)'}, Count: 4
+
+
+Common values between Alpha, Beta, Gamma, Omicron: {'A23403G (ORF2 (S))',
+'C241T (Non_ORF)', 'C14408T (ORF1ab)', 'A23063T (ORF2 (S))', 
+'C3037T (ORF1ab)'}, Count: 5
+
+
+Common values between Alpha, Beta, Delta, Omicron: {'A23403G (ORF2 (S))',
+'C14408T (ORF1ab)', 'C241T (Non_ORF)', 'C3037T (ORF1ab)'}, Count: 4
+
+
+Common values between Alpha, Gamma, Delta, Omicron: {'A23403G (ORF2 (S))',
+'C14408T (ORF1ab)', 'C241T (Non_ORF)', 'C3037T (ORF1ab)'}, Count: 4
+
+
+Common values between Beta, Gamma, Delta, Omicron: {'A23403G (ORF2 (S))',
+'C14408T (ORF1ab)', 'C241T (Non_ORF)', 'C3037T (ORF1ab)'}, Count: 4
+
+
+Common values between Alpha, Beta, Gamma, Delta, Omicron: {'A23403G (ORF2 (S))', 
+'C14408T (ORF1ab)', 'C241T (Non_ORF)', 'C3037T (ORF1ab)'}, Count: 4
