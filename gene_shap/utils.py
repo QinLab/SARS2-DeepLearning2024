@@ -241,14 +241,14 @@ def get_var_shap_count(df_agg, df_orfs, num):
     
     return var_df
 
-def get_var_dna_count(df_train_test, var, freq):
+def get_var_dna_count(df_train_test, var, freq, df_orfs):
     
     calc_base = aggshap(df_train_test, var)
     df, features, ID = calc_base.get_features( num_seq = None, 
                                      ID = None, 
                                      )
     
-    _, _, converted_sequence = convert_ref_to_onehot_lowercase
+    _, _, converted_sequence = convert_ref_to_onehot_lowercase()
     positions, ref_bases, mut_bases, frequency, _ = find_most_frequent_mutations(df, converted_sequence)
     
     mutations = list(zip(positions, ref_bases, mut_bases, frequency))
@@ -260,7 +260,6 @@ def get_var_dna_count(df_train_test, var, freq):
         matching_gene = 'Non_ORF'
         for index, row in df_orfs.iterrows():
                 if position >= int(row['Start']) and position <= int(row['End']):
-                    i += 1
                     matching_gene = row['Gene']
                     break
 
