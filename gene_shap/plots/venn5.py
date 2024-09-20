@@ -126,7 +126,7 @@ def get_labels(data, elements=None, fill=["number"]):
     return labels
 
 
-def venn5(labels, names=['Alpha', 'Beta', 'Gamma', 'Delta', 'Omicron'], elements=None, **options):
+def venn5(labels, plot, names=CONST.VOC_WHO, elements=None, **options):
     """
     plots a 5-set Venn diagram
 
@@ -224,5 +224,5 @@ def venn5(labels, names=['Alpha', 'Beta', 'Gamma', 'Delta', 'Omicron'], elements
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
         
-    plt.savefig(f'{directory_path}/venn_diagram.png', format='png', dpi=40, bbox_inches='tight')
+    plt.savefig(f'{directory_path}/venn_diagram_{name}.png', format='png', dpi=40, bbox_inches='tight')
     return fig, ax

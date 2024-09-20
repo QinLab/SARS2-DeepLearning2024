@@ -3,8 +3,8 @@ import matplotlib
 import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy as np
-import sars.constants as CONST
-from sars.shap.mutation import find_mutations
+import constants.constants as CONST
+from gene_shap.mutation import find_mutations
 
     
 def plot__(ax, base, left_edge, height, color):

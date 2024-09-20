@@ -1,4 +1,4 @@
-import sars.constants as CONST
+import constants.constants as CONST
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
@@ -90,5 +90,5 @@ def scatter_plot_var(ID, shap_values, var, as_var):
         os.makedirs(directory_path)
         
     # Save all plots to a single JPEG file
-    plt.savefig(directory_path, format='jpg', bbox_inches='tight')
+    plt.savefig(directory_path, format='jpg', bbox_inches='tight', dpi=100)
     plt.close()
