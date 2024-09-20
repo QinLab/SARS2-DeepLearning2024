@@ -40,7 +40,7 @@ if __name__== '__main__':
     labels = get_labels(all_sets, elements=elements, fill=['number', 'logic'])
 
     #Venn Diagram
-    venn5(labels, names=set_names,elements=elements)
+    venn5(labels, 'SHAP', names=CONST.VOC_WHO, elements=elements)
 
     #Bar Plot
     plot_common_positions_with_rank(all_sets, set_names, 'Top SHAP Values')
