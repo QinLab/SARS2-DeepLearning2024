@@ -1,8 +1,6 @@
 import sys
 import os
-# Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import constants as CONST
+import constants.constants as CONST
 import numpy as np
 import pandas as pd
 from utils_gwas import *
@@ -81,6 +79,3 @@ if __name__ == "__main__":
     # Plot all -log(p-value) regarding genes
     df_snv_ORF_plot = pd.merge(df_snv_ORF, stack_all_variant, on='Positions', how='outer')
     plot_by_genes(df_snv_ORF_plot, "Normalized -log(p-value)")
-
-    # Plot venn diagram
-    plot_venn_digram_shap_pvalue(great_num, df_snv_ORF, df_agg_ORF)
