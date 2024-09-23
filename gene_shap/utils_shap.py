@@ -117,7 +117,6 @@ def calculate_shap_value(model, explainer, base_value, var, df_sequences, ID_sha
     return df, features, shap_values
 
 def get_pos_nuc(df, cs, df_ORFs):
-#     column_names = ['ID', 'Variant_VOC']
     df = get_pos_local_shap(df)
     df_seq = df.iloc[:,2:]
     dictionary = df_seq.to_dict(orient='records')[0]
@@ -208,8 +207,8 @@ def plot_correlation(df):
         
     name = f"{directory_path}/corrolation_map.png"
     cluster_grid.fig.savefig(name, dpi=100, bbox_inches='tight')
-
     
+
 def get_var_shap_count(df_agg, df_orfs, num):
 
     numeric_df = df_agg[:-1].drop(columns=['Accession ID'])
@@ -224,7 +223,7 @@ def get_var_shap_count(df_agg, df_orfs, num):
             else:
                 column_count[col] = 1
 
-    for key, value in list(column_count.items()):
+    for key, value in list(column_count.items())[1:]:
         for _, row in df_orfs.iterrows():
             key = int(key)
             matching_gene = 'Non_ORF'
@@ -289,11 +288,11 @@ def count_common_positions_all_combinations(all_sets, set_names):
     for combination, (values, count) in common_sets.items():
         print(f"Common values between {combination}: {values}, Count: {count}")
     
-    return combinations_with_counts
+    return common_sets, combinations_with_counts
 
 
 def plot_common_positions_with_rank(all_sets, set_names, top):
-    combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
+    _ , combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
     combinations_with_counts.sort(key=lambda x: x[1], reverse=True)
     sns.set(style="whitegrid")
     plt.figure(figsize=(25, 15))
