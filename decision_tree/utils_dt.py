@@ -4,12 +4,16 @@ import joblib
 from matplotlib import pyplot as plt
 import numpy as np
 from one_hot.one_hot import *
+import os
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, classification_report
 import shap
 import tensorflow as tf
 from tqdm import trange
 
+result_dir = CONST.RSLT_DIR
+if not os.path.exists(result_dir):
+    os.makedirs(result_dir)
 
 def get_data(df):
     
@@ -98,7 +102,7 @@ def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
     plt.yticks(fontsize=16)  
 
     plt.title(f'Confusion Matrix for {model}', fontsize=26)
-    plt.savefig(f'{CONST.CNFMTRX_DIR}/confusion_matrix_{model}.png', dpi=100, bbox_inches='tight')
+    plt.savefig(f'{result_dir}/conf_matrix/confusion_matrix_{model}.png', dpi=100, bbox_inches='tight')
 
 
 def plot_metrics(model, y_preds, y_test, palette):
@@ -126,5 +130,5 @@ def plot_metrics(model, y_preds, y_test, palette):
     for i, score in enumerate(scores):
         plt.text(i, score + 0.02, f"{score:.2f}", ha='center', fontsize=26)
         
-    plt.savefig(f'{CONST.MTC_PLT}/metrics_{model}.png', dpi=100, bbox_inches='tight')
+    plt.savefig(f'{result_dir}/metrics_plot/metrics_{model}.png', dpi=100, bbox_inches='tight')
 

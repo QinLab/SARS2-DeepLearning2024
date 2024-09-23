@@ -21,6 +21,9 @@ elif model=='xgb':
 elif model == 'cat':
     model_dt = CONST.MODEL_XGB
     
+force_dir = f"{CONST.RSLT_DIR}/force_plot"
+if not os.path.exists(force_dir):
+    os.makedirs(force_dir)    
     
 if __name__  == '__main__':
     df_initial = pd.read_csv(f'{CONST.FRST_DIR}/first_detected.csv') 
@@ -36,13 +39,9 @@ if __name__  == '__main__':
         filtered_df = choosen_instance.loc[:, (choosen_instance == 1).any()]
         f = shap.force_plot(explainer.expected_value[index_var], summed_array,
                         filtered_df, figsize=(30, 5), show=False)
-        shap.save_html(f"{CONST.FRC_DIR}/force_plot_summation_{var}_{model}.htm", f)
+        shap.save_html(f"{force_dir}/force_plot_summation_{var}_{model}.htm", f)
 
         #without summation over the axis 2
         f = shap.force_plot(explainer.expected_value[index_var], shap_values[index_var],
                         df_shap, figsize=(40, 6), show=False)
-        
-        force_dir = CONST.FRC_DIR
-        if not os.path.exists(force_dir):
-            os.makedirs(force_dir)
         shap.save_html(f"{force_dir}/force_plot_{var}_{model}.htm", f)
