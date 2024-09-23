@@ -303,7 +303,7 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
     for i in range(num_features):
         tick_labels[i].set_color("#999999")
     
-    directory_path = f"{CONST.WTFL_DIR}/{var}"
+    directory_path = f"{CONST.RSLT_DIR}/waterfall_plot/{var}"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
         

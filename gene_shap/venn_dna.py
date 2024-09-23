@@ -1,7 +1,7 @@
 import argparse
 import constants.constants as CONST
 from gene_shap.plots.venn5 import venn5, get_labels
-from gene_shap.utils import get_var_dna_count, plot_common_positions_with_rank
+from gene_shap.utils_shap import get_var_dna_count, plot_common_positions_with_rank
 import pandas as pd
 
 arg_parser = argparse.ArgumentParser(description="Venn Diagram")

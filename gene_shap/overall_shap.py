@@ -1,9 +1,9 @@
 from agg_shap import Agg_SHAP
 import argparse
+import constants.constants as CONST
 import numpy as np
 import pandas as pd
 import os
-import constants.constants as CONST
 import shap
 import tensorflow as tf
 

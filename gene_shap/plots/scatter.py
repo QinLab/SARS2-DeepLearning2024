@@ -84,11 +84,11 @@ def scatter_plot_var(ID, shap_values, var, as_var):
         plt.xlim(start - 1000, end + 1000) # To compare with its neigbours
         plt.tight_layout()
     
-    directory_path = f'{CONST.SCAT_DIR}/{var}/{ID}_{var}_{as_var}_scat.jpg'
+    directory_path = CONST.RSLT_DIR
     
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
         
     # Save all plots to a single JPEG file
-    plt.savefig(directory_path, format='jpg', bbox_inches='tight', dpi=100)
+    plt.savefig(f'{directory_path}/scatter_plot/{ID}_{var}_{as_var}_scat.jpg'', format='jpg', bbox_inches='tight', dpi=100)
     plt.close()

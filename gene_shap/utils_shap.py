@@ -1,7 +1,7 @@
-from gene_shap.agg_shap import Agg_SHAP as aggshap
 from Bio import SeqIO
 import constants.constants as CONST
 import dcor
+from gene_shap.agg_shap import Agg_SHAP as aggshap
 from gene_shap.mutation import find_most_frequent_mutations, print_frequent_mutations
 import itertools
 from matplotlib import pyplot as plt
@@ -176,6 +176,22 @@ def get_pos_nuc_summation(df, df_ORFs, column_names, features):
     return df_sum
 
 
+def get_commonset_who_shap(num):
+    set_names = CONST.VOC_WHO
+    df_orfs = pd.read_csv(CONST.ORf_DIR)
+    
+    all_sets = []
+    for var in set_names:
+        df_var = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{var}_beeswarm.csv')
+        var_venn = get_var_shap_count(df_var, df_orfs, num)
+        var_set = set(var_venn['Positions'])
+        all_sets.append(var_set)
+
+    all_sets = [alpha_set, beta_set, gamma_set, delta_set, omicron_set]
+    
+    return all_sets
+
+
 def compute_distance_nonlinear_correlation_matrix(merged_df):
     """
     Computes the distance correlation matrix for the variants regarding the mean of their shap values
@@ -194,6 +210,7 @@ def compute_distance_nonlinear_correlation_matrix(merged_df):
         df_corr[col] = pd.to_numeric(df_corr[col], errors='coerce', downcast='float')
 
     return df_corr
+
 
 def plot_correlation(df):
     sns.set(font_scale=1.4)

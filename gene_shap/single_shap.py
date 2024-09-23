@@ -1,15 +1,15 @@
 import argparse
+import constants.constants as CONST
 from decision_tree.utils_dt import get_column_names
 import glob
 import numpy as np
 import pandas as pd
-import constants.constants as CONST
-import shap
-from utils import *
-import tensorflow as tf
 from plots.waterfall import waterfall
 from plots.viz import plot_DNA
 from plots.scatter import scatter_plot_var
+import shap
+from utils_shap import *
+import tensorflow as tf
 
 
 # Argument Parsing
@@ -62,7 +62,7 @@ if ID_shapvalue:
             num_cores = mp.cpu_count()  # Get the number of CPU cores
         else:
             num_cores = CONST.NM_CPU
-        filenames = glob.glob("/scr/parisa_shared/group_*.fasta")
+        filenames = glob.glob(f"{CONST.BATCH_DIR}/group_*.fasta")
         args = [(filename, ID_shapvalue) for filename in filenames]
         
         with mp.Pool(processes=num_cores) as pool:

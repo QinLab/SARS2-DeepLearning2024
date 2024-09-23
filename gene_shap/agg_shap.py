@@ -1,7 +1,7 @@
+import constants.constants as CONST
 import numpy as np
 import pandas as pd
-import sars.one_hot.one_hot as OneHot
-import sars.constants as CONST
+import one_hot.one_hot as OneHot
 from tqdm import trange
 
 

@@ -220,9 +220,9 @@ def venn5(labels, plot, names=CONST.VOC_WHO, elements=None, **options):
     leg = ax.legend(names, loc='center left', bbox_to_anchor=(1.0, 0.5), fancybox=True)
     leg.get_frame().set_alpha(0.5)
     
-    directory_path = f"{CONST.VEN_DIR}"
+    directory_path = CONST.RSLT_DIR
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
         
-    plt.savefig(f'{directory_path}/venn_diagram_{name}.png', format='png', dpi=40, bbox_inches='tight')
+    plt.savefig(f'{directory_path}/venn_plot/venn_diagram_{plot}.png', format='png', dpi=40, bbox_inches='tight')
     return fig, ax
