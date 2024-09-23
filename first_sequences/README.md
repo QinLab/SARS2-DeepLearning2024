@@ -5,7 +5,7 @@ Save the original FASTA file you downloaded from GISAID in a path, and specify t
 ## 1. Create Subfiles from original file
 To create sub-FASTA files from the original file, run:
 ```
-python3 group_fasta.py
+python3 ./first_sequences/group_fasta.py
 ```
 The sub-FASTA files will be saved in the following directory:`decision_tree/batched_sequences/group_<#>.fasta`.
 
