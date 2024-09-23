@@ -1,6 +1,6 @@
 import argparse
 import pandas as pd
-import sars.constants as CONST
+import constants.constants as CONST
 
 
 arg_parser = argparse.ArgumentParser()

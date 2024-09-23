@@ -1,15 +1,12 @@
 import argparse
-import sys
-import os
-# Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import constants.constants as CONST
 import pandas as pd
-from utils_dt import *
+import os
+from decision_tree.utils_dt import *
 shap.initjs()
 
 arg_parser = argparse.ArgumentParser(description="SHAP Value Calculation for SARS-CoV-2 Variants in Decision Trees")
-arg_parser.add_argument("-model", "--model", default=None,
+arg_parser.add_argument("-model", "--model",
                         help="Decision tree model for SHAP values (rf, xgb, cat)")
 
 args = arg_parser.parse_args()
@@ -44,4 +41,8 @@ if __name__  == '__main__':
         #without summation over the axis 2
         f = shap.force_plot(explainer.expected_value[index_var], shap_values[index_var],
                         df_shap, figsize=(40, 6), show=False)
-        shap.save_html(f"{CONST.FRC_DIR}/force_plot_{var}.htm", f)
+        
+        force_dir = CONST.FRC_DIR
+        if not os.path.exists(force_dir):
+            os.makedirs(force_dir)
+        shap.save_html(f"{force_dir}/force_plot_{var}.htm", f)

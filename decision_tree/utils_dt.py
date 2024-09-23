@@ -1,9 +1,9 @@
-from matplotlib import pyplot as plt
-import constants as CONST
+import constants.constants as CONST
+from gene_shap.utils_shap import convert_ref_to_onehot_lowercase
 import joblib
+from matplotlib import pyplot as plt
 import numpy as np
-from one_hot import *
-from gene_shap.utils import convert_ref_to_onehot_lowercase
+from one_hot.one_hot import *
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, classification_report
 import shap
@@ -93,9 +93,12 @@ def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
 
     ax.xaxis.set_label_coords(0.5, -0.1)
     ax.yaxis.set_label_coords(-0.1, 0.5)
+    
+    plt.xticks(fontsize=16) 
+    plt.yticks(fontsize=16)  
 
     plt.title(f'Confusion Matrix for {model}', fontsize=26)
-    plt.savefig(f'{CONST.CNFMTRX_DIR}/confusion_matrix_{model}.png', dpi=140, bbox_inches='tight')
+    plt.savefig(f'{CONST.CNFMTRX_DIR}/confusion_matrix_{model}.png', dpi=100, bbox_inches='tight')
 
 
 def plot_metrics(model, y_preds, y_test, palette):
@@ -123,5 +126,5 @@ def plot_metrics(model, y_preds, y_test, palette):
     for i, score in enumerate(scores):
         plt.text(i, score + 0.02, f"{score:.2f}", ha='center', fontsize=26)
         
-    plt.savefig(f'{CONST.MTC_PLT}/metrics_{model}.png', dpi=140, bbox_inches='tight')
+    plt.savefig(f'{CONST.MTC_PLT}/metrics_{model}.png', dpi=100, bbox_inches='tight')
 
