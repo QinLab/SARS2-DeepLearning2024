@@ -35,7 +35,6 @@ best_param_path = f"{CONST.BST_PARAM_DIR}"
 if not os.path.exists(best_param_path):
     os.makedirs(best_param_path)
 
-
 if __name__ == "__main__":
     # ------------------------Random forest------------------------
     n_estimators = [int(x) for x in np.linspace(start = 2, stop = 20, num = 10)]
