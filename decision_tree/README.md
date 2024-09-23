@@ -33,7 +33,7 @@ Confusion matrix and metrics plot will be saved in these directory respectively:
 * `results/conf_matix`
 * `results/metrics_plot`
 
-# 4. Force plot for SHAP values
+## 4. Force plot for SHAP values
 Run the following command:
 ```
 python3 ./decision_tree/shap_dt.py -model <Model_Name>
