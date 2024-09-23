@@ -9,7 +9,7 @@ python3 ./decision_tree/data_dt.py
 ```
 These subsets are saved in the directories specified by `./decision_tree/data/data_dt_train.csv` for training data and `./decision_tree/data/data_dt_test.csv` for test data.
 
-* If you want to select a different number of sequences from each VOCs, you can use the `-num` tag as shown below:
+\*\ If you want to select a different number of sequences from each VOCs, you can use the `-num` tag as shown below:
 ```
 python3 ./decision_tree/data_dt.py -num <Your_Preferred_Number>
 ```
@@ -44,3 +44,4 @@ The `Model_Name` can be chosen from the following options:
 * `xgb` for XGBoost
 * `cat` for CatBoost
 
+Results will be saved in this directory: `results/force_plot/`
