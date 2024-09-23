@@ -1,8 +1,8 @@
-import sys
 import os
-# Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import constants as CONST
+import constants.constants as CONST
+from gene_shap.utils import get_var_shap_count, count_common_positions_all_combinations
+from gene_shap.utils import count_common_positions_all_combinations
+from gwas.utils_gene import *
 import json
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
@@ -11,7 +11,6 @@ import pandas as pd
 from random import uniform
 from scipy.stats import chi2_contingency
 from sklearn.preprocessing import MinMaxScaler
-from utils_gene import *
 
 
 def split_sequence(sequence):
@@ -33,6 +32,53 @@ def calculate_p_value(df, column):
     chi2, p, dof, expected = chi2_contingency(contingency_table)
     return p
 
+
+def get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr):
+
+    pvalue_position_orf = []
+
+    greatest_pvalue_pos = df_snv_ORF[df_snv_ORF['Normalized -log(p-value)'] == thr]
+
+    for _, row_pvalue in greatest_pvalue_pos.iterrows():
+        for _, row in df_orfs.iterrows():
+            key = row_pvalue['Positions']
+            key = int(key)            
+            matching_gene = 'Non_ORF'
+            if key >= int(row['Start']) and key <= int(row['End']):
+                matching_gene = row['Gene']
+                break
+                
+        key_new = f'{key} ({ matching_gene})'
+        pvalue_position_orf.append(key_new)
+
+    var_df = pd.DataFrame(pvalue_position_orf, columns=['Positions'])
+    return var_df
+
+
+def get_commonset_who_pvalue(thr, num):
+    set_names = CONST.VOC_WHO
+    df_orfs = pd.read_csv(CONST.ORf_DIR)
+    df_pvalue = pd.read_csv(CONST.PVLU_DIR)
+    
+    df_pvalue['Positions'] = df_pvalue['Positions'].astype(int)
+    df_pvalue = norm_log_p_values(df_pvalue)
+    df_snv_ORF = map_snp_to_orf(df_pvalue, df_orfs)
+    p_value_pos = get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr=thr)['Positions']
+    
+    all_sets = []
+    for var in set_names:
+        df_var = df_alpha = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{var}_beeswarm.csv')
+        var_venn = get_var_shap_count(df_var, df_orfs, num)
+        var_set = set(var_venn['Positions'])
+        all_sets.append(var_set)
+    
+    common_set, combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
+    
+    set_pvalue = set(p_value_pos)
+    set_common_set = set(common_set['Alpha, Beta, Gamma, Delta, Omicron'][0])
+    
+    return set_pvalue, set_common_set
+    
 
 def norm_log_p_values(df_pvalue):
     """
@@ -120,7 +166,7 @@ def plot_dist_value_across_gene(df, file_name, value):
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
 
-def mean_agg_shap_values():
+def mean_agg_shap_values(heatmap=False):
     """
     Processes SHAP values for VOCs, computes the mean, merges them into a single DataFrame,
     and normalizes the aggregation.
@@ -139,17 +185,20 @@ def mean_agg_shap_values():
             merged_df = variant_df
         else:
             merged_df = merged_df.merge(variant_df, left_index=True, right_index=True)
+            
+    if heatmap:
+        return merged_df
+    else:
+        # Compute the mean aggregation across all variants
+        merged_df['mean-Aggregation'] = merged_df.mean(axis=1)
 
-    # Compute the mean aggregation across all variants
-    merged_df['mean-Aggregation'] = merged_df.mean(axis=1)
+        scaling_SHAP = MinMaxScaler()
+        merged_df['Normalized SHAP value'] = scaling_SHAP.fit_transform(merged_df[['mean-Aggregation']])
 
-    scaling_SHAP = MinMaxScaler()
-    merged_df['Normalized SHAP value'] = scaling_SHAP.fit_transform(merged_df[['mean-Aggregation']])
+        agg_shap_allVariants = merged_df[['Normalized SHAP value']].copy()
+        agg_shap_allVariants['Positions'] = agg_shap_allVariants.index
 
-    agg_shap_allVariants = merged_df[['Normalized SHAP value']].copy()
-    agg_shap_allVariants['Positions'] = agg_shap_allVariants.index
-
-    return agg_shap_allVariants
+        return agg_shap_allVariants
 
 
 def get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants, df_pvalue, df_orfs):
@@ -259,39 +308,4 @@ def plot_by_genes(df, norm):
     ax.text(x=0.12, y=.90, s=" Alpha, Beta, Delta,Gamma,Omicron", transform=fig.transFigure, ha='left', fontsize=14,weight='bold', alpha=.8)
     
     output_path = f'{CONST.GWAS_DIR}/manhattan_{norm}.png'
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
-
-
-def plot_venn_digram_shap_pvalue(num, df_snv_ORF, df_agg_ORF):
-    
-    greatest_pvalue_pos = df_snv_ORF.nlargest(num, 'Normalized -log(p-value)')
-    greatest_SHAPvalue_pos = df_agg_ORF.nlargest(num, 'Normalized SHAP value')
-    greatest_pvalue_pos['Positions'] = greatest_pvalue_pos['Positions'].astype(int)
-    greatest_SHAPvalue_pos['Positions'] = greatest_SHAPvalue_pos['Positions'].astype(int)
-
-    positions_pvalue = list(greatest_pvalue_pos['Positions'])
-    positions_shapvalue = list(greatest_SHAPvalue_pos['Positions'])
-    
-    counter_pvalue = Counter(positions_pvalue)
-    counter_shapvalue = Counter(positions_shapvalue)
-
-    # Compute the intersection
-    common_elements = list((counter_pvalue & counter_shapvalue).elements())
-    print(f"Number of common values: {len(common_values)}")
-    
-    unique_pvalue = set(positions_pvalue)
-    unique_shapvalue = set(positions_shapvalue)
-    
-    plt.figure(figsize=(8, 6))
-    venn = venn2([unique_pvalue, unique_shapvalue], 
-                 set_labels=('P-value Positions', 'SHAP Value Positions'))
-
-    venn.get_label_by_id('10').set_text(f'{len(positions_pvalue) - len(common_elements)}')
-    venn.get_label_by_id('01').set_text(f'{len(positions_shapvalue) - len(common_elements)}')
-    venn.get_label_by_id('11').set_text(f'{len(common_values)}')
-
-    # Set title and display the plot
-    plt.title(f'Number of Common Positions within {num} greatest value in p-value and SHAP value')
-    
-    output_path = f'{CONST.GWAS_DIR}/venn.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
