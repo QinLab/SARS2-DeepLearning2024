@@ -1,12 +1,12 @@
-import os
 import constants.constants as CONST
 from gene_shap.utils import get_var_shap_count, count_common_positions_all_combinations
-from gene_shap.utils import count_common_positions_all_combinations
-from gwas.utils_gene import *
+from gene_shap.utils_shap import count_common_positions_all_combinations, get_commonset_who_shap
+from gwas_shap.utils_gene import *
 import json
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
 import numpy as np
+import os
 import pandas as pd
 from random import uniform
 from scipy.stats import chi2_contingency
@@ -56,7 +56,7 @@ def get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr):
 
 
 def get_commonset_who_pvalue(thr, num):
-    set_names = CONST.VOC_WHO
+
     df_orfs = pd.read_csv(CONST.ORf_DIR)
     df_pvalue = pd.read_csv(CONST.PVLU_DIR)
     
@@ -65,12 +65,7 @@ def get_commonset_who_pvalue(thr, num):
     df_snv_ORF = map_snp_to_orf(df_pvalue, df_orfs)
     p_value_pos = get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr=thr)['Positions']
     
-    all_sets = []
-    for var in set_names:
-        df_var = df_alpha = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{var}_beeswarm.csv')
-        var_venn = get_var_shap_count(df_var, df_orfs, num)
-        var_set = set(var_venn['Positions'])
-        all_sets.append(var_set)
+    all_sets = get_commonset_who_shap(num)
     
     common_set, combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
     
