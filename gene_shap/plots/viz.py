@@ -4,7 +4,7 @@ import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy as np
 import constants.constants as CONST
-from gene_shap.mutation import find_mutations
+from msa.utils_mutations import find_mutations
 
     
 def plot__(ax, base, left_edge, height, color):

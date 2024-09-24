@@ -157,8 +157,10 @@ def plot_dist_value_across_gene(df, file_name, value):
         percentage = percentage_dict[orf]
         plt.text(bar.get_x() + bar.get_width() / 2, height, f'{percentage:.2f}%', ha='center', va='bottom')
     
-    output_path = f'{CONST.GWAS_DIR}/{file_name}.png'
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    directory_path = f"{CONST.RSLT_DIR}/gwas_shap_plot"
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+    plt.savefig(f'{directory_path}/{file_name}.png, dpi=300, bbox_inches='tight')
 
 
 def mean_agg_shap_values(heatmap=False):

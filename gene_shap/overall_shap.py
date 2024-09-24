@@ -1,6 +1,6 @@
-from agg_shap import Agg_SHAP
 import argparse
 import constants.constants as CONST
+from gene_shap.utils_agg_shap import Agg_SHAP
 import numpy as np
 import pandas as pd
 import os
@@ -42,7 +42,12 @@ if __name__ == '__main__':
     
     explainer = shap.DeepExplainer(model, features_base)
     base_value = np.array(explainer.expected_value)
-    np.savetxt(f'{CONST.SHAP_DIR}/base_{var}.csv', base_value, delimiter=',')
+    
+    directory_path = CONST.SHAP_DIR
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+        
+    np.savetxt(f'{directory_path}/base_{var}.csv', base_value, delimiter=',')
     
     'RAM needs to be clean'
     del df_train, df_test, model, df_concatenated, features_base
@@ -65,7 +70,7 @@ if __name__ == '__main__':
 
     df.loc[f'Total_SHAP_{var}'] = df.sum(numeric_only=True)
     
-    directory_path = f'{CONST.SHAP_DIR}/{var}_glob.csv'
+    directory_path = f'{directory_path}/{var}_glob.csv'
     
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)

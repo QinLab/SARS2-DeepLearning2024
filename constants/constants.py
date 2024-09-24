@@ -1,5 +1,3 @@
-import os
-
 LEN_SIZE = 7
 NM_CPU = None
 SEQ_SIZE = 29891
@@ -65,32 +63,22 @@ AMINO_ACID = {'C913T':'S216S', 'C1059T':'T85I', 'A2480G':'I559V', 'C2558T':'P585
               'C28253T':'F120F', ('G28280C', 'A28281T', 'T28282A'):'D3L', 'C28311T':'P13L','A28461G':'D63G', 'G28881T':'R203M',
               'G29402T':'D377Y', 'C28977T':'S235F' }
 
-HOME_DIR = os.path.expanduser("~")
 BALANC_DIR = "./training/data/who_dataset.csv"
 BATCH_DIR = "./first_sequences/batched_sequences"
 BST_PARAM_DIR = "./decision_tree/best_params"
-CNFMTRX_DIR = "./sars/results/conf_matrix"
-CORL_DIR = f"{HOME_DIR}/sars/results/corrolation_map"
-FRC_DIR = f"{HOME_DIR}/sars/results/force_plot"
-FRST_DIR = f"{HOME_DIR}/sars/first_sequences/first_seq"
-GWAS_DIR= f"{HOME_DIR}/sars/results/gwas_shap_plot"
-HST_DIR = f"{HOME_DIR}/sars/results/history.pickle"
-HTMP_DIR = f"{HOME_DIR}/sars/results/heatmap"
-LABEL_DIR ="/scr/qinlab/GISAID/variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv"
-MODEL_CTB = f"{HOME_DIR}/sars/decision_tree/model/ctb.joblib"
-MODEL_RF = f"{HOME_DIR}/sars/decision_tree/model/random_forest.joblib"
-MODEL_SAVE = f"{HOME_DIR}/sars/model/model_cnn.hdf5"
-MODEL_XGB = f"{HOME_DIR}/sars/decision_tree/model/xgb.joblib"
-MTC_PLT = f"{HOME_DIR}/sars/results/metrics_plot"
-ORf_DIR = f"{HOME_DIR}/sars/orf_csv/ORF.csv"
-RSLT_DIR = f"{HOME_DIR}/sars/results"
-SCAT_DIR = f"{HOME_DIR}/sars/results/scatter_plot"
-SEQ_DIR = "/scr/qinlab/GISAID/alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa"
-SHAP_DIR = f"{HOME_DIR}/sars/gene_shap/agg_shap_value"
-TRAIN_DIR = f"{HOME_DIR}/sars/training/data/train/who_train.csv"
+FRST_DIR = "./first_sequences/first_seq"
+HST_DIR = "./results/history.pickle"
+LABEL_DIR ="./GISAID/variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv"
+MODEL_CTB = "./decision_tree/model/ctb.joblib"
+MODEL_RF = "./decision_tree/model/random_forest.joblib"
+MODEL_SAVE = "./model/model_cnn.hdf5"
+MODEL_XGB = "./decision_tree/model/xgb.joblib"
+ORf_DIR = "./orf_csv/ORF.csv"
+PVLU_DIR = "./gwas/p_value_csv/p_values_chi_square.csv"
+RSLT_DIR = "./results"
+SEQ_DIR = "./GISAID/alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa"
+SHAP_DIR = "./gene_shap/agg_shap_value"
+TRAIN_DIR = "./training/data/train/who_train.csv"
 TRAIN_DT = "./decision_tree/data/data_dt_train.csv"
-TEST_DIR = f"{HOME_DIR}/sars/training/data/test/who_test.csv"
+TEST_DIR = "./training/data/test/who_test.csv"
 TEST_DT = "./decision_tree/data/data_dt_test.csv"
-VEN_DIR = "./results/venn_plot"
-VIZ_DIR = f"{HOME_DIR}/sars/results/viz_plot"
-WTFL_DIR = f"{HOME_DIR}/sars/results/waterfall_plot"

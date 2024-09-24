@@ -21,7 +21,7 @@ if __name__ == '__main__':
     set_pvalue, set_common_set = get_commonset_who_pvalue(thr=thr, num=num)
     venn2(subsets = (set_pvalue, set_common_set), set_labels = ('GWAS', 'WHO'))
     
-    directory_path = f"{CONST.VEN_DIR}"
+    directory_path = f"{CONST.RSLT_DIR}/venn_plot"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
     plt.savefig(f'{directory_path}/venn_GWAS_VOCs.png', format='png', dpi=140, bbox_inches='tight')

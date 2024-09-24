@@ -17,7 +17,9 @@ df_train = pd.read_csv(CONST.TRAIN_DT)
 df_test = pd.read_csv(CONST.TEST_DT)
 
 # Prepare data
+print("Loading training dataset...")
 X_train, y_train = get_data(df_train)
+print("Loading testing dataset...")
 X_test, y_test = get_data(df_test)
 
 param_dir = CONST.BST_PARAM_DIR

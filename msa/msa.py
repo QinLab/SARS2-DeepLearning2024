@@ -1,7 +1,7 @@
 import argparse
 import constants.constants as CONST
 from gene_shap.agg_shap import Agg_SHAP
-from gene_shap.mutation import find_most_frequent_mutations, print_frequent_mutations
+from msa.utils_mutations import find_most_frequent_mutations, print_frequent_mutations
 from gene_shap.utils_shap import convert_ref_to_onehot_lowercase
 import pandas as pd
 

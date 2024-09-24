@@ -1,7 +1,7 @@
 # Decision Trees
 
 ## 1. Preparing data
-Because of limitations on memory we cannot use the entire training and test datasets for the 2-layer CNN, then we selected 2,000 sequences from each VOC, splitting 20% of them for testing. 
+Because of limitations on memory, for decision trees we cannot use the entire training and test datasets we used for the 2-layer CNN, then we selected 2,000 sequences from each VOC, splitting 20% of them for testing. 
 
 To create these datasets, first create a folder named `data`, then run:
 ```
@@ -14,11 +14,9 @@ These subsets are saved in the directories specified by `./decision_tree/data/da
 ```
 python3 ./decision_tree/data_dt.py -num <Your_Preferred_Number>
 ```
-* After finishing the execution you are expected to see:
-`Training and testing dataset for decision trees were saved successfully!`
 
 ## 2. Fine Tunning
-We separate a specified number of sequences from the created dataset, ensuring it is smaller than the training dataset. By default, 500 sequences from each VOC are selected. To do the finetunning with same default run: 
+We separate a specified number of sequences from the created dataset, ensuring it is smaller than the training dataset. By default, 500 sequences from each VOC are selected. To do the fine tunning with same default, run: 
 ```
 python3 ./decision_tree/fine_tunning.py 
 ```
@@ -27,13 +25,6 @@ python3 ./decision_tree/fine_tunning.py
 ```
 python3 ./decision_tree/fine_tunning.py -num <Your_Preferred_Number>
 ```
-* What you expected to see after execuation:
-
-```
-Loading training dataset...
-1%-100%|██████████| <0-num*5>/num*5
-```
-
 the result will be saved in the directory: `./decision_tree/best_params`
 
 ## 3. Training

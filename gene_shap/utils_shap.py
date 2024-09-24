@@ -1,8 +1,8 @@
 from Bio import SeqIO
 import constants.constants as CONST
 import dcor
-from gene_shap.agg_shap import Agg_SHAP as aggshap
-from gene_shap.mutation import find_most_frequent_mutations, print_frequent_mutations
+from gene_shap.utils_agg_shap import Agg_SHAP as aggshap
+from msa.utils_mutations import find_most_frequent_mutations, print_frequent_mutations
 import itertools
 from matplotlib import pyplot as plt
 import multiprocessing as mp
@@ -186,8 +186,19 @@ def get_commonset_who_shap(num):
         var_venn = get_var_shap_count(df_var, df_orfs, num)
         var_set = set(var_venn['Positions'])
         all_sets.append(var_set)
+    
+    return all_sets
 
-    all_sets = [alpha_set, beta_set, gamma_set, delta_set, omicron_set]
+
+def get_commonset_who_dna(df, num):
+    set_names = CONST.VOC_WHO
+    df_orfs = pd.read_csv(CONST.ORf_DIR)
+    
+    all_sets = []
+    for var in set_names:
+        var_venn = get_var_dna_count(df, var, freq, df_orfs)
+        var_set = set(var_venn['Positions'])
+        all_sets.append(var_set)
     
     return all_sets
 
@@ -218,7 +229,7 @@ def plot_correlation(df):
     cluster_grid = sns.clustermap(df, cmap=cmap,vmin=0, vmax=1, center=0,
                 square=True, linewidths=.5, cbar_kws={"shrink": .5}, annot=True)
     
-    directory_path = f"{CONST.CORL_DIR}"
+    directory_path = f"{CONST.RSLT_DIR}/corrolation_map"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
         
@@ -256,6 +267,7 @@ def get_var_shap_count(df_agg, df_orfs, num):
     var_df = var_df.sort_values(by='Count', ascending=False)
     
     return var_df
+
 
 def get_var_dna_count(df_train_test, var, freq, df_orfs):
     
@@ -329,7 +341,7 @@ def plot_common_positions_with_rank(all_sets, set_names, top):
     yticks_labels = [f"{label} ({i + 1})" for i, label in enumerate(df_combinations['Combination'])]
     plt.yticks(ticks=range(len(yticks_labels)), labels=yticks_labels, fontsize=24)
     
-    directory_path = f"{CONST.VEN_DIR}"
+    directory_path = f"{CONST.RSLT_DIR}/venn_plot"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
         
