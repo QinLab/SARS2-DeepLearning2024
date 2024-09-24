@@ -44,4 +44,5 @@ export PYTHONPATH="<ROOT_DIRECTORY>:$PYTHONPATH"
 - Non-trainable params: 0
 
 **Notes**
+
 \* All commands should be run from the root of the repository.
