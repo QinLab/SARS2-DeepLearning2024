@@ -40,28 +40,26 @@ def get_model():
 
 def plotter(history, pickle_file=False):
     
-    if pickle_file==True:
+    if pickle_file:
         with open(history, 'rb') as file:
             history = pickle.load(file)
     else:
-        history = history
+        history = history.history
         
     plt.figure()
-    plt.plot(history.history['accuracy'])
-    plt.plot(history.history['val_accuracy'])
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'validation'])
+    plt.plot(history['accuracy'])
+    plt.plot(history['val_accuracy'])
+    plt.title('Model Accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Validation'])
     plt.savefig(f"{CONST.RSLT_DIR}/Training_validation_accuracy.jpg")
-    plt.show()
 
     plt.figure()
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title('model loss')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'validation'])
+    plt.plot(history['loss'])
+    plt.plot(history['val_loss'])
+    plt.title('Model Loss')
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Validation'])
     plt.savefig(f"{CONST.RSLT_DIR}/Training_validation_loss.jpg")
-    plt.show()

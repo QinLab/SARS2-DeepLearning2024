@@ -5,6 +5,7 @@ import ast
 from Bio import SeqIO
 import constants.constants as CONST
 import numpy as np
+import os
 import pandas as pd
 import pickle
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -34,11 +35,11 @@ if __name__ == '__main__':
 
     '''
     Number of sequences in each variant:
-    Delta      35491
-    Omicron    34852
-    Gamma      33956
-    Alpha      33934
-    Beta       32897
+    Delta      32000
+    Omicron    32000
+    Gamma      32000
+    Alpha      32000
+    Beta       32000
     '''
 
     #preparing data
@@ -78,12 +79,13 @@ if __name__ == '__main__':
                         callbacks=[callbacks])
     
     if pickle_file == True:
-        history_file = CONST.BST_PARAM_DIR
-        if not os.path.exists(history_file):
-            os.makedirs(history_file)
+        history_path = CONST.RSLT_DIR
+        if not os.path.exists(history_path):
+            os.makedirs(history_path)
+        history_file = os.path.join(history_path, 'history.pickle')
         with open(history_file, 'wb') as file:
             pickle.dump(history.history, file)
     else:
-        history = history
+        history_file = history
 
-    plotter(history, pickle_file)
+    plotter(history_file, pickle_file)

@@ -126,7 +126,11 @@ if __name__ == "__main__":
     '''
     
     labels_path = CONST.LABEL_DIR
-    sequences_path = CONST.TRAIN_DIR
+    sequences_path = CONST.SEQ_DIR
 
     clade_to_sequences_map = map_clade_to_sequence_function(labels_path, sequences_path) 
-    clade_to_sequences_map.to_csv(CONST.BALANC_DIR)
+    
+    balance_data_dir = CONST.BALANC_DIR
+    if not os.path.exists(balance_data_dir):
+        os.makedirs(balance_data_dir, exist_ok=True)
+    clade_to_sequences_map.to_csv(balance_data_dir)

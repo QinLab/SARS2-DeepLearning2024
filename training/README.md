@@ -19,7 +19,7 @@ export PYTHONPATH="<ROOT_DIRECTORY>:$PYTHONPATH"
 6. To make train and test dataset: Run 
 ```python3 ./training/split_data_train_val_test.py```
 7. To train the model: Run 
-```python3 ./trainig/main.py 64 15```
+```python3 ./training/main.py 64 15```
 -batch_size = 64, epoches=15.
  
 
