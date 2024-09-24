@@ -31,7 +31,7 @@ python3 ./decision_tree/fine_tunning.py -num <Your_Preferred_Number>
 
 ```
 Loading training dataset...
-1%-100%|██████████| <0-num\*5>/num\*5
+1%-100%|██████████| <0-num*5>/num*5
 ```
 
 the result will be saved in the directory: `./decision_tree/best_params`
