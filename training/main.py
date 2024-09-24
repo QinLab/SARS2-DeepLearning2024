@@ -3,14 +3,15 @@ from __future__ import division
 import argparse
 import ast
 from Bio import SeqIO
-import sars.constants as CONST
-from data_generator import DataGenerator
-from model import get_model, plotter
+import constants.constants as CONST
 import numpy as np
 import pandas as pd
 import pickle
-from split_data_train_val_test import split_data_val
 from tensorflow.keras.callbacks import ModelCheckpoint
+from training.data_generator import DataGenerator
+from training.model import get_model, plotter
+from training.split_data_train_val_test import split_data_val
+
 
 
 arg_parser = argparse.ArgumentParser()
@@ -77,7 +78,9 @@ if __name__ == '__main__':
                         callbacks=[callbacks])
     
     if pickle_file == True:
-        history = CONST.HST_DIR
+        history_file = CONST.BST_PARAM_DIR
+        if not os.path.exists(history_file):
+            os.makedirs(history_file)
         with open(history_file, 'wb') as file:
             pickle.dump(history.history, file)
     else:

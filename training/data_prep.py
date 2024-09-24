@@ -1,9 +1,9 @@
 from __future__ import division
 
-import sars.constants as CONST
+from Bio import SeqIO
+import constants.constants as CONST
 import gc
 import pandas as pd
-from Bio import SeqIO
 from sklearn import preprocessing
 from sklearn.compose import ColumnTransformer
 from sklearn.metrics import confusion_matrix, accuracy_score
