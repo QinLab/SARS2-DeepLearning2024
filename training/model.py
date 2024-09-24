@@ -1,4 +1,4 @@
-import sars.constants as CONST
+import constants.constants as CONST
 import matplotlib.pyplot as plt 
 import os
 import pickle
