@@ -9,7 +9,7 @@ python3 <root_repository>/first_sequences/group_fasta.py
 ```
 We saved 10,000 sequences in each sub-FASTA files.
 
-The sub-FASTA files will be saved in the following directory:`<root_repository>/decision_tree/batched_sequences/group_<#>.fasta`.
+The sub-FASTA files will be saved in the following directory:`./batched_sequences/group_<#>.fasta`.
 
 \* if you want to change the number of sequences saved in each FASTA file, run:
 ```
@@ -21,10 +21,10 @@ Run:
 ```
 python3 <root_repository>/first_sequences/save_first_sequences.py
 ```
-The initial sequences from each VOC will be saved in the directory:`<root_repository>/decision_tree/first_seq/<Variant_name>.fasta`.
+The initial sequences from each VOC will be saved in the directory:`./first_seq/<Variant_name>.fasta`.
 
 **3. Label Initial Sequences**
-To label the initial sequences and save all of them in a single file named `<root_repository>/first_seq/first_detected.csv`, run:
+To label the initial sequences and save all of them in a single file named `./first_seq/first_detected.csv`, run:
 ```
 python3 <root_repository>/first_sequences/label_first_sequences.py
 ```
