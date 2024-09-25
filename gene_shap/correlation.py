@@ -1,5 +1,5 @@
-from gwas_shap.utils_gwas import mean_agg_shap_values
 from gene_shap.utils_shap import compute_distance_nonlinear_correlation_matrix, plot_correlation
+from gwas.utils_gwas import mean_agg_shap_values
 
 
 if __name__ == '__main__':

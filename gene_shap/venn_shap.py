@@ -1,7 +1,7 @@
 import argparse
 import constants.constants as CONST
 from gene_shap.plots.venn5 import venn5, get_labels
-from gene_shap.utils_shap import plot_common_positions_with_rank
+from gene_shap.utils_shap import get_commonset_who_shap, plot_common_positions_with_rank
 
 
 arg_parser = argparse.ArgumentParser(description="Venn Diagram among VOCs")

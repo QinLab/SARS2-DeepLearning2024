@@ -53,7 +53,7 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
     
     if summation == True:
         values = np.sum(shap_values,axis=-1)
-    elif summation == False:
+    else :
         values = shap_values.reshape(shap_values.shape[1]*shap_values.shape[2])
         
 

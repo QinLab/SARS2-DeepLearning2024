@@ -50,7 +50,6 @@ df_sequences = pd.DataFrame()
 
 # SHAP value for initial sequences of each variant
 if initial:
-    df_initial = pd.read_csv(f'{CONST.FRST_DIR}/first_detected.csv')
     df_sequences = first_sequences[first_sequences['Variant_VOC'] == var]
     ID = df_sequences["ID"].values[0]
     
@@ -106,14 +105,13 @@ if __name__ == "__main__":
     #---------------------------shap value for initial sequences of each variant---------------------------
     index = CONST.VOC_WHO.index(var)
     df, features, shap_values = calculate_shap_value(model, explainer, base_value, var, df_sequences, ID_shapvalue, index)
-#     print("feature:", type(features))
 
     #---------------------------Get the positions as column names of each shap value---------------------------
     df_ORFs = pd.read_csv(CONST.ORf_DIR)
     df_var = get_pos_nuc(df_sequences, ref_seq, df_ORFs)
 
 
-    #---------------------------Draw plots for local SHAP value of a sequence---------------------------
+    #---------------------------Draw plots for SHAP value of a sequence---------------------------
     # waterfall plot
     for i in variants:
         print(f'If the {var} sequence gets classified as {i}:')

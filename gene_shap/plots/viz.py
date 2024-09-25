@@ -1,12 +1,13 @@
 from collections import Counter
+import constants.constants as CONST
 import matplotlib
 import matplotlib.patches
 import matplotlib.pyplot as plt
-import numpy as np
-import constants.constants as CONST
 from msa.utils_mutations import find_mutations
+import numpy as np
+import os
 
-    
+   
 def plot__(ax, base, left_edge, height, color):
     ax.add_patch(matplotlib.patches.Rectangle(xy=[left_edge, base], 
                                               width=1.5*height, 
@@ -340,12 +341,12 @@ class plot_DNA():
             plt.tight_layout()
             plt.subplots_adjust(bottom=0.3)
             
-            directory_path =f'{CONST.RSLT_DIR}/viz_plot/{self.var}/{self.Id}_{self.var}_as_{self.as_var}_{self.indices}.jpg'
+            directory_path =f'{CONST.RSLT_DIR}/viz_plot/{self.var}'
     
             if not os.path.exists(directory_path):
                 os.makedirs(directory_path)
                 
-            plt.savefig(directory_path, dpi=40)
+            plt.savefig(f'{directory_path}/{self.Id}_{self.var}_as_{self.as_var}_{self.indices}.jpg', dpi=80)
             plt.close(fig)
 
                 

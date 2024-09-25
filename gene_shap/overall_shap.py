@@ -16,18 +16,17 @@ var = args.variant
 features_tot = []
 var_who = CONST.VOC_WHO
 
+# Using df_train for producing base value
+df_train = pd.read_csv(f'{CONST.TRAIN_DIR}')
+df_test = pd.read_csv(f'{CONST.TEST_DIR}')
+
+# All of sequences, both train and test sequences, within each variant.
+df_concatenated = pd.concat([df_train, df_test], ignore_index=True)
+non_dup_test = df_concatenated.drop_duplicates(subset=['ID'], keep=False)
+
 if __name__ == '__main__':
-    'Data'
-    model = tf.keras.models.load_model(f'{CONST.MODEL_SAVE}')
-    
-    # Using df_train for producing base value
-    df_train = pd.read_csv(f'{CONST.TRAIN_DIR}')
-    df_test = pd.read_csv(f'{CONST.TEST_DIR}')
-    
-    # All of sequences, both train and test sequences, within each variant.
-    df_concatenated = pd.concat([df_train, df_test], ignore_index=True)
-    non_dup_test = df_concatenated.drop_duplicates(subset=['ID'], keep=False)
-    
+
+    model = tf.keras.models.load_model(f'{CONST.MODEL_SAVE}')   
     'Calculating base value'
     # Producing base value for calculating of SHAP value for all variants
     for i in range(len(var_who)):
@@ -70,9 +69,7 @@ if __name__ == '__main__':
 
     df.loc[f'Total_SHAP_{var}'] = df.sum(numeric_only=True)
     
-    directory_path = f'{directory_path}/{var}_glob.csv'
-    
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
         
-    df.to_csv(directory_path, index=False)
+    df.to_csv(f'{directory_path}/agg_{var}_beeswarm.csv', index=False)
