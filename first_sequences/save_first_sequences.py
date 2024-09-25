@@ -1,17 +1,16 @@
 from Bio import SeqIO
 import glob
-import sars.constants as CONST
+import constants.constants as CONST
 import datetime
-import pandas as pd
 import multiprocessing as mp
 from multiprocessing import current_process, Value
-import sys
 import os
-from tqdm.autonotebook import tqdm
 import time
 
 dir_save = CONST.FRST_DIR
-
+if not os.path.exists(dir_save):
+    os.makedirs(dir_save)
+    
 def save_seq(sequence, filename):
     with open(filename, "w") as handle:
           write_seq = SeqIO.write(sequence, handle, "fasta")
@@ -25,27 +24,27 @@ def read_seq(file_path):
         id_seq = sequence.id.split('|')
         
         if id_seq[0]=='EPI_ISL_601443':
-            filename = f"{dir_save}/alpha_test.fasta"
+            filename = f"{dir_save}/alpha.fasta"
             save_seq(sequence, filename)
             print(f"{id_seq[0]} is found")
 
         if id_seq[0]=='EPI_ISL_712073':            
-            filename = f"{dir_save}/beta_test.fasta"
+            filename = f"{dir_save}/beta.fasta"
             save_seq(sequence, filename)
             print(f"{id_seq[0]} is found")
 
         if id_seq[0]=='EPI_ISL_2095177':
-            filename = f"{dir_save}/gamma_test.fasta"
+            filename = f"{dir_save}/gamma.fasta"
             save_seq(sequence, filename)
             print(f"{id_seq[0]} is found")
 
         if id_seq[0]=='EPI_ISL_3148365':
-            filename = f"{dir_save}/delta_test.fasta"
+            filename = f"{dir_save}/delta.fasta"
             save_seq(sequence, filename)
             print(f"{id_seq[0]} is found")
 
         if id_seq[0]=='EPI_ISL_6640916':
-            filename = f"{dir_save}/omicron_test.fasta"
+            filename = f"{dir_save}/omicron.fasta"
             save_seq(sequence, filename)
             print(f"{id_seq[0]} is found")
 

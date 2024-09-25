@@ -1,8 +1,8 @@
 from Bio import SeqIO
 import glob
 import pandas as pd
-import sars.constants as CONST
-from sars.training.data_prep import read_labels
+import constants.constants as CONST
+from training.data_prep import read_labels
 
 
 if __name__ == "__main__":

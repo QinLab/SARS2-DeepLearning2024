@@ -1,10 +1,12 @@
 import argparse
 from Bio import SeqIO
+import constants.constants as CONST
 import os
-import sars.constants as CONST
+
 
 arg_parser = argparse.ArgumentParser(description="Split a large FASTA file into smaller batches.")
-arg_parser.add_argument("-b", "--batch_size", type=int, help="Batch size for splitting the large FASTA file into sub FASTA files")
+arg_parser.add_argument("-b", "--batch_size", type=int, default=10000,
+                        help="Batch size for splitting the large FASTA file into sub FASTA files")
 args = arg_parser.parse_args()
 batch_size = args.batch_size
 
@@ -29,18 +31,21 @@ def batch_iterator(iterator, batch_size):
             batch = []
 
 
-
+batch_path = CONST.BATCH_DIR
+if not os.path.exists(batch_path):
+    os.makedirs(batch_path)
+    
 record_iter = SeqIO.parse(open(CONST.SEQ_DIR), "fasta")
 for i, batch in enumerate(batch_iterator(record_iter, batch_size)):
-    filename = f"{CONST.BATCH_DIR}/group_{i + 1}.fasta"
-    print(f"Creating file: {filename}")
+    filename = f"{batch_path}/group_{i + 1}.fasta"
+#     print(f"Creating file: {filename}")
     with open(filename, "w") as handle:
         count = SeqIO.write(batch, handle, "fasta")
         
     print("Wrote %i records to %s" % (count, filename))
     # Check if the file now exists
-    if os.path.exists(filename):
-        print(f"File {filename} successfully created.")
-    else:
-        print(f"Failed to create file {filename}.")
-    break
+#     if os.path.exists(filename):
+#         print(f"File {filename} successfully created.")
+#     else:
+#         print(f"Failed to create file {filename}.")
+#     break
