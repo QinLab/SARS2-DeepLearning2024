@@ -3,11 +3,8 @@ from __future__ import division
 from Bio import SeqIO
 import constants.constants as CONST
 import gc
+import os
 import pandas as pd
-from sklearn import preprocessing
-from sklearn.compose import ColumnTransformer
-from sklearn.metrics import confusion_matrix, accuracy_score
-from sklearn.preprocessing import OneHotEncoder
 from tqdm.autonotebook import tqdm
 
 
@@ -43,16 +40,12 @@ def read_labels(path, desired_var):
     label_who = pd.read_csv(path, sep='\t', usecols=['Accession ID', 'Variant'], dtype={'Variant': str})
 
     label_who = label_who.dropna(subset=['Variant'])
-
     desired_var_pattern = '|'.join(desired_var)  # create a pattern like 'var1|var2|var3|...'
     label_who['Variant_VOC'] = label_who['Variant'].str.extract('('+ desired_var_pattern + ')', expand=False)
-
     label_who = label_who.dropna(subset=['Variant_VOC'])
-
     label_who = label_who.rename(columns={'Accession ID': 'ID'})
     
-    print("unbalanced\n", label_who['Variant_VOC'].value_counts())
-    
+    print("unbalanced\n", label_who['Variant_VOC'].value_counts())    
     print("length of labels: ", len(label_who))
 
     return label_who
@@ -89,8 +82,7 @@ def map_clade_to_sequence_function(labels_path, sequences_path):
     label_who = read_labels(labels_path, variants_who)
     id_label_map = balanced_data(label_who)
     id_seq_ds = read_sequences(sequences_path, id_label_map)
-    
-    
+        
     merged_df = pd.merge(id_seq_ds, id_label_map, on='ID')
     
     # Clean up memory
