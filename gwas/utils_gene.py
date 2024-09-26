@@ -2,7 +2,7 @@ from Bio.Seq import Seq
 import re
 from collections import Counter
 import constants as CONST
-from gene_shap.utils import convert_ref_to_onehot_lowercase
+from gene_shap.utils_shap import convert_ref_to_onehot_lowercase
 
 
 ref_seq, ref_seq_oneHot, converted_sequence = convert_ref_to_onehot_lowercase()

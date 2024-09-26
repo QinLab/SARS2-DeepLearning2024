@@ -1,13 +1,13 @@
 import constants.constants as CONST
+from gwas.utils_gwas import split_sequence, replace_invalid_chars, calculate_p_value
 import numpy as np
 import os
 import pandas as pd
 from scipy.stats import chi2_contingency
-from gwas.utils_gwas import split_sequence, replace_invalid_chars, calculate_p_value
 
 
-df_train = pd.read_csv(CONST.TRAIN_DT)
-df_test = pd.read_csv(CONST.TEST_DT)
+df_train = pd.read_csv(CONST.TRAIN_DIR)
+df_test = pd.read_csv(CONST.TEST_DIR)
 df_concatenated = pd.concat([df_train, df_test], ignore_index=True)
 df = df_concatenated[["sequence", "Variant_VOC"]]
 del df_concatenated
@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     p_values_df = pd.DataFrame(p_values.items(), columns=['Positions', 'P-Value'])
 
-    directory_path = f"{CONST.PVLU_DIR}"
+    directory_path = CONST.PVLU_DIR
     if not os.path.exists(directory_path):
-        os.makedirs(directory_path, , exist_ok=True)
-    p_values_df.to_csv(directory_path, index=False)
+        os.makedirs(directory_path, exist_ok=True)
+    p_values_df.to_csv(f'{directory_path}/p_values_chi_square_test.csv', index=False)

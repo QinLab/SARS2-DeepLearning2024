@@ -1,7 +1,6 @@
 import constants.constants as CONST
-from gene_shap.utils import get_var_shap_count, count_common_positions_all_combinations
-from gene_shap.utils_shap import count_common_positions_all_combinations, get_commonset_who_shap
-from gwas_shap.utils_gene import *
+from gene_shap.utils_shap import get_var_shap_count, count_common_positions_all_combinations, get_commonset_who_shap
+from gwas.utils_gene import *
 import json
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
@@ -37,7 +36,7 @@ def get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr):
 
     pvalue_position_orf = []
 
-    greatest_pvalue_pos = df_snv_ORF[df_snv_ORF['Normalized -log(p-value)'] == thr]
+    greatest_pvalue_pos = df_snv_ORF[df_snv_ORF['Normalized -log(p-value)'] >= thr]
 
     for _, row_pvalue in greatest_pvalue_pos.iterrows():
         for _, row in df_orfs.iterrows():
@@ -55,24 +54,25 @@ def get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr):
     return var_df
 
 
-def get_commonset_who_pvalue(thr, num):
+def get_commonset_who_pvalue(thr, num, agg):
 
     df_orfs = pd.read_csv(CONST.ORf_DIR)
-    df_pvalue = pd.read_csv(CONST.PVLU_DIR)
+    df_pvalue = pd.read_csv(CONST.PVLU_DIR2)
+    set_names = CONST.VOC_WHO
     
     df_pvalue['Positions'] = df_pvalue['Positions'].astype(int)
     df_pvalue = norm_log_p_values(df_pvalue)
     df_snv_ORF = map_snp_to_orf(df_pvalue, df_orfs)
     p_value_pos = get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr=thr)['Positions']
     
-    all_sets = get_commonset_who_shap(num)
+    all_sets, agg = get_commonset_who_shap(num, agg)
     
     common_set, combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
     
     set_pvalue = set(p_value_pos)
     set_common_set = set(common_set['Alpha, Beta, Gamma, Delta, Omicron'][0])
     
-    return set_pvalue, set_common_set
+    return set_pvalue, set_common_set, agg
     
 
 def norm_log_p_values(df_pvalue):
@@ -160,7 +160,7 @@ def plot_dist_value_across_gene(df, file_name, value):
     directory_path = f"{CONST.RSLT_DIR}/gwas_shap_plot"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
-    plt.savefig(f'{directory_path}/{file_name}.png, dpi=300, bbox_inches='tight')
+    plt.savefig(f'{directory_path}/{file_name}.png', dpi=300, bbox_inches='tight')
 
 
 def mean_agg_shap_values(heatmap=False):
@@ -171,7 +171,7 @@ def mean_agg_shap_values(heatmap=False):
     merged_df = pd.DataFrame()
     variants = CONST.VOC_WHO
     for variant in variants:
-        df = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{variant}_beeswarm.csv')
+        df = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{variant}_beeswarm_test.csv')
         
         # Compute the mean, excluding the last row (aggregation of all shap values) and column (VOCs name)
         df_mean = df.iloc[:-1, :-1].mean()
@@ -304,5 +304,5 @@ def plot_by_genes(df, norm):
     ax.text(x=0.12, y=.93, s=f"Scatter plot of {norm} within", transform=fig.transFigure, ha='left', fontsize=14, weight='bold', alpha=.8)
     ax.text(x=0.12, y=.90, s=" Alpha, Beta, Delta,Gamma,Omicron", transform=fig.transFigure, ha='left', fontsize=14,weight='bold', alpha=.8)
     
-    output_path = f'{CONST.GWAS_DIR}/manhattan_{norm}.png'
+    output_path = f'{CONST.GWAS_DIR}/manhattan_{norm}_test.png'
     plt.savefig(output_path, dpi=300, bbox_inches='tight')

@@ -6,7 +6,6 @@ import pandas as pd
 from utils_gwas import *
 
 
-
 if __name__ == "__main__":
     #-----------------Analyze p-value-----------------
     df_pvalue = pd.read_csv('./p_value_csv/p_values_chi_square.csv')
