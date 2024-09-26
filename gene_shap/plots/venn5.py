@@ -126,7 +126,7 @@ def get_labels(data, elements=None, fill=["number"]):
     return labels
 
 
-def venn5(labels, plot, names=CONST.VOC_WHO, elements=None, **options):
+def venn5(labels, plot, agg, names=CONST.VOC_WHO, elements=None , **options):
     """
     plots a 5-set Venn diagram
 
@@ -223,6 +223,9 @@ def venn5(labels, plot, names=CONST.VOC_WHO, elements=None, **options):
     directory_path = f'{CONST.RSLT_DIR}/venn_plot'
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
-        
-    plt.savefig(f'{directory_path}/venn_diagram_{plot}.png', format='png', dpi=100, bbox_inches='tight')
+    if agg:
+        name = 'all'
+    else:
+        name = 'individual'
+    plt.savefig(f'{directory_path}/venn_diagram_{plot}_{name}.png', format='png', dpi=100, bbox_inches='tight')
     return fig, ax

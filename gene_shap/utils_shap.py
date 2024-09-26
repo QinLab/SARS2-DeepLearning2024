@@ -1,14 +1,14 @@
 from Bio import SeqIO
-import constants.constants as CONST
+import constants as CONST
 import dcor
 from gene_shap.utils_agg_shap import Agg_SHAP as aggshap
-from msa.utils_mutations import find_most_frequent_mutations, print_frequent_mutations
 import itertools
+from msa.utils_mutations import find_most_frequent_mutations, print_frequent_mutations
 from matplotlib import pyplot as plt
 import multiprocessing as mp
 import numpy as np
 import os
-from one_hot.one_hot import one_hot_encode_label as onehot
+from one_hot import one_hot_encode_label as onehot
 import pandas as pd
 import re
 import seaborn as sns
@@ -116,6 +116,7 @@ def calculate_shap_value(model, explainer, base_value, var, df_sequences, ID_sha
     
     return df, features, shap_values
 
+
 def get_pos_nuc(df, cs, df_ORFs):
     df = get_pos_local_shap(df)
     df_seq = df.iloc[:,2:]
@@ -176,18 +177,18 @@ def get_pos_nuc_summation(df, df_ORFs, column_names, features):
     return df_sum
 
 
-def get_commonset_who_shap(num):
+def get_commonset_who_shap(num, agg=True):
     set_names = CONST.VOC_WHO
     df_orfs = pd.read_csv(CONST.ORf_DIR)
     
     all_sets = []
     for var in set_names:
-        df_var = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{var}_beeswarm.csv')
-        var_venn = get_var_shap_count(df_var, df_orfs, num)
+        df_var = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{var}_beeswarm_test.csv')
+        var_venn, agg = get_var_shap_count(df_var, df_orfs, num, agg)
         var_set = set(var_venn['Positions'])
         all_sets.append(var_set)
     
-    return all_sets
+    return all_sets, agg
 
 
 def get_commonset_who_dna(df, num):
@@ -237,21 +238,28 @@ def plot_correlation(df):
     cluster_grid.fig.savefig(name, dpi=100, bbox_inches='tight')
     
 
-def get_var_shap_count(df_agg, df_orfs, num):
+def get_var_shap_count(df_agg, df_orfs, num, agg_all_seq_in_single_var=True):
 
     numeric_df = df_agg[:-1].drop(columns=['Accession ID'])
-    column_count = {}
-    column_count_new = {}
+    column_countshap = {}
+    column_countshap_new = {}
+    if agg_all_seq_in_single_var:
+        column_sums = numeric_df.sum()
+        great_sum_shap = column_sums.nlargest(num)
+        positions = great_sum_shap.index
+        column_countshap = dict(zip(positions, great_sum_shap))
+    else:   
+        for idx, row in numeric_df.iterrows():
+            top_shap_columns = row.nlargest(num).index
+            for col in top_shap_columns:
+                if col in column_countshap:
+                    column_countshap[col] += 1
+                else:
+                    column_countshap[col] = 1
+                    
+        column_countshap = dict(sorted(column_countshap.items(), key=lambda item: item[1], reverse=True)[:num])
 
-    for idx, row in numeric_df.iterrows():
-        top_shap_columns = row.nlargest(num).index
-        for col in top_shap_columns:
-            if col in column_count:
-                column_count[col] += 1
-            else:
-                column_count[col] = 1
-
-    for key, value in list(column_count.items())[1:]:
+    for key, value in list(column_countshap.items())[1:]:
         for _, row in df_orfs.iterrows():
             key = int(key)
             matching_gene = 'Non_ORF'
@@ -259,14 +267,14 @@ def get_var_shap_count(df_agg, df_orfs, num):
                 matching_gene = row['Gene']
                 break
 
-        value = column_count[str(key)]
+        value = column_countshap[str(key)]
         key_new = f'{key} ({ matching_gene})'
-        column_count_new[key_new] = value
+        column_countshap_new[key_new] = value
 
-    var_df = pd.DataFrame(list(column_count_new.items()), columns=['Positions', 'Count'])
-    var_df = var_df.sort_values(by='Count', ascending=False)
+    var_df = pd.DataFrame(list(column_countshap_new.items()), columns=['Positions', 'Count/SHAP'])
+    var_df = var_df.sort_values(by='Count/SHAP', ascending=False)
     
-    return var_df
+    return var_df, agg_all_seq_in_single_var
 
 
 def get_var_dna_count(df_train_test, var, freq, df_orfs):
@@ -320,7 +328,7 @@ def count_common_positions_all_combinations(all_sets, set_names):
     return common_sets, combinations_with_counts
 
 
-def plot_common_positions_with_rank(all_sets, set_names, top):
+def plot_common_positions_with_rank(all_sets, set_names, top, agg):
     _ , combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
     combinations_with_counts.sort(key=lambda x: x[1], reverse=True)
     sns.set(style="whitegrid")
@@ -344,5 +352,9 @@ def plot_common_positions_with_rank(all_sets, set_names, top):
     directory_path = f"{CONST.RSLT_DIR}/venn_plot"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
+    if agg:
+        name = 'all'
+    else:
+        name = 'individual'
         
-    plt.savefig(f'{directory_path}/bar_{top}.png', format='png', dpi=40, bbox_inches='tight')
+    plt.savefig(f'{directory_path}/bar_{top}_{name}.png', format='png', dpi=40, bbox_inches='tight')

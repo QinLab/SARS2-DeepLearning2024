@@ -1,4 +1,4 @@
-import constants.constants as CONST
+import constants as CONST
 import numpy as np
 import pandas as pd
 import one_hot.one_hot as OneHot
