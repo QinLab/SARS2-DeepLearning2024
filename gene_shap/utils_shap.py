@@ -183,7 +183,7 @@ def get_commonset_who_shap(num, agg=True):
     
     all_sets = []
     for var in set_names:
-        df_var = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{var}_beeswarm_test.csv')
+        df_var = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{var}_beeswarm.csv')
         var_venn, agg = get_var_shap_count(df_var, df_orfs, num, agg)
         var_set = set(var_venn['Positions'])
         all_sets.append(var_set)
@@ -259,7 +259,7 @@ def get_var_shap_count(df_agg, df_orfs, num, agg_all_seq_in_single_var=True):
                     
         column_countshap = dict(sorted(column_countshap.items(), key=lambda item: item[1], reverse=True)[:num])
 
-    for key, value in list(column_countshap.items())[1:]:
+    for key, value in list(column_countshap.items()):
         for _, row in df_orfs.iterrows():
             key = int(key)
             matching_gene = 'Non_ORF'
