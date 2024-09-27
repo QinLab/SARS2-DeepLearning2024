@@ -13,7 +13,7 @@ args = arg_parser.parse_args()
 num = args.num_mut
 agg = args.agg_shap_high
 
-elements = ['A', 'B', 'D', 'G', 'O']
+elements = ['A', 'B', 'G', 'D', 'O']
 set_names = CONST.VOC_WHO
 
 
@@ -22,7 +22,7 @@ if __name__== '__main__':
     labels = get_labels(all_sets, elements=elements, fill=['number', 'logic'])
 
     #Venn Diagram
-    venn5(labels, 'SHAP', agg,names=CONST.VOC_WHO, elements=elements)
+    venn5(labels, f'SHAP{num}', agg,names=CONST.VOC_WHO, elements=elements)
 
     #Bar Plot
-    plot_common_positions_with_rank(all_sets, set_names, 'Top SHAP Values', agg)
+    plot_common_positions_with_rank(all_sets, set_names, f'Top SHAP Values {num}', agg)
