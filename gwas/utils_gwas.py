@@ -160,7 +160,7 @@ def plot_dist_value_across_gene(df, file_name, value):
     directory_path = f"{CONST.RSLT_DIR}/gwas_shap_plot"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
-    plt.savefig(f'{directory_path}/{file_name}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{directory_path}/{file_name}.png', dpi=140, bbox_inches='tight')
 
 
 def mean_agg_shap_values(heatmap=False):
@@ -171,7 +171,7 @@ def mean_agg_shap_values(heatmap=False):
     merged_df = pd.DataFrame()
     variants = CONST.VOC_WHO
     for variant in variants:
-        df = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{variant}_beeswarm_test.csv')
+        df = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{variant}_beeswarm.csv')
         
         # Compute the mean, excluding the last row (aggregation of all shap values) and column (VOCs name)
         df_mean = df.iloc[:-1, :-1].mean()
@@ -220,7 +220,7 @@ def get_aminoacide_pvalue_shap(mutation_data, variant_name, agg_shap_allVariants
 
 def match_gwas_shap(agg_shap_allVariants, df_pvalue, df_orf):
     
-    with open('mutations.json', 'r') as json_file:
+    with open(CONST.MUT_DIR, 'r') as json_file:
         mutations_data = json.load(json_file)
 
     variants = {
@@ -302,7 +302,9 @@ def plot_by_genes(df, norm):
     if norm == "Normalized SHAP value":
         norm = "Normalized aggregation of SHAP value"
     ax.text(x=0.12, y=.93, s=f"Scatter plot of {norm} within", transform=fig.transFigure, ha='left', fontsize=14, weight='bold', alpha=.8)
-    ax.text(x=0.12, y=.90, s=" Alpha, Beta, Delta,Gamma,Omicron", transform=fig.transFigure, ha='left', fontsize=14,weight='bold', alpha=.8)
+    ax.text(x=0.12, y=.90, s=" Alpha, Beta, Delta, Gamma, Omicron", transform=fig.transFigure, ha='left', fontsize=14,weight='bold', alpha=.8)
     
-    output_path = f'{CONST.GWAS_DIR}/manhattan_{norm}_test.png'
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    directory_path = f"{CONST.RSLT_DIR}/gwas_shap_plot"
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+    plt.savefig(f'{directory_path}/manhattan_{norm}_test.png', dpi=140, bbox_inches='tight')
