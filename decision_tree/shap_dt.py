@@ -39,9 +39,9 @@ if __name__  == '__main__':
         filtered_df = choosen_instance.loc[:, (choosen_instance == 1).any()]
         f = shap.force_plot(explainer.expected_value[index_var], summed_array,
                         filtered_df, figsize=(30, 5), show=False)
-        shap.save_html(f"{force_dir}/force_plot_summation_{var}_{model}.htm", f)
+        shap.save_html(f"{force_dir}/force_plot_summation_{var}_{model}.html", f)
 
         #without summation over the axis 2
         f = shap.force_plot(explainer.expected_value[index_var], shap_values[index_var],
                         df_shap, figsize=(40, 6), show=False)
-        shap.save_html(f"{force_dir}/force_plot_{var}_{model}.htm", f)
+        shap.save_html(f"{force_dir}/force_plot_{var}_{model}.html", f)
