@@ -1,7 +1,7 @@
 import argparse
 import constants.constants as CONST
 from gene_shap.plots.venn5 import venn5, get_labels
-from gene_shap.utils_shap import plot_common_positions_with_rank
+from gene_shap.utils_shap import get_commonset_who_dna, plot_common_positions_with_rank
 import pandas as pd
 
 arg_parser = argparse.ArgumentParser(description="Venn Diagram")
@@ -25,8 +25,8 @@ if __name__ == '__main__':
     labels = get_labels(all_sets, elements=elements, fill=['number', 'logic'])
     
     #Venn Diagram
-    venn5(labels, 'DNA', names=CONST.VOC_WHO, elements=elements)
+    venn5(labels, 'DNA', agg=None, names=CONST.VOC_WHO, elements=elements)
     
     #Bar Plot
-    plot_common_positions_with_rank(all_sets, set_names, 'Most_Frequent_Mutations')
+    plot_common_positions_with_rank(all_sets, set_names, f'Most_Frequent_Mutations_{freq}', agg=None)
     

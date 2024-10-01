@@ -1,7 +1,7 @@
 import argparse
 import constants.constants as CONST
 from gene_shap.utils_agg_shap import Agg_SHAP
-from msa.utils_mutations import find_most_frequent_mutations, print_frequent_mutations
+from msa_gene.utils_mutations import find_most_frequent_mutations, print_frequent_mutations
 from gene_shap.utils_shap import convert_ref_to_onehot_lowercase
 import pandas as pd
 
@@ -29,7 +29,7 @@ if __name__== "__main__":
     df_train_test = pd.concat([df_train, df_test])
 
     calc_base = Agg_SHAP(df_train_test, var)
-    df, features, ID = calc_base.get_features( num_seq = num_seq, 
+    df, features, ID = calc_base.get_features(num_seq = num_seq, 
                                          ID = None, 
                                          )
 
