@@ -265,7 +265,6 @@ def get_var_shap_count(df_agg, df_orfs, thr=None, num_sum=None, perc=None, agg_a
                 num = num_sum
             elif perc:
                 top_shap_columns = row.nlargest(int((perc/100)*len(rows.columns))).index
-                print("top_shap_columns:", top_shap_columns)
                 num = int((perc/100)*len(rows.columns))
             elif thr:
                 top_shap_columns = row.loc[:, row.iloc[0] > thr]
