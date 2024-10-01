@@ -3,6 +3,7 @@ from collections import Counter
 from gene_shap.utils_shap import get_var_shap_count, count_common_positions_all_combinations, get_commonset_who_shap
 from gwas.utils_gene import *
 import json
+import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
 import numpy as np
@@ -36,6 +37,7 @@ def calculate_p_value(df, column):
 def get_great_pvalue_position_orf(df_snv_ORF, df_orfs, num=None, thr=None, perc=None):
 
     pvalue_position_orf = []
+    df_snv_ORF = df_snv_ORF[df_snv_ORF["ORF"] != "ORF1a"]
     df_snv_ORF =df_snv_ORF.drop_duplicates(subset='Positions', keep='first')
     count_greatest_pvalue = (df_snv_ORF['Normalized -log(p-value)'] == 1).sum()
     
@@ -112,8 +114,43 @@ def get_commonset_who_pvalue(agg, common_all_var=None, num=None, thr=None, perc=
         set_common_set = {value for value, count in most_common}
     
     return set_pvalue, set_common_set, agg, name_plot
-    
 
+
+def plot_pie_chart(dataset, universal_orfs, save_dir, chart_title, plot_label, data_type):
+    
+    def autopct_format(pct):
+        return f'{pct:.1f}%'
+    
+    orf_names = [item.split('(')[1].strip(')') for item in dataset]
+    orf_counts = Counter(orf_names)
+    
+    orf_counts_full = {orf: orf_counts.get(orf, 0) for orf in universal_orfs}
+
+#     unique_colors = list(mcolors.TABLEAU_COLORS.values())[:len(universal_orfs)] 
+    unique_colors = ['cornflowerblue', 'tomato', 'limegreen', 'yellow', 'mediumorchid', 'saddlebrown', 'violet', 'grey', 'khaki', 'aquamarine', 'peru', 'black']
+
+    plt.figure(figsize=(12, 12))
+    wedges, texts, autotexts = plt.pie(
+        orf_counts_full.values(), 
+        colors=unique_colors,  # Assign unique colors
+        autopct=autopct_format,  # Custom percentage format
+        startangle=140, 
+        textprops=dict(color="w")
+    )
+    
+    for autotext in autotexts:
+        autotext.set_fontsize(14)
+        
+    plt.legend(wedges, universal_orfs, title="ORFs", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+
+    plt.title(f'Distribution of ORFs: {data_type}')
+    plt.axis('equal')
+
+    file_path = f'{save_dir}/pie_{data_type}_{len(dataset)}_{chart_title}_{plot_label}.png'
+    plt.savefig(file_path, format='png', dpi=100, bbox_inches='tight')
+    plt.close()
+
+    
 def norm_log_p_values(df_pvalue):
     """
     Processes the p-values in the DataFrame to compute the -log(p) values, handle infinities, and normalize them.
