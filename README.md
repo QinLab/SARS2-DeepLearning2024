@@ -20,6 +20,10 @@ source myenv/bin/activate
 ```
 pip3 install -r requirements.txt
 ```
-4. Every files has its own `README.md` file and you can run them using file `slurm.sh` by uncomment assigning the information of you own cluster and uncommnet line code according to what you want run
+4. If you want to run on cluster use `slurm.sh`:
+    1. Update the SLURM directives (e.g., #SBATCH options) to match the specifications of your cluster. 
+    2. Activate your virtual environment: ```source activate myenv```
+    3. Uncomment the scripts you want to execute: For example, to run the Venn SHAP calculation, you would leave this line uncommented: ```python3 ./gene_shap/venn_shap.py -num 1500 -agg```
+    4. Submit the job: ```sbatch slurm.sh```
 
 
