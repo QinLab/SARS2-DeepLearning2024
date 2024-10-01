@@ -11,7 +11,7 @@ arg_parser.add_argument("-freq", "--frequency", type=int,
 args = arg_parser.parse_args()
 freq = args.frequency
 
-elements = ['A', 'B', 'D', 'G', 'O']
+elements = ['A', 'B', 'G', 'D', 'O']
 set_names = CONST.VOC_WHO
 
 df_orfs = pd.read_csv(CONST.ORf_DIR)
