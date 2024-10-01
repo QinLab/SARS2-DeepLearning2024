@@ -322,7 +322,8 @@ def get_var_dna_count(df_train_test, var, freq, df_orfs):
         data.append({
             'Mutations': f'{aa} ({matching_gene})',
             'Frequency': frequencys
-        })
+        }
+        )
 
     df = pd.DataFrame(data)
     df_var = df[df["Frequency"]>=freq].sort_values(by="Frequency", ascending=False)
