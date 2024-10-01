@@ -25,5 +25,7 @@ pip3 install -r requirements.txt
     2. Activate your virtual environment: ```source activate myenv```
     3. Uncomment the scripts you want to execute: For example, to run the Venn SHAP calculation, you would leave this line uncommented: ```python3 ./gene_shap/venn_shap.py -num 1500 -agg```
     4. Submit the job: ```sbatch slurm.sh```
-
-
+    **Notes:** Output Files: The script will create an output file in the `./outs/` directory
+5. If you want to run without cluster:
+    1. Activate the environment with: ```source myenv/bin/activate```
+    2. Run the desired Python script from root of repository, for example: ```python3 ./gene_shap/venn_shap.py -num 1500 -agg```
