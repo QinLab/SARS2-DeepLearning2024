@@ -36,5 +36,7 @@ pip3 install -r requirements.txt
 3. Analysis SHAP value for two-layer CNN model: `./gene_shap/`
 4. Compare SHAP value with GWAS: `./gwas/`
 5. Train decision tree models and produce their SHAP values: `./decision_tree/`
+
 ** Optional: Find MSA within each variant: `./msa_gene/`
+
 **Note:** All results will be saved in `./results/`
