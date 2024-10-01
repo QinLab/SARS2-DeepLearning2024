@@ -1,4 +1,6 @@
-# Steps for training
+# Train model
+
+## Steps for training
 1. Download `alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa` for having sequences and `variant_surveillance_tsv_2022_06_16/variant_surveillance.tsv` for having labels of sequences from [GISAID](https://gisaid.org/).
 2. Save data in these directories:
     - `<root_repository>/GISAID/alignment-and-proteins/msa_2022-06-16/2022-06-16_unmasked.fa`
@@ -23,7 +25,7 @@ export PYTHONPATH="<ROOT_DIRECTORY>:$PYTHONPATH"
 -batch_size = 64, epoches=15.
  
 
-# Summary of our model
+## Summary of our model
 
 
 | Layer (type)                |Output Shape            |Param  |   
@@ -42,3 +44,11 @@ export PYTHONPATH="<ROOT_DIRECTORY>:$PYTHONPATH"
 - Total params: 4,975,287
 - Trainable params: 4,975,287
 - Non-trainable params: 0
+
+## Results
+* Accuracy in training and validation dataset
+
+![Accuracy](/results/Training_validation_accuracy.jpg)
+
+* Loss in training and validation dataset
+![Loss](/results/Training_validation_loss.jpg)
