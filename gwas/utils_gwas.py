@@ -1,4 +1,5 @@
 import constants.constants as CONST
+from collections import Counter
 from gene_shap.utils_shap import get_var_shap_count, count_common_positions_all_combinations, get_commonset_who_shap
 from gwas.utils_gene import *
 import json
@@ -32,11 +33,26 @@ def calculate_p_value(df, column):
     return p
 
 
-def get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr):
+def get_great_pvalue_position_orf(df_snv_ORF, df_orfs, num=None, thr=None, perc=None):
 
     pvalue_position_orf = []
-
-    greatest_pvalue_pos = df_snv_ORF[df_snv_ORF['Normalized -log(p-value)'] >= thr]
+    df_snv_ORF =df_snv_ORF.drop_duplicates(subset='Positions', keep='first')
+    count_greatest_pvalue = (df_snv_ORF['Normalized -log(p-value)'] == 1).sum()
+    
+    if perc:
+        greatest_pvalue_pos = df_snv_ORF.nlargest(int((perc/100)*len(df_snv_ORF)), 'Normalized -log(p-value)')
+        info_pvalue = f"Top {perc}% value in pvalue"
+    elif thr:
+        greatest_pvalue_pos = df_snv_ORF[df_snv_ORF['Normalized -log(p-value)'] >= thr]
+        info_pvalue = f"pvalues with values higher than {thr}"
+    elif num:
+        if num < count_greatest_pvalue:
+            num = count_greatest_pvalue
+        greatest_pvalue_pos = df_snv_ORF.sort_values(by='Normalized -log(p-value)', ascending=False).iloc[:num, :]
+        info_pvalue = f"Top {num} pvalues"        
+    else:          
+        greatest_pvalue_pos = df_snv_ORF[df_snv_ORF['Normalized -log(p-value)'] == 1]
+        info_pvalue = f"{count_greatest_pvalue} normalized(-log(p-value)) has value 1"
 
     for _, row_pvalue in greatest_pvalue_pos.iterrows():
         for _, row in df_orfs.iterrows():
@@ -51,11 +67,22 @@ def get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr):
         pvalue_position_orf.append(key_new)
 
     var_df = pd.DataFrame(pvalue_position_orf, columns=['Positions'])
-    return var_df
+    return var_df, count_greatest_pvalue
 
 
-def get_commonset_who_pvalue(thr, num, agg):
-
+def get_commonset_who_pvalue(agg, common_all_var=None, num=None, thr=None, perc=None):
+    
+    if num:
+        name_plot= f"num_{num}"
+        num_pos = num
+    elif thr:
+        name_plot= f"thr_{thr}"
+    elif perc:
+        name_plot= f"perc_{perc}"
+        num_pos = int((perc/100) * CONST.SEQ_SIZE)
+    else:
+        name_plot = "default_plot"
+        
     df_orfs = pd.read_csv(CONST.ORf_DIR)
     df_pvalue = pd.read_csv(CONST.PVLU_DIR2)
     set_names = CONST.VOC_WHO
@@ -63,16 +90,28 @@ def get_commonset_who_pvalue(thr, num, agg):
     df_pvalue['Positions'] = df_pvalue['Positions'].astype(int)
     df_pvalue = norm_log_p_values(df_pvalue)
     df_snv_ORF = map_snp_to_orf(df_pvalue, df_orfs)
-    p_value_pos = get_great_pvalue_position_orf(df_snv_ORF, df_orfs, thr=thr)['Positions']
+    p_value_pos, count_greatest_pvalue = get_great_pvalue_position_orf(df_snv_ORF, df_orfs, num=num, thr=thr, perc=perc)
+    p_value_pos = p_value_pos['Positions']
     
-    all_sets, agg = get_commonset_who_shap(num, agg)
+    if num==None and thr==None and perc==None: # when we do not define any criteria
+        num = count_greatest_pvalue
+        
+    all_sets, agg = get_commonset_who_shap(thr, num, perc, agg)
     
-    common_set, combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
+    common_set, all_values, combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
     
     set_pvalue = set(p_value_pos)
-    set_common_set = set(common_set['Alpha, Beta, Gamma, Delta, Omicron'][0])
+    if common_all_var or thr:
+        name_plot = f"{name_plot}_common"
+        set_common_set = set(common_set['Alpha, Beta, Gamma, Delta, Omicron'][0])
+
+    else:
+        flattened_values = [val for sublist in all_values for val in sublist]
+        counter = Counter(flattened_values)
+        most_common = counter.most_common(num_pos)
+        set_common_set = {value for value, count in most_common}
     
-    return set_pvalue, set_common_set, agg
+    return set_pvalue, set_common_set, agg, name_plot
     
 
 def norm_log_p_values(df_pvalue):

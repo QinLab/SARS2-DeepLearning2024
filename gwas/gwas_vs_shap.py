@@ -76,11 +76,11 @@ if __name__ == "__main__":
         info_shap = f"Top {num} normalized aggregated SHAP values" 
 
     else:   
-        count_greatest_pvalue = (df_agg_ORF['Normalized SHAP value'] == 1).sum()
+        count_greatest_shapvalue = (df_agg_ORF['Normalized SHAP value'] == 1).sum()
         greatest_pvalue_pos = df_agg_ORF[df_agg_ORF['Normalized SHAP value'] == 1]
         great_num = max(count_greatest_shapvalue, count_greatest_pvalue)
         greatest_SHAP_value_pos = df_agg_ORF.nlargest(great_num, 'Normalized SHAP value')
-        info_shap = f"{count_greatest_pvalue} normalized aggregated SHAP values has value 1"
+        info_shap = f"{count_greatest_shapvalue} normalized aggregated SHAP values has value 1"
         
     orf_percentage_shap = greatest_SHAP_value_pos['ORF'].value_counts(normalize=True) * 100
     print(f'{info_shap}: {orf_percentage_shap}')
