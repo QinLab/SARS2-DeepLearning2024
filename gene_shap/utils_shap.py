@@ -3,7 +3,7 @@ import constants as CONST
 import dcor
 from gene_shap.utils_agg_shap import Agg_SHAP as aggshap
 import itertools
-from msa.utils_mutations import find_most_frequent_mutations, print_frequent_mutations
+from msa_gene.utils_mutations import find_most_frequent_mutations, print_frequent_mutations
 from matplotlib import pyplot as plt
 import multiprocessing as mp
 import numpy as np
@@ -191,14 +191,14 @@ def get_commonset_who_shap(thr, num, perc, agg):
     return all_sets, agg
 
 
-def get_commonset_who_dna(df, num):
+def get_commonset_who_dna(df, freq):
     set_names = CONST.VOC_WHO
     df_orfs = pd.read_csv(CONST.ORf_DIR)
     
     all_sets = []
     for var in set_names:
         var_venn = get_var_dna_count(df, var, freq, df_orfs)
-        var_set = set(var_venn['Positions'])
+        var_set = set(var_venn['Mutations'])
         all_sets.append(var_set)
     
     return all_sets
@@ -320,12 +320,12 @@ def get_var_dna_count(df_train_test, var, freq, df_orfs):
                     break
 
         data.append({
-            'mutations': f'{aa} ({matching_gene})',
-            'frequency': frequencys
+            'Mutations': f'{aa} ({matching_gene})',
+            'Frequency': frequencys
         })
 
     df = pd.DataFrame(data)
-    df_var = df[df["frequency"]>=freq].sort_values(by="frequency", ascending=False)
+    df_var = df[df["Frequency"]>=freq].sort_values(by="Frequency", ascending=False)
     return df_var
 
 
@@ -375,9 +375,12 @@ def plot_common_positions_with_rank(all_sets, set_names, top, agg):
     directory_path = f"{CONST.RSLT_DIR}/venn_plot"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
-    if agg:
+        
+    if agg==True:
         name = 'all'
-    else:
+    elif agg==False:
         name = 'individual'
+    else:
+        name = ''
         
     plt.savefig(f'{directory_path}/bar_{top}_{name}.png', format='png', dpi=40, bbox_inches='tight')

@@ -223,9 +223,13 @@ def venn5(labels, plot, agg, names=CONST.VOC_WHO, elements=None , **options):
     directory_path = f'{CONST.RSLT_DIR}/venn_plot'
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
-    if agg:
+        
+    if agg==True:
         name = 'all'
-    else:
+    elif agg==False:
         name = 'individual'
+    else:
+        name = ''
+        
     plt.savefig(f'{directory_path}/venn_diagram_{plot}_{name}.png', format='png', dpi=100, bbox_inches='tight')
     return fig, ax

@@ -19,6 +19,10 @@ class Agg_SHAP:
     def features_id(self, filtered_df, num_seq):
         features = []
         ids = []
+        
+        if num_seq > len(filtered_df):
+            raise Exception(f"The number assigned should be equal or less than length dataframe ({len(filtered_df)})")
+            
         for i in trange(num_seq):
             x = filtered_df['sequence'].iloc[i]
             features.append(np.array(OneHot.one_hot_encode_seq(x)))
