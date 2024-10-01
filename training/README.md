@@ -51,4 +51,5 @@ export PYTHONPATH="<ROOT_DIRECTORY>:$PYTHONPATH"
 ![Accuracy](/results/Training_validation_accuracy.jpg)
 
 * Loss in training and validation dataset
+
 ![Loss](/results/Training_validation_loss.jpg)
