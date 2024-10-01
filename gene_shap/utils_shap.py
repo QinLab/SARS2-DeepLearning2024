@@ -177,14 +177,14 @@ def get_pos_nuc_summation(df, df_ORFs, column_names, features):
     return df_sum
 
 
-def get_commonset_who_shap(num, agg=True):
+def get_commonset_who_shap(thr, num, perc, agg):
     set_names = CONST.VOC_WHO
     df_orfs = pd.read_csv(CONST.ORf_DIR)
     
     all_sets = []
     for var in set_names:
         df_var = pd.read_csv(f'{CONST.SHAP_DIR}/agg_{var}_beeswarm.csv')
-        var_venn, agg = get_var_shap_count(df_var, df_orfs, num, agg)
+        var_venn, agg = get_var_shap_count(df_var, df_orfs, thr, num, perc, agg)
         var_set = set(var_venn['Positions'])
         all_sets.append(var_set)
     
@@ -238,19 +238,39 @@ def plot_correlation(df):
     cluster_grid.fig.savefig(name, dpi=100, bbox_inches='tight')
     
 
-def get_var_shap_count(df_agg, df_orfs, num, agg_all_seq_in_single_var=True):
+def get_var_shap_count(df_agg, df_orfs, thr=None, num_sum=None, perc=None, agg_all_seq_in_single_var=None):
 
     numeric_df = df_agg[:-1].drop(columns=['Accession ID'])
     column_countshap = {}
     column_countshap_new = {}
-    if agg_all_seq_in_single_var:
-        column_sums = numeric_df.sum()
-        great_sum_shap = column_sums.nlargest(num)
+    if agg_all_seq_in_single_var==True:
+        column_sums = numeric_df.sum()       
+        if num_sum:
+            great_sum_shap = column_sums.nlargest(num_sum)
+            num = num_sum
+        elif perc:
+            great_sum_shap = column_sums.nlargest(int((perc / 100) * (len(column_sums))))
+            num = int((perc/100)*(len(column_sums)))
+        elif thr:
+            great_sum_shap = column_sums.loc[:, column_sums.iloc[0] > thr]
+            num = len(great_sum_shap.columns)
+            
         positions = great_sum_shap.index
         column_countshap = dict(zip(positions, great_sum_shap))
+        
     else:   
         for idx, row in numeric_df.iterrows():
-            top_shap_columns = row.nlargest(num).index
+            if num_sum:
+                top_shap_columns = row.nlargest(num_sum).index
+                num = num_sum
+            elif perc:
+                top_shap_columns = row.nlargest(int((perc/100)*len(rows.columns))).index
+                print("top_shap_columns:", top_shap_columns)
+                num = int((perc/100)*len(rows.columns))
+            elif thr:
+                top_shap_columns = row.loc[:, row.iloc[0] > thr]
+                num = len(rows.columns)
+                
             for col in top_shap_columns:
                 if col in column_countshap:
                     column_countshap[col] += 1
@@ -309,10 +329,11 @@ def get_var_dna_count(df_train_test, var, freq, df_orfs):
     return df_var
 
 
-def count_common_positions_all_combinations(all_sets, set_names):
+def count_common_positions_all_combinations(all_sets, set_names, pri=False):
     
     common_sets = {}
     combinations_with_counts = []
+    all_values = []
 
     for r in range(2, len(all_sets) + 1):
         for combination in itertools.combinations(enumerate(all_sets), r):
@@ -323,13 +344,15 @@ def count_common_positions_all_combinations(all_sets, set_names):
             combinations_with_counts.append((key, len(common_values)))
 
     for combination, (values, count) in common_sets.items():
-        print(f"Common values between {combination}: {values}, Count: {count}")
+        all_values.append(values)        
+        if pri:
+            print(f"Common values between {combination}: {values}, Count: {count}")
     
-    return common_sets, combinations_with_counts
+    return common_sets, all_values, combinations_with_counts
 
 
 def plot_common_positions_with_rank(all_sets, set_names, top, agg):
-    _ , combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
+    _ , _, combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
     combinations_with_counts.sort(key=lambda x: x[1], reverse=True)
     sns.set(style="whitegrid")
     plt.figure(figsize=(25, 15))
