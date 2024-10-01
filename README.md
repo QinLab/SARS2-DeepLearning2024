@@ -20,5 +20,6 @@ source myenv/bin/activate
 ```
 pip3 install -r requirements.txt
 ```
+4. Every files has its own `README.md` file and you can run them using file `slurm.sh` by uncomment assigning the information of you own cluster and uncommnet line code according to what you want run
 
 
