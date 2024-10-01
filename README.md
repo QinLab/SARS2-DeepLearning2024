@@ -29,3 +29,12 @@ pip3 install -r requirements.txt
 5. If you want to run without cluster:
     1. Activate the environment with: ```source myenv/bin/activate```
     2. Run the desired Python script from root of repository, for example: ```python3 ./gene_shap/venn_shap.py -num 1500 -agg```
+
+# Repository Structure
+1. Train model: `./training/`
+2. Find initial sequences in each VOCs: `./first_sequences/`
+3. Analysis SHAP value for two-layer CNN model: `./gene_shap/`
+4. Compare SHAP value with GWAS: `./gwas/`
+5. Train decision tree models and produce their SHAP values: `./decision_tree/`
+** Optional: Find MSA within each variant: `./msa_gene/`
+**Note:** All results will be saved in `./results/`
