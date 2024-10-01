@@ -30,7 +30,7 @@ pip3 install -r requirements.txt
     1. Activate the environment with: ```source myenv/bin/activate```
     2. Run the desired Python script from root of repository, for example: ```python3 ./gene_shap/venn_shap.py -num 1500 -agg```
 
-# Repository Structure
+## Repository Structure
 1. Train model: `./training/`
 2. Find initial sequences in each VOCs: `./first_sequences/`
 3. Analysis SHAP value for two-layer CNN model: `./gene_shap/`
