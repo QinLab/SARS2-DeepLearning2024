@@ -23,7 +23,7 @@ thr = args.threshold
 agg = args.agg_shap_high
 perc = args.percentage
 common_all_var = args.common_all_var
-universal_orfs = ['ORF1ab', 'ORF2 (S)', 'ORF3a', 'ORF4 (E)', 'ORF5 (M)', 'ORF6', 'ORF7a', 'ORF7b', 'ORF8', 'ORF9 (N)', 'ORF10', 'Non_ORF']
+universal_orfs = ['ORF1ab', 'ORF2 ', 'ORF3 ', 'ORF4 ', 'ORF5 ', 'ORF6 ', 'ORF7 ', 'ORF8 ', 'ORF9 ', 'ORF10 ', 'Non_ORF']
 
 if __name__ == '__main__':
     set_pvalue, set_common_set, agg, name_plot = get_commonset_who_pvalue(agg=agg, common_all_var=common_all_var, num=num, thr=thr, perc=perc)
