@@ -47,10 +47,10 @@ if __name__ == '__main__':
     plot_pie_chart(set_pvalue, universal_orfs, directory_path, name, name_plot, 'pvalue')
 
     # Pie chart for SHAP set
-    plot_pie_chart(set_common_set, universal_orfs, directory_path, name, name_plot, 'SHAP')
+    plot_pie_chart(set_common_set, universal_orfs, directory_path, name, name_plot, f'SHAP_{name}')
 
     # Pie chart for intersection of SHAP and p-value sets
     common_set = set_common_set & set_pvalue
-    plot_pie_chart(common_set, universal_orfs, directory_path, name, name_plot, 'SHAP_pvalue_intersection')
+    plot_pie_chart(common_set, universal_orfs, directory_path, name, name_plot, f'SHAP_pvalue_intersection_{name}')
     
     
