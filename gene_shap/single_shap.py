@@ -85,7 +85,7 @@ if __name__ == "__main__":
     ref_seq, ref_seq_oneHot, converted_sequence = convert_ref_to_onehot_lowercase()
 
     #---------------------------Base value---------------------------
-    # Get some sequences from test dataset to produce base value
+    # Get some sequences from train dataset to produce base value
     base_features = []
 
     for variant in variants:
