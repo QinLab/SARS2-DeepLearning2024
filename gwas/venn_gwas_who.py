@@ -1,6 +1,6 @@
 import argparse
 import constants.constants as CONST
-from gwas.utils_gwas import get_commonset_who_pvalue, plot_pie_chart
+from gwas.utils_gwas import get_commonset_who, plot_pie_chart
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2
 import os
@@ -26,10 +26,10 @@ common_all_var = args.common_all_var
 universal_orfs = ['ORF1ab', 'ORF2 ', 'ORF3 ', 'ORF4 ', 'ORF5 ', 'ORF6 ', 'ORF7 ', 'ORF8 ', 'ORF9 ', 'ORF10 ', 'Non_ORF']
 
 if __name__ == '__main__':
-    set_pvalue, set_common_set, agg, name_plot = get_commonset_who_pvalue(agg=agg, common_all_var=common_all_var, num=num, thr=thr, perc=perc)
+    set_pvalue, set_shap, agg, name_plot = get_commonset_who(agg=agg, common_all_var=common_all_var, num=num, thr=thr, perc=perc)
     
     # Venn Diagram
-    venn2(subsets = (set_pvalue, set_common_set), set_labels = ('GWAS', 'SHAP'))
+    venn2(subsets = (set_pvalue, set_shap), set_labels = ('GWAS', 'SHAP'))
     
     directory_path = f"{CONST.RSLT_DIR}/venn_plot"
     if not os.path.exists(directory_path):
@@ -47,10 +47,10 @@ if __name__ == '__main__':
     plot_pie_chart(set_pvalue, universal_orfs, directory_path, name, name_plot, 'pvalue')
 
     # Pie chart for SHAP set
-    plot_pie_chart(set_common_set, universal_orfs, directory_path, name, name_plot, f'SHAP_{name}')
+    plot_pie_chart(set_shap, universal_orfs, directory_path, name, name_plot, f'SHAP_{name}')
 
     # Pie chart for intersection of SHAP and p-value sets
-    common_set = set_common_set & set_pvalue
+    common_set = set_shap & set_pvalue
     plot_pie_chart(common_set, universal_orfs, directory_path, name, name_plot, f'SHAP_pvalue_intersection_{name}')
     
     
