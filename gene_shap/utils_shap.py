@@ -258,7 +258,7 @@ def get_var_shap_count(df_agg, df_orfs, thr=None, num_sum=None, perc=None, agg_a
         positions = great_sum_shap.index
         column_countshap = dict(zip(positions, great_sum_shap))
         
-    else:   
+    else:  
         for idx, row in numeric_df.iterrows():
             if num_sum:
                 top_shap_columns = row.nlargest(num_sum).index
