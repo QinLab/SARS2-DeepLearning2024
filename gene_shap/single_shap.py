@@ -4,9 +4,9 @@ from decision_tree.utils_dt import get_column_names
 import glob
 import numpy as np
 import pandas as pd
-from plots.waterfall import waterfall
-from plots.viz import plot_DNA
-from plots.scatter import scatter_plot_var
+from gene_shap.plots.waterfall import waterfall
+from gene_shap.plots.viz import plot_DNA
+from gene_shap.plots.scatter import scatter_plot_var
 import shap
 from utils_shap import *
 import tensorflow as tf
