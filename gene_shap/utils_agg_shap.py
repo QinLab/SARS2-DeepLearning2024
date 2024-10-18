@@ -19,7 +19,6 @@ class Agg_SHAP:
     def features_id(self, filtered_df, num_seq):
         features = []
         ids = []
-        
         if num_seq > len(filtered_df):
             raise Exception(f"The number assigned should be equal or less than length dataframe ({len(filtered_df)})")
             
@@ -45,7 +44,7 @@ class Agg_SHAP:
         # When we want to seperate sequences based on some certain IDs
         elif ID!=None: 
             filtered_df = filtered_df[filtered_df['ID'].isin(ID)]
-            features, ids = self.features_id(filtered_df, num_seq)
+            features, ids = self.features_id(filtered_df, len(filtered_df))
         
         return filtered_df, features, ids
         
