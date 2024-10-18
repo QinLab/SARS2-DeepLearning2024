@@ -351,6 +351,33 @@ def count_common_positions_all_combinations(all_sets, set_names, pri=False):
     return common_sets, all_values, combinations_with_counts
 
 
+def get_orf_names(index, df_orfs):
+    orf_names = [str(index)]  #hold the ORFs and positions
+    for _, row in df_orfs.iterrows():
+        if row['Start'] <= index <= row['End']:
+            orf_names.append(row['Gene'])
+
+    if len(orf_names) == 1:
+        orf_names.append('None-ORF')
+
+    return ', '.join(orf_names) 
+
+
+def orf_column_names(df, ref_seq):
+
+    df_ORFs = pd.read_csv(CONST.ORf_DIR)
+    existing_column_names = df.columns.tolist()
+    new_column_names = [get_orf_names(index, df_ORFs) for index in range(1, len(existing_column_names) + 1)]
+    df.columns = new_column_names
+    
+    i = 0
+    for column in df.columns:
+        df.rename(columns={column: f'{ref_seq[i]}'+column}, inplace=True)
+        i += 1
+
+    return df
+
+
 def plot_common_positions_with_rank(all_sets, set_names, top, agg):
     _ , _, combinations_with_counts = count_common_positions_all_combinations(all_sets, set_names)
     combinations_with_counts.sort(key=lambda x: x[1], reverse=True)
