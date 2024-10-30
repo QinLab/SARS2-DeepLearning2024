@@ -17,7 +17,7 @@ from shap.plots._labels import labels
 import warnings
 
 
-def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_display, summation=True, show=True):
+def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_display, miss=False, summation=True, show=True):
     """ Plots an explantion of a single prediction as a waterfall plot.
 
     The SHAP value of a feature represents the impact of the evidence provided by that feature on the model's
@@ -311,6 +311,8 @@ def waterfall(var, as_var, df_variant, shap_values, base_value, index, max_displ
         name = f"{directory_path}/{df_col.iloc[0][0]}_{var}_as_{as_var}.png"
     elif summation == False:
         name = f"{directory_path}/{df_col.iloc[0][0]}_{var}_as_{as_var}_sum.png"
+    if miss:
+        name = f"{directory_path}/{df_col.iloc[0][0]}_{var}_as_{as_var}_miss.png" 
            
     plt.savefig(name, dpi=100, bbox_inches='tight')
     
