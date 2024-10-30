@@ -87,7 +87,6 @@ def plot_confusion_matrix(model, y_preds, y_test, color, cmap):
 
     heatmap = sns.heatmap(conf_matrix_normalized,
                           annot=True,
-                          fmt='.2f', 
                           cmap=cmap,  
                           cbar=False,
                           xticklabels=CONST.VOC_WHO,
