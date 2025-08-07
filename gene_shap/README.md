@@ -36,6 +36,14 @@ python3 <root_repository>/gene_shap/correlation.py
 ```
 The plot will be saved in: `<root_repository>/results/corrolation_map/`
 
+## Heat Map of Signs of SHAP Values
+Run:
+```
+python3 <root_repository>/gene_shap/heatmap.py --max_display 10 --output_dir "results/heatmaps" --output_name "shap_heatmap.png"
+```
+- `max_display`: Maximum number of features to display in the heatmap
+- `output_dir` and `output_name`: Output directory for saving the heatmap
+The plot will be saved in: `<root_repository>/results/heatmaps/`
 ## Venn Diagram Between VOCs
 Run:
 ```
