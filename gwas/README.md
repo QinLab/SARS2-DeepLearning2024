@@ -10,7 +10,7 @@ Results will be saved in `./p_value_csv/p_values_chi_square.csv`
 ## 2. Visualize Normalized(-log(p-value)) and SHAP Values
 Run:
 ```
-python3 <root_repository>/gwas/gwas_who_sctr.py
+python3 <root_repository>/gwas/gwas_vs_shap.py
 ```
 The plot will be saved in `<root_repository>/results/gwas_shap_plot`
 
