@@ -1,20 +1,21 @@
 '''
 a modified version of https://github.com/shap/shap/blob/master/shap/plots/_beeswarm.py
 '''
+# import sars.constants.constants as CONST
 import warnings
 
 import matplotlib.pyplot as pl
 import numpy as np
+import os
 import scipy.cluster
 import scipy.sparse
 import scipy.spatial
-from scipy.stats import gaussian_kde
+import constants.constants as CONST
 
 from shap._explanation import Explanation
 from matplotlib.colors import ListedColormap
 
 try:
-    import matplotlib
     import matplotlib.pyplot as plt
 except ImportError:
     warnings.warn("matplotlib could not be loaded!")
@@ -265,7 +266,6 @@ def beeswarm(var, df, shap_values,df_test_model, max_display=5, order=Explanatio
 
             # plot the non-nan fvalues colored by the trimmed feature value
             cvals = fvalues[np.invert(nan_mask)].astype(np.float64)
-#             print("cvals:", cvals)
             cvals_imp = cvals.copy()
             cvals_imp[np.isnan(cvals)] = (vmin + vmax) / 2.0
             cvals[cvals_imp > vmax] = vmax
@@ -285,7 +285,6 @@ def beeswarm(var, df, shap_values,df_test_model, max_display=5, order=Explanatio
                         zorder=3, rasterized=len(shaps) > 500)
         else:
             color_values = custom_cmap(fvalues.astype(int) % len(colors_unique))
-            print("fvalues.astype(int) % len(colors_unique):", fvalues.astype(int) % len(colors_unique))
             pl.scatter(shaps, pos + ys, s=16, alpha=alpha, linewidth=0, zorder=3,
                         color=color_values if colored_feature else "#777777", rasterized=len(shaps) > 500)
 
@@ -312,8 +311,9 @@ def beeswarm(var, df, shap_values,df_test_model, max_display=5, order=Explanatio
     pl.yticks(range(len(feature_inds)), reversed(yticklabels), fontsize=24)
     pl.gca().tick_params('y', length=20, width=0.5, which='major')
     pl.gca().tick_params('x', labelsize=20)
-    xmin, xmax= -0.05, 0.15
-    pl.xlim([xmin, xmax])
+    shap_min = np.min(values)
+    shap_max = np.max(values)
+    pl.xlim([shap_min, shap_max])
     pl.ylim(-1, len(feature_inds))
     pl.xlabel(labels['VALUE'], fontsize=15)
     
@@ -322,7 +322,7 @@ def beeswarm(var, df, shap_values,df_test_model, max_display=5, order=Explanatio
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
 
-    pl.savefig(f'{directory_path}/beewarm_{var}.jpg', dpi=100, bbox_inches='tight')
-    pl.close(fig)
+    pl.savefig(f'{directory_path}/beewarm_{var}.jpg', dpi=300, bbox_inches='tight')
+    pl.close()
     if show:
         pl.show()
