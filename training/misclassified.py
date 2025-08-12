@@ -1,12 +1,12 @@
 import argparse
 import constants as CONST
 from decision_tree.utils_dt import plot_confusion_matrix, plot_metrics
-from gene_shap.plots import waterfall
+from gene_shap.plots import waterfallMiss
 from gene_shap.utils_shap import calculate_base_value, convert_ref_to_onehot_lowercase
 import numpy as np
 import pandas as pd
 import shap
-from utils_misclass import get_misclass_seq_index_var
+from utils_misclass import plot_id_missclassified, get_misclass_seq_index_var
 import tensorflow as tf
 
 
@@ -36,7 +36,9 @@ combined_features = np.concatenate(base_features, axis=0)
 explainer = shap.DeepExplainer(model, combined_features)
 base_value = np.array(explainer.expected_value)
 
-pred_miss, concatenate_feature, y_preds, y_test, misclassified_indices_array = get_misclass_seq_index_var(df_test, model)
+pred_miss, feature_list, concatenate_feature_miss, y_preds, y_test, misclassified_indices_array, ids_stack = get_misclass_seq_index_var(df_test, model)
 
-plot_confusion_matrix('cnn', y_preds, y_test, 'blue', 'Blues')
-plot_metrics('cnn', y_preds, y_test, 'Blues')
+plot_confusion_matrix('cnn', np.argmax(y_preds, axis=1), np.argmax(y_test, axis=1), 'blue', 'Blues')
+plot_metrics('cnn', np.argmax(y_preds, axis=1), np.argmax(y_test, axis=1), 'Blues')
+
+plot_id_missclassified(y_preds, y_test, concatenate_feature_miss, misclassified_indices_array, ref_seq, ids_stack, base_value, explainer)
