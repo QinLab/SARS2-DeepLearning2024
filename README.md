@@ -1,6 +1,6 @@
 # Explainable Convolutional Neural Network Model Provides an Alternative Genome-Wide Association Perspective on Mutations in SARS-CoV-2  
 
-Code repository of the paper <link_of_paper>
+Code repository of the paper https://arxiv.org/abs/2410.22452 
 
 ## Overview
 ![Summary of or model](/results/model.png)
