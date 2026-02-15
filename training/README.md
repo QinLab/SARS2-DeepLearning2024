@@ -57,6 +57,10 @@ For model input, each aligned nucleotide string is converted position-wise into 
 - Trainable params: 4,975,287
 - Non-trainable params: 0
 
+## Methods paragraph for reproducibility
+
+To ensure reproducibility of the CNN experiments, we recommend reporting and reusing the exact architecture and training settings implemented in this repository: two 1D convolutional blocks (`Conv1D(filters=196, kernel_size=19, strides=3, activation='relu')` + `MaxPooling1D(pool_size=5)`), followed by fully connected layers of 164, 42, and 20 units with ReLU activations, `Dropout(0.40)`, and a 5-class softmax output (`training/model.py`). Training should be run with the same one-hot encoded aligned inputs of shape `(29891, 7)` and the same class-balanced split construction (32,000 sequences per VOC for training and 8,000 per VOC for testing before validation split), as documented above and implemented in `training/split_data_train_val_test.py` and `constants/constants.py`. Optimization should match the current setup (`Adam` with learning rate `0.0014924`, categorical cross-entropy loss, and accuracy metric) and model selection should follow validation-loss checkpointing to `./model/model_cnn.hdf5` (`training/main.py`). For strict run-to-run comparability, explicitly fix random seeds for Python/NumPy/TensorFlow and record software versions (notably TensorFlow/Keras from `requirements.txt`), hardware type (CPU/GPU), and command-line arguments (e.g., `python3 training/main.py --batch_size 64 --epochs 15`) in the Methods section and experiment logs.
+
 ## Results
 * Accuracy in training and validation dataset
 
