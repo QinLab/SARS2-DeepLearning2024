@@ -3,6 +3,21 @@
 ## 1. Preparing data
 Because of limitations on memory, for decision trees we cannot use the entire training and test datasets we used for the 2-layer CNN, then we selected 2,000 sequences from each VOC, splitting 20% of them for testing. 
 
+### Baseline models and sample sizes
+The tree-based baselines used to compare against the CNN are:
+
+* Random Forest (`rf`)
+* XGBoost (`xgb`)
+* CatBoost (`cat`)
+
+With the default `-num 2000` setting in `data_dt.py` and five VOC classes, this creates:
+
+* 10,000 total sequences for decision-tree experiments
+* 8,000 training sequences (80%)
+* 2,000 test sequences (20%)
+
+For hyperparameter fine-tuning, `fine_tunning.py` uses 500 sequences per VOC by default (2,500 total sequences).
+
 To create these datasets, first create a folder named `data`, then run:
 ```
 python3 <root_repository>/decision_tree/data_dt.py
